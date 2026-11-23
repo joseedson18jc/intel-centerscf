@@ -18,6 +18,14 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
     </button>
   </div>
+  <!-- Quarter countdown: lives only here (owner's request) -->
+  <div class="sn-clock" role="group" data-i18n-aria="aria.quarter" aria-label="Contagem para o fim do trimestre">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 1.5M9.5 2.5h5"/></svg>
+    <div class="sn-lbl sn-clock-txt">
+      <span id="quarter-heading">Fechamento do trimestre</span>
+      <strong role="timer" id="quarter-clock" data-i18n-aria="aria.clock"></strong>
+    </div>
+  </div>
 
   <div class="sn-body" id="snBody">
     <nav class="sn-group" aria-labelledby="snStepsLbl">
@@ -84,6 +92,7 @@
         <span class="set-dot" aria-hidden="true"></span>
       </button>
     </div>
+
   </div>
 </aside>
 <div class="sn-tip" id="snTip" aria-hidden="true" hidden></div>

@@ -56,7 +56,6 @@
     const close = midnight - (m[1] === "+" ? 1 : -1) * (Number(m[2]) * 60 + Number(m[3])) * 60000;
     const seconds = Math.max(0, Math.ceil((close - now.getTime()) / 1000)), pad = n => String(n).padStart(2, "0");
     $("quarter-heading").textContent = T("Q" + quarter + " " + parts.year + " close", "Fechamento " + quarter + "º tri " + parts.year);
-    $("quarter-date").textContent = new Intl.DateTimeFormat(loc(), {timeZone:zone, day:"numeric", month:"short", year:"numeric"}).format(close - 1) + " · São Paulo";
     $("quarter-clock").textContent = Math.floor(seconds / 86400) + "d " + pad(Math.floor(seconds / 3600) % 24) + "h " + pad(Math.floor(seconds / 60) % 60) + "m " + pad(seconds % 60) + "s";
   }
 

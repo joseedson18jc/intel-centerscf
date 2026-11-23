@@ -199,19 +199,6 @@
   .hero-art .flow{stroke-dasharray:3 6;animation:dash 1.8s linear infinite}
   @keyframes dash{to{stroke-dashoffset:-18}}
 
-  .hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
-  .quarter-pill{
-    display:inline-flex;align-items:center;gap:12px;
-    background:var(--surface);border:1px solid var(--hair);
-    border-left:3.5px solid var(--blue);
-    border-radius:10px;padding:7px 13px;box-shadow:var(--shadow-sm);
-    font-size:12px;color:var(--muted);
-  }
-  .quarter-pill strong{color:var(--navy);font-weight:700;display:block;font-size:12px}
-  #quarter-clock{
-    font-family:var(--head);font-size:14px;font-weight:700;color:var(--blue);
-    background:var(--sky-soft);padding:3px 9px;border-radius:7px;white-space:nowrap;
-  }
   .week-bar{
     display:flex;align-items:center;gap:10px;
     background:var(--surface);border:1px solid var(--hair);
@@ -1614,6 +1601,14 @@
     .sidenav,.sn-backdrop,.sn-tip,.skip-link{display:none!important}
     body{padding-left:0!important}
   }
+
+  /* Quarter countdown, pinned under the brand */
+  .sn-clock{display:flex;align-items:center;gap:10px;margin:2px 12px 8px;padding:8px 12px;border:1px solid var(--hair);border-left:3.5px solid var(--blue);border-radius:10px;background:var(--surface);color:var(--muted)}
+  .sn-clock svg{flex:0 0 auto;color:var(--blue)}
+  .sn-clock-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .sn-clock-txt span{font-size:11px;font-weight:600}
+  .sn-clock-txt strong{font-family:var(--head);font-size:14px;font-weight:700;color:var(--blue);white-space:nowrap;font-variant-numeric:tabular-nums}
+  @media (min-width:1100px){.sn-collapsed .sn-clock{padding:10px 0;margin:10px 0 0;border:0;background:none;justify-content:center}}
   /* ========== DARK MODE (COMPLETE, ZERO BROKEN INLINE HACKS) ========== */
   html[data-theme="dark"]{
     color-scheme:dark;
@@ -1735,7 +1730,7 @@
     .ias-drawer{grid-template-columns:1fr}
   }
   @media(max-width:980px){
-    .hero{grid-template-columns:1fr}.hero-right{align-items:stretch}.quarter-pill{justify-content:space-between}
+    .hero{grid-template-columns:1fr}
     .grid-2,.friction-card,.price-grid,.share-grid,.sig-feed{grid-template-columns:1fr}
   }
   @media(max-width:680px){
@@ -1784,7 +1779,7 @@
     html.sn-collapsed .li-lbl,html.sn-collapsed .li-wk{padding-left:0}
   }
   @media(min-width:1100px) and (max-width:1212px){
-    html:not(.sn-collapsed) .hero{grid-template-columns:1fr}html:not(.sn-collapsed) .hero-right{align-items:stretch}html:not(.sn-collapsed) .quarter-pill{justify-content:space-between}
+    html:not(.sn-collapsed) .hero{grid-template-columns:1fr}
     html:not(.sn-collapsed) .grid-2,html:not(.sn-collapsed) .friction-card,html:not(.sn-collapsed) .price-grid,html:not(.sn-collapsed) .share-grid,html:not(.sn-collapsed) .sig-feed{grid-template-columns:1fr}
   }
   @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
@@ -1810,6 +1805,14 @@
     <button class="sn-ico-btn sn-close" id="snClose" type="button" data-i18n-aria="sn.close" aria-label="Fechar menu">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
     </button>
+  </div>
+  <!-- Quarter countdown: lives only here (owner's request) -->
+  <div class="sn-clock" role="group" data-i18n-aria="aria.quarter" aria-label="Contagem para o fim do trimestre">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 1.5M9.5 2.5h5"/></svg>
+    <div class="sn-lbl sn-clock-txt">
+      <span id="quarter-heading">Fechamento do trimestre</span>
+      <strong role="timer" id="quarter-clock" data-i18n-aria="aria.clock"></strong>
+    </div>
   </div>
 
   <div class="sn-body" id="snBody">
@@ -1890,6 +1893,7 @@
         <span class="set-dot" aria-hidden="true"></span>
       </button>
     </div>
+
   </div>
 </aside>
 <div class="sn-tip" id="snTip" aria-hidden="true" hidden></div>
@@ -1965,12 +1969,6 @@
       </g>
     </svg>
 
-    <div class="hero-right">
-      <aside class="quarter-pill" data-i18n-aria="aria.quarter">
-        <div><strong id="quarter-heading">Fechamento do trimestre</strong><span id="quarter-date"></span></div>
-        <div role="timer" id="quarter-clock" data-i18n-aria="aria.clock"></div>
-      </aside>
-    </div>
   </section>
 
   <!-- 4-STEP INTUITIVE JOURNEY SELECTOR -->
@@ -6459,7 +6457,6 @@ Write all prose in ${langName}.`;
     const close = midnight - (m[1] === "+" ? 1 : -1) * (Number(m[2]) * 60 + Number(m[3])) * 60000;
     const seconds = Math.max(0, Math.ceil((close - now.getTime()) / 1000)), pad = n => String(n).padStart(2, "0");
     $("quarter-heading").textContent = T("Q" + quarter + " " + parts.year + " close", "Fechamento " + quarter + "º tri " + parts.year);
-    $("quarter-date").textContent = new Intl.DateTimeFormat(loc(), {timeZone:zone, day:"numeric", month:"short", year:"numeric"}).format(close - 1) + " · São Paulo";
     $("quarter-clock").textContent = Math.floor(seconds / 86400) + "d " + pad(Math.floor(seconds / 3600) % 24) + "h " + pad(Math.floor(seconds / 60) % 60) + "m " + pad(seconds % 60) + "s";
   }
 
