@@ -1,7 +1,7 @@
   // ========== COMMENTARY + ALERTS ==========
   function commentary(w) {
     const i = w - 1, p = Math.max(0, i - 1), dA = D.active[i] - D.active[p], share = Math.round(D.active[i] / BASE_SUP * 100), err = nf(D.err[i], 1), ok = D.err[i] <= 8;
-    $("briefingWeekTag").textContent = WL() + w + " · " + (SRCINFO ? SRCINFO.name : T("Pilot anchor","Âncora piloto"));
+    $("briefingWeekTag").textContent = WL() + w + " · " + (SRCINFO ? SRCINFO.name : T("Pilot anchor · example data","Âncora piloto · dados de exemplo"));
     let t = T(
       `Week ${w}: active suppliers ${dA > 0 ? "rose by " + dA + " to" : "held at"} ${D.active[i]} (${share}% of the ${BASE_SUP}-supplier base). Utilization is ${D.util[i]}% and share of wallet ${D.sow[i]}%. Forecast error is ${err}%, ${ok ? "inside" : "above"} the 8% tolerance. `,
       `Semana ${w}: fornecedores ativos ${dA > 0 ? "subiram " + dA + " para" : "permaneceram em"} ${D.active[i]} (${share}% da base de ${BASE_SUP}). Utilização em ${D.util[i]}% e share of wallet em ${D.sow[i]}%. Erro de projeção de ${err}%, ${ok ? "dentro" : "acima"} da tolerância de 8%. `

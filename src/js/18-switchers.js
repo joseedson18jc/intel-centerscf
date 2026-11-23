@@ -5,13 +5,18 @@
       `Saúde do programa, checagem de limite aprovado e decisão de onde crescer · ${BASE_SUP} fornecedores e ${bn(SPEND / 1000, 1)} em compras anuais no escopo.`
     );
     $("csNote").textContent = ccy === "USD"
-      ? T("Projected balance at the selected horizon, in millions of USD (PTAX R$5.89).","Saldo projetado no horizonte escolhido, em milhões de dólares (PTAX R$ 5,89).")
+      ? T(`Projected balance at the selected horizon, in millions of USD (${fxLabel(true)}, rate entered in the panel).`,`Saldo projetado no horizonte escolhido, em milhões de dólares (${fxLabel(true)}, câmbio informado no painel).`)
       : T("Projected balance at the selected horizon, in millions of reais.","Saldo projetado no horizonte escolhido, em milhões de reais.");
     $("limUnit").textContent = ccy === "USD" ? T("USD m","US$ mi") : T("R$ m","R$ mi");
     $("limit").value = Math.round(limitBRL / fx());
     const fxEl = $("fxBadge");
     fxEl.hidden = ccy !== "USD";
-    fxEl.textContent = T("BCB PTAX 19 Nov 2026: R$5.89 / US$","PTAX BCB 19/11/2026: R$ 5,89 / US$");
+    fxEl.textContent = fxLabel();
+    // Currency switches (topbar and deck) carry the same rate as a tooltip.
+    document.querySelectorAll(".ccy-switch").forEach(e => { e.title = fxLabel(); });
+    // Data badge: same vocabulary as the source chip. With the user's own weekly data it says so, and what is still an example.
+    const db = $("dataBadge");
+    if (db) db.textContent = SRCINFO ? T("Your weekly data · other figures are examples","Seus dados semanais · demais números são exemplos") : T("Example data","Dados de exemplo");
   }
   function setCcy(c, redraw = true) {
     ccy = c === "USD" ? "USD" : "BRL";

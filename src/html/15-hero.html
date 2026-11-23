@@ -5,15 +5,15 @@
     <div>
       <div class="kick-row">
         <span class="kick" data-i18n="kick">Carteira Brasil · Revisão semanal, toda segunda</span>
-        <span class="badge" data-i18n="badge">Dados ilustrativos</span>
-        <span class="fx-badge" id="fxBadge" hidden>PTAX BCB 19/11/2026: R$ 5,89 / US$</span>
+        <span class="badge" id="dataBadge">Dados de exemplo</span>
+        <span class="fx-badge" id="fxBadge" hidden></span>
       </div>
       <h1 data-i18n="h1">Cockpit semanal do especialista de SCF</h1>
       <p class="sub" id="heroSub"></p>
       <button class="srcchip" id="src-chip" type="button"><i></i><span id="src-txt"></span></button>
     </div>
 
-    <svg class="hero-art" viewBox="0 0 400 150" role="img" aria-label="Fluxo entre fornecedor, âncora e banco">
+    <svg class="hero-art" viewBox="0 0 400 150" role="img" aria-label="Fluxo entre fornecedor, âncora e banco" data-i18n-aria="hero.art">
       <defs>
         <linearGradient id="hg-main" x1="0" x2="1"><stop offset="0" stop-color="#00BDF2"/><stop offset="1" stop-color="#056DAE"/></linearGradient>
         <radialGradient id="hg-glow"><stop offset="0" stop-color="#00BDF2" stop-opacity=".28"/><stop offset="1" stop-color="#00BDF2" stop-opacity="0"/></radialGradient>
@@ -56,7 +56,7 @@
         </div>
         <div class="slider-wrap">
           <input type="range" id="slider" min="1" max="12" value="12" data-i18n-aria="wk">
-          <div class="slider-ticks"><span id="tk-start">S1</span><span class="milestone" data-i18n="wk.docai">S5 · IA Docs</span><span id="tk-end">S12</span></div>
+          <div class="slider-ticks"><span id="tk-start">S1</span><span class="milestone" id="docAiTick" data-i18n="wk.docai">S5 · IA Docs</span><span id="tk-end">S12</span></div>
         </div>
       </div>
     </div>

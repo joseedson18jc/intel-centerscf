@@ -24,6 +24,8 @@
     "css/52-datasets.css",
     "css/53-products.css",
     "css/54-open-finance.css",
+    "css/55-insights.css",
+    "css/56-assistant.css",
     "css/60-guide.css",
     "css/90-dark.css",
     "css/91-print.css",
@@ -72,6 +74,10 @@
     "js/17-playback-clock.js",
     "js/18-switchers.js",
     "js/19-persistence.js",
+    "js/20-engine.js",
+    "js/21-assistant.js",
+    "js/22-live-insights.js",
+    "js/23-consistency.js",
     "js/30-guide.js",
     "js/99-boot.js"
   ],
@@ -84,23 +90,29 @@
     ],
     "topbar-actions": [
       "html/slots/open-finance-button.html",
-      "html/slots/guide-button.html"
+      "html/slots/guide-button.html",
+      "html/slots/assistant-button.html"
     ],
     "after-main": [
       "html/slots/open-finance-modal.html",
-      "html/slots/guide-layer.html"
+      "html/slots/guide-layer.html",
+      "html/slots/assistant-panel.html"
     ],
     "panel-1-top": [
-      "html/slots/tips-1.html"
+      "html/slots/tips-1.html",
+      "html/slots/insights-1.html"
     ],
     "panel-2-top": [
-      "html/slots/tips-2.html"
+      "html/slots/tips-2.html",
+      "html/slots/insights-2.html"
     ],
     "panel-3-top": [
-      "html/slots/tips-3.html"
+      "html/slots/tips-3.html",
+      "html/slots/insights-3.html"
     ],
     "panel-4-top": [
-      "html/slots/tips-4.html"
+      "html/slots/tips-4.html",
+      "html/slots/insights-4.html"
     ]
   }
 }

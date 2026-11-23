@@ -1,0 +1,40 @@
+<!-- ==================== ASSISTANT PANEL (drawer on desktop, full sheet on phones) ==================== -->
+<div class="asst-backdrop" id="m-assistant" hidden role="dialog" aria-modal="true" aria-labelledby="asst-title" tabindex="-1">
+  <aside class="asst-panel">
+    <header class="asst-head">
+      <div class="asst-head-txt">
+        <h3 id="asst-title" data-i18n="as.h">Assistente do painel</h3>
+        <p id="asst-src" class="asst-src"></p>
+      </div>
+      <div class="asst-head-btns">
+        <button type="button" class="asst-ico" id="asst-clear" data-i18n-aria="as.clear" title="Limpar conversa">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12h10l1-12M9 7V4h6v3"/></svg>
+        </button>
+        <button type="button" class="asst-ico" data-close data-i18n-aria="as.close" title="Fechar (Esc)">✕</button>
+      </div>
+    </header>
+    <div class="asst-mode" id="asst-mode" role="group" aria-labelledby="asst-mode-lbl">
+      <span class="asst-mode-lbl" id="asst-mode-lbl" data-i18n="as.mode">Quem responde</span>
+      <div class="asst-seg">
+        <button type="button" data-asst-mode="engine" aria-pressed="true" data-i18n="as.mode.engine">Motor do painel</button>
+        <button type="button" data-asst-mode="model" aria-pressed="false" data-i18n="as.mode.model">Perguntar ao Claude</button>
+      </div>
+      <p class="asst-mode-note" id="asst-mode-note"></p>
+    </div>
+    <div class="asst-log" id="asst-log" role="log" aria-live="polite" aria-relevant="additions" tabindex="0"></div>
+    <form class="asst-form" id="asst-form" autocomplete="off">
+      <label class="asst-sr" for="asst-q" data-i18n="as.q.lbl">Sua pergunta</label>
+      <textarea id="asst-q" rows="1" maxlength="600" enterkeyhint="send"></textarea>
+      <button type="submit" class="asst-send" id="asst-send" data-i18n-aria="as.send" title="Enviar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </form>
+    <footer class="asst-foot">
+      <span id="asst-foot-note"></span>
+      <span class="asst-foot-links">
+        <button type="button" class="asst-link" id="asst-open-review" data-i18n="as.review">Sugestões de parâmetros</button>
+        <button type="button" class="asst-link" id="asst-open-settings" data-i18n="as.settings">Chave e modelo</button>
+      </span>
+    </footer>
+  </aside>
+</div>

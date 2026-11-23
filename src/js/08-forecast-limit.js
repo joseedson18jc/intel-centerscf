@@ -54,8 +54,8 @@
     $("assumption").textContent = (w === 1
       ? T("Week 1 uses a 2.6% starting growth assumption.","A semana 1 usa uma premissa inicial de crescimento de 2,6%.")
       : T(`Base growth uses the last ${n} observed weekly change${n === 1 ? "" : "s"} (geometric mean ${g}%).`, n === 1 ? `O crescimento base usa a última variação semanal observada (${g}%).` : `O crescimento base usa as últimas ${n} variações semanais observadas (média geométrica de ${g}%).`))
-      + T(` Downside/upside use 0.5× and 1.5× base growth with 93% weekly decay. Balances follow (${bn(SPEND / 1000, 1)} × spend % × utilization %) × ${G.tenor}d ÷ 365.${ccy === "USD" ? " Displayed in USD at BCB PTAX R$5.89 (19 Nov 2026)." : ""}`,
-          ` Os cenários pessimista/otimista usam 0,5× e 1,5× o crescimento base com decaimento semanal de 93%. O saldo segue (${bn(SPEND / 1000, 1)} × gasto % × utilização %) × ${G.tenor}d ÷ 365.${ccy === "USD" ? " Valores em USD pela PTAX BCB de R$ 5,89 (19/nov/2026)." : ""}`);
+      + T(` Downside/upside use 0.5× and 1.5× base growth with 93% weekly decay. Balances follow (${bn(SPEND / 1000, 1)} × spend % × utilization %) × ${PILOT.tenor}d ÷ 365, the pilot tenor set in Data. The range is a modeled band scaled by this week's forecast error, not a statistical confidence interval.${ccy === "USD" ? ` Displayed in USD. ${fxLabel()}.` : ""}`,
+          ` Os cenários pessimista/otimista usam 0,5× e 1,5× o crescimento base com decaimento semanal de 93%. O saldo segue (${bn(SPEND / 1000, 1)} × gasto % × utilização %) × ${PILOT.tenor}d ÷ 365, o prazo do piloto definido em Dados. A faixa é uma banda modelada, proporcional ao erro de projeção da semana, e não um intervalo de confiança estatístico.${ccy === "USD" ? ` Valores em USD. ${fxLabel()}.` : ""}`);
 
     fc.replaceChildren();
     const count = w + horizon, history = D.bal.slice(0, w);

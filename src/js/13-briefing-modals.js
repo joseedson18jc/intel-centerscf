@@ -4,10 +4,12 @@
     const kp = KPIS.map(m => {
       const div = m.k === "rev" ? fx() : 1;
       const cur = m.series[i] / div, prev = i ? m.series[i - 1] / div : cur, diff = cur - prev;
-      return `<tr><td>${L(m.lbl)}</td><td><b>${(m.k === "rev" ? sym() : "") + nf(cur, m.d)} ${unitOf(m)}</b></td><td>${i ? ((diff >= 0 ? "+" : "−") + nf(Math.abs(diff), m.d)) : "–"}</td></tr>`;
+      const u = unitOf(m), tight = u === "%" || (m.k === "rev" && lang !== "pt"), flat = +Math.abs(diff).toFixed(m.d) === 0;   // "60%", "R$6.2m / yr", "R$ 6,2 mi / ano"
+      return `<tr><td>${L(m.lbl)}</td><td><b>${(m.k === "rev" ? sym() : "") + nf(cur, m.d)}${tight ? "" : " "}${u}</b></td><td>${!i ? "–" : flat ? T("flat","estável") : ((diff > 0 ? "+" : "−") + nf(Math.abs(diff), m.d))}</td></tr>`;
     }).join("");
     const al = ALERTS.filter(a => a[0] <= w).sort((a, b) => b[0] - a[0]).slice(0, 3).map(a => `<li>${WL()}${a[0]} · ${L(a[2])}</li>`).join("");
-    return `<div><b>${L(I18N.h1)}</b> · ${T("Week","Semana")} ${w} · ${ccy} · ${SRCINFO ? esc(SRCINFO.name) : T("demo data","dados de demonstração")}</div>
+    return `<div><b>${L(I18N.h1)}</b> · ${T("Week","Semana")} ${w} · ${ccy} · ${esc(dataLabel())}</div>
+      <div style="font-size:.92em;opacity:.85">${T("Steps 3 and 4","Etapas 3 e 4")}: ${esc(dsBaseLabel(true))} · ${T("pipeline on working hypotheses, market figures fabricated","pipeline sobre hipóteses de trabalho, números de mercado fabricados")}${ccy === "USD" ? " · " + esc(fxLabel()) : ""}</div>
       <h4>${T("Action plan","Plano de ação")}</h4><ol>${ACTS.map(a => `<li><b>${esc(a.title)}</b> — ${esc(a.why)} <i>(${T("Decision","Decisão")} ${a.dec} · ${a.own.map(o => L(OWN[o])).join(" + ")} · ${L(a.due)})</i></li>`).join("")}</ol>
       <h4>${T("Balance & limit outlook","Projeção de saldo e limite")}</h4><p style="color:inherit">${esc($("outlook").textContent)}<br>${esc($("limit-status").textContent)}</p>
       <h4>${T("KPIs","Indicadores")}</h4><table>${kp}</table>

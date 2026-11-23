@@ -1,48 +1,52 @@
-<!-- ==================== AI ANALYSIS ON COPILOT MODAL ==================== -->
+<!-- ==================== PARAMETER SUGGESTIONS (OPTIONAL, MODEL OUTPUT THE USER REVIEWS) ==================== -->
 <div class="modal-backdrop" id="m-ai" hidden role="dialog" aria-modal="true" aria-labelledby="mai-title" tabindex="-1">
   <div class="modal-dialog wide">
     <div class="modal-head">
-      <div><div class="lbl" data-i18n="ai.mod.lbl">Inteligência cruzada · Etapas 1 a 4 + Apresentação (17)</div><h3 id="mai-title" data-i18n="ai.mod.h">AI Analysis ON · Predições, Insights &amp; Otimizador de Parâmetros</h3></div>
+      <div><div class="lbl" data-i18n="ai.mod.lbl">Opcional · usa o Claude com a sua chave de API</div><h3 id="mai-title" data-i18n="ai.mod.h">Sugestões de parâmetros para você revisar</h3></div>
       <button class="modal-close" data-close aria-label="Fechar / Close">✕</button>
     </div>
     <div class="modal-body">
+      <p class="set-intro" data-i18n="ai.mod.intro"></p>
       <div class="ai-bar">
         <div class="ai-bar-left">
-          <span class="ai-model-tag" id="aiModelTag">AI Analysis ON</span>
-          <span id="aiKeyState" style="font-weight:600;color:var(--muted)"></span>
+          <span class="ai-model-tag" id="aiModelTag"></span>
+          <span id="aiKeyState" class="ai-keystate"></span>
         </div>
         <div class="mbtns">
-          <button type="button" class="mbtn" id="aiUndoBtn" hidden data-i18n="ai.mod.undo">↩ Desfazer última atualização IA</button>
-          <button type="button" class="mbtn" id="aiGoSettings" data-i18n="ai.mod.cfg">⚙ Configurar chave</button>
+          <button type="button" class="mbtn" id="aiUndoBtn" hidden data-i18n="ai.mod.undo">↩ Desfazer a última mudança aceita</button>
+          <button type="button" class="mbtn" id="aiGoSettings" data-i18n="ai.mod.cfg">Chave e modelo</button>
         </div>
-      </div>
-
-      <div class="ai-modes" id="aiModes" role="group" aria-label="AI Analysis ON">
-        <button type="button" class="ai-mode-btn" data-aimode="cross" aria-pressed="true">
-          <strong data-i18n="ai.m1.h">Cruzar dados &amp; insights</strong>
-          <span data-i18n="ai.m1.p">Cruza Etapas 1–4, 3T26, IAS 7 e sinais externos.</span>
-        </button>
-        <button type="button" class="ai-mode-btn" data-aimode="predict" aria-pressed="false">
-          <strong data-i18n="ai.m2.h">Predições &amp; estresse</strong>
-          <span data-i18n="ai.m2.p">Revisa erro de projeção, sazonalidade e limite aprovado.</span>
-        </button>
-        <button type="button" class="ai-mode-btn" data-aimode="optimize" aria-pressed="false">
-          <strong data-i18n="ai.m3.h">Otimizar parâmetros</strong>
-          <span data-i18n="ai.m3.p">Propõe ajustes em prazo, spread, limite, 5 âncoras e apresentação.</span>
-        </button>
-        <button type="button" class="ai-mode-btn" data-aimode="exec" aria-pressed="false">
-          <strong data-i18n="ai.m4.h">Feedback executivo</strong>
-          <span data-i18n="ai.m4.p">Síntese crítica e plano de ação para segunda-feira.</span>
-        </button>
       </div>
 
       <div class="set-field">
-        <label for="ai-prompt" data-i18n="ai.mod.promptLbl">Direcionamento adicional para AI Analysis ON (opcional)</label>
-        <textarea class="ai-prompt" id="ai-prompt" rows="2"></textarea>
+        <span class="lbl" id="aiModesLbl" data-i18n="ai.mod.focus">Foco do pedido</span>
+        <div class="ai-modes" id="aiModes" role="group" aria-labelledby="aiModesLbl">
+          <button type="button" class="ai-mode-btn" data-aimode="overview" aria-pressed="true">
+            <strong data-i18n="ai.m1.h">Visão geral</strong>
+            <span data-i18n="ai.m1.p">Comentários sobre as quatro etapas do retrato.</span>
+          </button>
+          <button type="button" class="ai-mode-btn" data-aimode="forecast" aria-pressed="false">
+            <strong data-i18n="ai.m2.h">Projeção e limite</strong>
+            <span data-i18n="ai.m2.p">Erro de projeção, cenário, horizonte e folga no limite.</span>
+          </button>
+          <button type="button" class="ai-mode-btn" data-aimode="params" aria-pressed="false">
+            <strong data-i18n="ai.m3.h">Parâmetros</strong>
+            <span data-i18n="ai.m3.p">Pede principalmente mudanças de parâmetros, cada uma com o motivo.</span>
+          </button>
+          <button type="button" class="ai-mode-btn" data-aimode="exec" aria-pressed="false">
+            <strong data-i18n="ai.m4.h">Resumo para a liderança</strong>
+            <span data-i18n="ai.m4.p">Texto curto: o que funciona, o que pede atenção, próximos passos.</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="set-field">
+        <label for="ai-prompt" data-i18n="ai.mod.promptLbl">Instrução adicional para este pedido (opcional)</label>
+        <textarea class="ai-prompt" id="ai-prompt" rows="2" maxlength="1500"></textarea>
       </div>
 
       <div class="mbtns">
-        <button type="button" class="mbtn pri" id="aiRunBtn" data-i18n="ai.mod.run">✦ Executar AI Analysis ON</button>
+        <button type="button" class="mbtn pri" id="aiRunBtn" data-i18n="ai.mod.run">Pedir sugestões</button>
         <button type="button" class="mbtn danger" id="aiAbortBtn" hidden data-i18n="ai.mod.abort">Cancelar</button>
         <span id="aiRunStatus" class="ai-status" role="status"></span>
       </div>

@@ -1,53 +1,55 @@
-<!-- ==================== SETTINGS MODAL (PERSISTENT ANTHROPIC KEY & AI ANALYSIS ON) ==================== -->
+<!-- ==================== SETTINGS MODAL: THE ONE PLACE FOR THE OPTIONAL API KEY AND MODEL ==================== -->
 <div class="modal-backdrop" id="m-settings" hidden role="dialog" aria-modal="true" aria-labelledby="ms-title" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-head">
-      <div><div class="lbl" data-i18n="st.set.lbl">Configurações do cockpit · Inteligência Artificial</div><h3 id="ms-title" data-i18n="st.set.h">Chave Anthropic &amp; AI Analysis ON</h3></div>
+      <div><div class="lbl" data-i18n="st.set.lbl">Opcional · o painel funciona sem isso</div><h3 id="ms-title" data-i18n="st.set.h">Acesso ao Claude: chave de API e modelo</h3></div>
       <button class="modal-close" data-close aria-label="Fechar / Close">✕</button>
     </div>
     <div class="modal-body">
+      <p class="set-intro" data-i18n="st.set.intro"></p>
       <div class="set-grid">
         <div class="set-field">
-          <label for="ai-key" data-i18n="st.set.key">Anthropic API Key (persistente neste navegador)</label>
+          <label for="ai-key" data-i18n="st.set.key">Chave de API da Anthropic (salva neste navegador)</label>
           <div class="key-row">
-            <input type="password" id="ai-key" autocomplete="off" spellcheck="false" placeholder="sk-ant-api03-...">
+            <input type="password" id="ai-key" autocomplete="off" spellcheck="false" autocapitalize="off" placeholder="sk-ant-...">
             <button type="button" class="mbtn" id="ai-key-toggle" data-i18n="st.set.show">Mostrar</button>
           </div>
+          <span id="set-keystate" class="ai-keystate muted"></span>
         </div>
         <div class="set-row-2">
           <div class="set-field">
-            <label for="ai-model" data-i18n="st.set.model">Perfil de IA (Anthropic)</label>
+            <label for="ai-model" data-i18n="st.set.model">Modelo</label>
             <select id="ai-model">
-              <option value="claude-opus-5-5">AI Analysis ON (Padrão)</option>
-              <option value="claude-opus-5">AI Analysis ON · v5</option>
-              <option value="claude-opus-4-8">AI Analysis ON · v4.8</option>
-              <option value="custom" data-i18n="st.set.customOpt">Outro ID personalizado...</option>
+              <option value="custom" data-i18n="st.set.customOpt">Outro ID de modelo...</option>
             </select>
           </div>
           <div class="set-field">
-            <label for="ai-model-custom" data-i18n="st.set.customLbl">ID de modelo personalizado (opcional)</label>
-            <input type="text" id="ai-model-custom" placeholder="AI Analysis ON" spellcheck="false">
+            <label for="ai-model-custom" data-i18n="st.set.customLbl">ID do modelo (quando "Outro" está selecionado)</label>
+            <input type="text" id="ai-model-custom" spellcheck="false" autocapitalize="off">
           </div>
         </div>
-        <div class="set-field">
-          <label for="ai-endpoint" data-i18n="st.set.ep">Endpoint da API (padrão oficial Anthropic ou proxy CORS)</label>
-          <input type="url" id="ai-endpoint" value="https://api.anthropic.com/v1/messages" spellcheck="false">
-        </div>
-        <label class="set-check">
-          <input type="checkbox" id="ai-autoapply">
-          <span>
-            <strong data-i18n="st.set.autoH">Aplicar atualizações automaticamente (Cockpit + Apresentação)</strong>
-            <span data-i18n="st.set.autoP">Quando desmarcado (recomendado), você revisa o diff Antes → Depois e atualiza cockpit e apresentação com um clique.</span>
-          </span>
-        </label>
+        <details class="set-adv">
+          <summary data-i18n="st.set.adv">Avançado: endereço da API</summary>
+          <div class="set-field">
+            <label for="ai-endpoint" data-i18n="st.set.ep">Endereço da API (a chave é enviada para este endereço)</label>
+            <input type="url" id="ai-endpoint" value="https://api.anthropic.com/v1/messages" spellcheck="false">
+            <span class="set-hint" data-i18n="st.set.epNote"></span>
+          </div>
+        </details>
         <div class="mbtns">
-          <button type="button" class="mbtn pri" id="ai-save" data-i18n="st.set.save">Salvar configurações</button>
+          <button type="button" class="mbtn pri" id="ai-save" data-i18n="st.set.save">Salvar</button>
           <button type="button" class="mbtn" id="ai-test" data-i18n="st.set.test">Testar conexão</button>
-          <button type="button" class="mbtn" id="ai-open-copilot" data-i18n="st.set.openAi">Abrir AI Analysis ON ✦</button>
           <button type="button" class="mbtn danger" id="ai-clear" data-i18n="st.set.clear">Remover chave</button>
         </div>
         <p id="set-status" class="ai-status" role="status"></p>
-        <div class="set-note" data-i18n="st.set.note"></div>
+        <div class="set-note set-warn">
+          <strong data-i18n="st.set.warnH">Antes de salvar uma chave</strong>
+          <span data-i18n-html="st.set.note"></span>
+        </div>
+        <div class="mbtns set-next">
+          <button type="button" class="mbtn" id="ai-open-asst" data-i18n="st.set.openAsst">Abrir o assistente</button>
+          <button type="button" class="mbtn" id="ai-open-review" data-i18n="st.set.openRev">Sugestões de parâmetros</button>
+        </div>
       </div>
     </div>
   </div>
