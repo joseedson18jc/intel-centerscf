@@ -43,6 +43,11 @@ also send your question and a snapshot of the dashboard to the API. The key stay
 `localStorage`, readable by anyone using the same browser profile, so treat this as personal demo use.
 Model answers are labelled and should be checked against the panel.
 
+### Navigation and tutorial
+
+The left menu divides the panel by section. A quick tutorial opens on every load; add `?notour` to the URL to skip it.
+The Claude test only works when the file is opened directly in a browser (not inside an embedded preview).
+
 ## Develop
 
 ```

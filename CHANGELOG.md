@@ -24,11 +24,18 @@ Merges two single-file versions (kept untouched under `legacy/`).
 - Live insights at the top of each step
 - One assistant panel: rule engine by default, Claude optional; every suggested parameter change is
   validated against allowed ranges, shown before and after, accepted one by one, and undoable
-- First-run tour, dismissible tip per step, field hints, compact header on phones
+- Left sidebar menu by section (steps, tools, preferences), collapsible to icons, drawer on phones
+- Quick tutorial on every load (add `?notour` to the URL to skip it), dismissible tip per step, field hints
+- Open Finance wordmark; brand "Early Money"; title "Intel Center - SCF Team"
+- System font stack (no external font request); the file makes no network call unless a Claude key is used
+- API test explains the cause when the page cannot reach the API (offline, embedded preview, blocked)
 - Wording pass: example data, working hypotheses and fabricated market figures labelled where they
   appear; "audited/verified" wording replaced by what the page actually does (reproduces the arithmetic)
 
 **Fixed**
+- Review pass: limit verdicts named by scenario, physical ceiling of the book, NaN guards, per-dataset restore,
+  field clamping, CSV maxima, market figures relabelled as illustrative, invented positions removed, deck layout,
+  keyboard and contrast fixes
 - Parameter fields that did nothing until a CSV was loaded
 - Decimal handling in CSV import
 - Proofs and forecast notes showing pipeline tenor and spread for the pilot book
