@@ -192,7 +192,23 @@
     if (st === 400) return T("The API did not accept the request (400).","A API não aceitou o pedido (400).") + detail;
     if (st === 529 || st >= 500) return T(`The API is unavailable or overloaded (${st}). Try again later.`,`A API está indisponível ou sobrecarregada (${st}). Tente mais tarde.`) + detail;
     if (st) return T(`The API answered with an error (${st}).`,`A API respondeu com erro (${st}).`) + detail;
-    return T("Could not reach the API (network, CORS or a blocked address).","Não foi possível alcançar a API (rede, CORS ou endereço bloqueado).");
+    return aiNetText();
+  }
+  // The request never left the page (fetch threw). Say the most likely reason for THIS page instead of a generic line.
+  // A direct call from a file opened in Chrome/Edge reaches api.anthropic.com (checked: it answers 401 to a bad key),
+  // so the usual culprit is where the page is running: an embedded preview that blocks outside connections.
+  function aiEmbedded() {
+    try { if (window.top !== window.self) return true; } catch (e) { return true; }
+    return !/^(file|https?):$/.test(location.protocol);
+  }
+  function aiNetText() {
+    if (navigator.onLine === false) return T("This computer is offline. Connect to the internet and try again.","Este computador está sem internet. Conecte e tente de novo.");
+    if (aiEmbedded()) return T(
+      "This panel is open inside a preview window that blocks connections to outside addresses, so the request never left the page. Download the file, open it directly in Chrome or Edge (double-click), and test again there. The panel engine keeps working here without a key.",
+      "O painel está aberto dentro de uma janela de pré-visualização que bloqueia conexões externas, então o pedido nem saiu da página. Baixe o arquivo, abra direto no Chrome ou no Edge (dois cliques) e teste de novo por lá. O motor do painel continua funcionando aqui sem chave.");
+    return T(
+      `The request did not reach ${aiHost()}. Something between this browser and the API blocked it: usually an ad or privacy blocker extension, a company network or proxy, or an antivirus. Try a private window with extensions off, or another network. The panel engine keeps working without a key.`,
+      `O pedido não chegou a ${aiHost()}. Algo entre este navegador e a API bloqueou: em geral uma extensão bloqueadora de anúncios ou de privacidade, a rede ou o proxy da empresa, ou o antivírus. Tente uma janela anônima sem extensões ou outra rede. O motor do painel continua funcionando sem chave.`);
   }
   const aiErr = (code, message) => Object.assign(new Error(message || code), { code });
 
@@ -258,7 +274,8 @@
   }
 
   if ($("ai-test")) $("ai-test").onclick = async () => {
-    if (!persistSettingsFromForm()) return;
+    // A blocked localStorage must not stop the test: the key is still held in memory for this page.
+    if (!persistSettingsFromForm() && !aiEndpointOk($("ai-endpoint").value.trim() || DEFAULT_AI_CFG.endpoint)) return;
     if (!aiHasKey()) { setStatusEl("set-status", T("Type a key first.","Digite uma chave primeiro."), "err"); return; }
     setStatusEl("set-status", T(`Testing ${activeAiModel()} (sends one short request)...`,`Testando ${activeAiModel()} (envia um pedido curto)...`), "info");
     const t0 = performance.now();
