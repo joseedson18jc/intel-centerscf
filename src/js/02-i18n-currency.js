@@ -76,7 +76,7 @@
     "vm.step":["Step-by-step","Passo a passo"],"vm.all":["Full cockpit","Visão completa"],
     "ms.d1c":["Weekly · operational","Semanal · operacional"],"ms.d2c":["Weekly · predictability","Semanal · previsibilidade"],"ms.d3c":["Monthly / quarterly","Mensal / trimestral"],
     "kick":["Brazil portfolio · Weekly review, daily inputs","Carteira Brasil · Revisão semanal, inputs diários"],
-    "h1":["SCF specialist weekly Intel Center","Intel Center semanal especialista de SCF"],"badge":["Illustrative data","Dados ilustrativos"],
+    "h1":["Intel Center - SCF Team","Intel Center - SCF Team"],"badge":["Illustrative data","Dados ilustrativos"],
     "aria.weekctl":["Week controls","Controles de semana"],"aria.prev":["Previous week","Semana anterior"],"aria.next":["Next week","Próxima semana"],
     "aria.play":["Play weekly history","Reproduzir histórico semanal"],"aria.quarter":["Quarter countdown","Contagem para o fim do trimestre"],"aria.clock":["Time remaining in quarter","Tempo restante no trimestre"],
     "wk":["Week","Semana"],"wk.short":["Wk","Sem"],"wk.docai":["W5 · Doc AI","S5 · IA Docs"],
