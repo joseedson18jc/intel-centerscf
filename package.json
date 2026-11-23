@@ -1,0 +1,11 @@
+{
+  "name": "scf-cockpit",
+  "version": "14.0.0",
+  "private": true,
+  "description": "Weekly cockpit of a supply chain finance (risco sacado) specialist. Example data only.",
+  "type": "module",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "test": "node tools/build.mjs && node tools/smoke.mjs"
+  }
+}

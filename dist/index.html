@@ -175,6 +175,73 @@
   }
   .pill-switch button[aria-pressed="true"]{background:#fff;color:#00205B}
 
+
+  /* ---------- "More" menu: secondary controls collapse into one dropdown ----------
+     >= 1440px  tools (guide, data, briefing, slot buttons) inline; currency, language, theme and settings in the menu
+     <  1440px  tools join the menu (.tb-collapsed), so the bar holds in one row down to tablets
+     <=  980px  the step tabs take their own row; <= 680px the notice scrolls away and labels shrink */
+  .nav-more{
+    display:inline-flex;align-items:center;gap:7px;
+    border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.06);
+    color:#E8F2FC;font-size:11px;font-weight:700;letter-spacing:.02em;
+    height:32px;padding:0 10px;border-radius:999px;cursor:pointer;
+    white-space:nowrap;transition:all .15s;flex-shrink:0;
+  }
+  .nav-more:hover,.nav-more[aria-expanded="true"]{border-color:#67CFDA;background:rgba(255,255,255,.16);color:#fff}
+  .tb-menu,.tb-tools{display:contents}
+  .tb-prefs{
+    display:none;position:absolute;z-index:5;top:calc(100% + 6px);right:clamp(14px,3vw,32px);
+    align-items:center;gap:8px;flex-wrap:wrap;
+    width:max-content;max-width:calc(100vw - 24px);
+    padding:10px;border-radius:14px;
+    background:#002D72;border:1px solid rgba(255,255,255,.18);
+    box-shadow:0 14px 34px rgba(0,12,40,.42);
+  }
+  .topbar.menu-open .tb-prefs{display:flex}
+  .tb-prefs .nav-ico{width:auto;height:30px;border-radius:999px;padding:0 11px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+  .tb-prefs .nav-ico .set-dot{position:static;order:3}
+  .nav-ico-lbl{white-space:nowrap}
+  @media(max-width:1539px){
+    .brand-title span{display:none}
+    .topbar-right{gap:6px}
+    .nav-step-btn{padding:5px 9px}
+  }
+  /* .tb-collapsed is set by 03-step-nav.js below 1440px, or at any width where the bar would not fit in one row */
+  .tb-collapsed .tb-menu{
+    display:none;position:absolute;z-index:5;top:calc(100% + 6px);right:clamp(12px,3vw,32px);
+    flex-direction:column;gap:10px;
+    width:min(300px,calc(100vw - 24px));max-height:calc(100vh - 150px);overflow-y:auto;
+    padding:12px;border-radius:14px;
+    background:#002D72;border:1px solid rgba(255,255,255,.18);
+    box-shadow:0 14px 34px rgba(0,12,40,.42);
+  }
+  .tb-collapsed.menu-open .tb-menu{display:flex}
+  .tb-collapsed .tb-tools{display:flex;flex-direction:column;gap:6px}
+  .tb-collapsed .tb-tools>*{justify-content:flex-start;width:100%;min-height:36px;text-align:left}
+  .tb-collapsed .tb-prefs,.tb-collapsed.menu-open .tb-prefs{
+    display:flex;position:static;width:auto;max-width:none;padding:10px 0 0;border:0;border-radius:0;
+    border-top:1px solid rgba(255,255,255,.14);background:transparent;box-shadow:none;
+  }
+  .tb-collapsed .topbar-right{gap:8px}
+  @media(max-width:980px){
+    .nav-steps{order:3;width:100%;max-width:100%;justify-content:flex-start;overflow-x:auto}
+    .nav-step-btn{flex:1 0 auto;justify-content:center}
+  }
+  @media(max-width:680px){
+    /* The notice sits above the sticky part: it scrolls away with the page instead of eating screen height. */
+    .topbar{top:calc(-1 * var(--notice-h,0px))}
+    .header-notice{font-size:10.5px;line-height:1.35;padding:4px 12px;gap:6px;flex-wrap:nowrap;text-align:left}
+    .header-notice::before{width:6px;height:6px}
+    .topbar-inner{padding:6px 12px;gap:6px 8px}
+    .brand-divider{display:none}
+    .nav-steps{padding:2px}
+    .nav-step-btn{padding:4px 6px;font-size:11.5px;gap:5px}
+    .nav-ai,.btn-present{height:32px;padding:0 11px}
+    .nav-more{padding:0 8px}
+    .nav-more-lbl{display:none}
+    .tb-collapsed .tb-menu{max-height:calc(100vh - 110px)}
+  }
+  @media(max-width:560px){.btn-present span,.nav-ai .ai-lbl{display:none}}
   /* ========== MAIN CONTAINER ========== */
   .wrap{max-width:1540px;margin:0 auto;padding:22px clamp(14px,3vw,32px) 44px}
 
@@ -309,6 +376,11 @@
   .view-toggle button{border:0;background:transparent;color:var(--muted);font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer;transition:all .15s}
   .view-toggle button[aria-pressed="true"]{background:var(--navy);color:#fff}
 
+  /* "Everything" view: the step being read (scroll spy in 03-step-nav.js) */
+  .step-card.in-view{border-color:var(--blue);box-shadow:0 0 0 3px rgba(5,109,174,.12),var(--shadow-sm)}
+  .step-card.in-view .step-num i{background:var(--blue);color:#fff}
+  html[data-theme="dark"] .step-card.in-view{border-color:#38BDF8;box-shadow:0 0 0 3px rgba(56,189,248,.16),var(--shadow-sm)}
+  html[data-theme="dark"] .step-card.in-view .step-num i{background:#38BDF8;color:#041225}
   /* ========== STEP PANELS & HEADERS ========== */
   .step-panel{animation:panelIn .32s var(--ease) both}
   .step-panel[hidden]{display:none}
@@ -1146,19 +1218,136 @@
   html[data-theme="dark"] .of-status.on{border-color:rgba(52,211,153,.35)}
   .of-note{font-size:11.5px;color:var(--subtle);line-height:1.45}
   @media(max-width:680px){.of-grid{grid-template-columns:1fr}}
-  /* Topbar fit. The base topbar fits one row at 1440px with about 16px to spare, so one more button would push the
-     right-hand group to a second row. Between 1340px and 1535px this tightens spacing only (nothing is hidden) so the
-     topbar stays on one row with the Open Finance button. Integrator: move to 10-topbar.css or drop if the topbar changes. */
-  @media(min-width:1340px) and (max-width:1535px){
-    .topbar-inner{gap:8px}
-    .topbar-right{gap:5px}
-    .nav-step-btn{padding:5px 8px;gap:5px}
-    .nav-ghost,.nav-ai{padding:6px 9px}
-    .btn-present{padding:6px 10px}
-    .pill-switch button{padding:4px 7px}
-    .brand-lockup{gap:9px}
+
+  /* ========== GUIDE: MENU, FIRST-RUN TOUR, STEP TIPS, FIELD HINTS (js/30-guide.js) ========== */
+
+  /* ---------- Guide menu (opens from the "Guide" button in the header) ---------- */
+  .guide-menu{
+    position:fixed;z-index:60;width:min(310px,calc(100vw - 16px));
+    display:flex;flex-direction:column;gap:6px;
+    padding:12px;border-radius:14px;
+    background:var(--surface);color:var(--ink);
+    border:1px solid var(--hair-strong);box-shadow:0 18px 44px rgba(0,22,60,.24);
+  }
+  .guide-menu[hidden]{display:none}
+  .guide-menu>strong{font-family:var(--head);font-size:13.5px;color:var(--navy);padding:2px 4px 4px}
+  .guide-menu-item{
+    display:flex;align-items:center;gap:10px;text-align:left;width:100%;
+    border:1px solid var(--hair);background:var(--surface-alt);color:var(--ink);
+    padding:9px 11px;border-radius:10px;cursor:pointer;font-size:12.5px;line-height:1.3;
+    transition:border-color .15s,background .15s;
+  }
+  .guide-menu-item:hover{border-color:var(--blue)}
+  .guide-menu-item>svg{flex-shrink:0;color:var(--blue)}
+  .guide-menu-item>span{display:flex;flex-direction:column;gap:1px;flex:1;min-width:0}
+  .guide-menu-item b{font-weight:650;color:var(--navy)}
+  .guide-menu-item small{font-size:11.5px;color:var(--muted)}
+  .guide-menu-item.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+  .guide-menu-item.primary>svg,.guide-menu-item.primary b{color:#fff}
+  .guide-menu-item.primary small{color:#C9DCF2}
+  .guide-switch{
+    flex-shrink:0;width:30px;height:18px;border-radius:999px;background:var(--hair-strong);
+    position:relative;transition:background .15s;
+  }
+  .guide-switch::after{
+    content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;transition:transform .15s;box-shadow:0 1px 2px rgba(0,0,0,.25);
+  }
+  [aria-checked="true"]>.guide-switch{background:var(--green)}
+  [aria-checked="true"]>.guide-switch::after{transform:translateX(12px)}
+  @media(max-width:680px){
+    .guide-menu{left:8px!important;right:8px!important;top:auto!important;bottom:8px;width:auto}
   }
 
+  /* ---------- Tour: spotlight + card ---------- */
+  .guide-layer{position:fixed;inset:0;z-index:200}
+  .guide-layer[hidden]{display:none}
+  .guide-spot{
+    position:fixed;left:50%;top:50%;width:0;height:0;border-radius:12px;pointer-events:none;
+    box-shadow:0 0 0 200vmax rgba(2,14,38,.66),0 0 0 2px rgba(0,189,242,.95),0 0 0 6px rgba(0,189,242,.22);
+  }
+  .guide-spot.none{box-shadow:0 0 0 200vmax rgba(2,14,38,.66)}
+  .guide-card{
+    position:fixed;width:min(360px,calc(100vw - 24px));
+    background:var(--surface);color:var(--ink);
+    border:1px solid var(--hair-strong);border-radius:16px;
+    padding:15px 17px 14px;
+    box-shadow:0 22px 54px rgba(0,14,44,.42);
+    animation:guideIn .22s var(--ease) both;
+  }
+  .guide-card:focus{outline:none}
+  @keyframes guideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .guide-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}
+  .guide-count{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
+  .guide-dots{display:inline-flex;gap:4px}
+  .guide-dots i{width:6px;height:6px;border-radius:50%;background:var(--hair-strong)}
+  .guide-dots i.on{background:var(--blue);width:16px;border-radius:999px}
+  .guide-card h3{font-family:var(--head);font-size:16.5px;font-weight:700;color:var(--navy);letter-spacing:-.02em;line-height:1.25}
+  .guide-card p{font-size:13.5px;color:var(--muted);line-height:1.5;margin-top:5px}
+  .guide-btns{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px}
+  .guide-btns-right{display:inline-flex;gap:8px;margin-left:auto}
+  .guide-skip{border:0;background:transparent;color:var(--subtle);font-size:12.5px;font-weight:600;cursor:pointer;padding:8px 4px;text-decoration:underline;text-underline-offset:3px}
+  .guide-skip:hover{color:var(--navy)}
+  .guide-btn{
+    border:1px solid var(--hair-strong);background:var(--surface);color:var(--navy);
+    font-size:13px;font-weight:650;padding:8px 15px;border-radius:999px;cursor:pointer;min-height:36px;
+    transition:border-color .15s,background .15s,color .15s;
+  }
+  .guide-btn:hover{border-color:var(--blue);color:var(--blue)}
+  .guide-btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+  .guide-btn.primary:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+  .guide-btn[hidden],.guide-skip[hidden]{display:none}
+  .guide-card.docked{right:24px;bottom:24px;left:auto!important;top:auto!important}
+  @media(max-width:680px){
+    .guide-card,.guide-card.docked{
+      left:0!important;right:0;top:auto!important;bottom:0;width:auto;
+      border-radius:18px 18px 0 0;border-width:1px 0 0;
+      padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));
+    }
+  }
+
+  /* ---------- Contextual tip at the top of each step ---------- */
+  .tip-card{
+    display:flex;align-items:flex-start;gap:10px;
+    margin:0 0 14px;padding:10px 12px;
+    background:var(--sky-soft);border:1px solid rgba(5,109,174,.24);border-left:3px solid var(--blue);
+    border-radius:10px;
+  }
+  .tip-card[hidden]{display:none}
+  .tip-ico{flex-shrink:0;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--surface);color:var(--blue)}
+  .tip-card p{flex:1;min-width:0;font-size:13px;line-height:1.5;color:var(--ink)}
+  .tip-card p b{color:var(--navy);font-weight:700;margin-right:4px}
+  .tip-x{
+    flex-shrink:0;width:26px;height:26px;border-radius:50%;border:0;background:transparent;
+    color:var(--muted);font-size:12px;cursor:pointer;display:grid;place-items:center;transition:background .15s,color .15s;
+  }
+  .tip-x:hover{background:var(--surface);color:var(--navy)}
+
+  /* ---------- Field hint popover ---------- */
+  .hint-pop{
+    position:fixed;z-index:70;max-width:min(290px,calc(100vw - 16px));
+    padding:8px 11px;border-radius:9px;
+    background:#0B1F3F;color:#F1F6FC;border:1px solid rgba(255,255,255,.14);
+    font-size:12.5px;line-height:1.45;font-weight:500;
+    box-shadow:0 10px 26px rgba(0,14,44,.34);
+    pointer-events:none;
+    animation:guideIn .16s var(--ease) both;
+  }
+  .hint-pop[hidden]{display:none}
+
+  /* ---------- Dark theme ---------- */
+  html[data-theme="dark"] .guide-menu{box-shadow:0 18px 44px rgba(0,0,0,.55)}
+  html[data-theme="dark"] .guide-menu-item.primary,
+  html[data-theme="dark"] .guide-btn.primary{background:#38BDF8;border-color:#38BDF8;color:#041225}
+  html[data-theme="dark"] .guide-menu-item.primary>svg,
+  html[data-theme="dark"] .guide-menu-item.primary b{color:#041225}
+  html[data-theme="dark"] .guide-menu-item.primary small{color:#0B3350}
+  html[data-theme="dark"] .guide-btn.primary:hover{background:#7DD3FC;border-color:#7DD3FC;color:#041225}
+  html[data-theme="dark"] .guide-card{box-shadow:0 22px 54px rgba(0,0,0,.6)}
+  html[data-theme="dark"] .tip-card{border-color:rgba(56,189,248,.28);border-left-color:#38BDF8}
+  html[data-theme="dark"] .hint-pop{background:#E8F1FC;color:#0B172A;border-color:transparent}
+
+  @media print{.guide-menu,.guide-layer,.hint-pop,.tip-card{display:none!important}}
   /* ========== DARK MODE (COMPLETE, ZERO BROKEN INLINE HACKS) ========== */
   html[data-theme="dark"]{
     color-scheme:dark;
@@ -1281,10 +1470,9 @@
   @media(max-width:980px){
     .hero{grid-template-columns:1fr}.hero-right{align-items:stretch}.quarter-pill{justify-content:space-between}
     .grid-2,.friction-card,.price-grid,.share-grid,.sig-feed{grid-template-columns:1fr}
-    .nav-steps{order:3;width:100%;max-width:100%;justify-content:flex-start;overflow-x:auto}
   }
   @media(max-width:680px){
-    .wrap{padding:16px 12px 32px}.topbar-inner{padding:9px 12px;gap:8px}.brand-title span{display:none}
+    .wrap{padding:16px 12px 32px}
     .journey-bar,.kpis,.grid-3,.sig-health-grid{grid-template-columns:1fr}
     .grid-3>.card:last-child{grid-column:auto}
     .card{padding:15px;min-width:0}.kpi{min-height:132px}.kpi .val{font-size:29px}
@@ -1301,15 +1489,15 @@
     .scen-head{flex-direction:column;align-items:stretch}
     .ai-modes,.ai-insight-grid,.set-row-2{grid-template-columns:1fr}
   }
-  @media(max-width:440px){.qgrid{grid-template-columns:1fr}.btn-present span,.nav-ai .ai-lbl{display:none}}
-  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  @media(max-width:440px){.qgrid{grid-template-columns:1fr}}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
 <header class="topbar">
   <div class="header-notice" role="note">
-    <span>Uso funcional comprovado porém esta versão é somente por ora, ilustrativa e pertence a J.E.M.Costa.</span>
+    <span data-i18n="hdr.notice">Uso funcional comprovado porém esta versão é somente por ora, ilustrativa e pertence a J.E.M.Costa.</span>
   </div>
   <div class="topbar-inner">
     <a class="brand-lockup" href="#top" id="brandHome" aria-label="Risco Sacado · SCF Cockpit">
@@ -1321,7 +1509,7 @@
       </span>
     </a>
 
-    <nav class="nav-steps" aria-label="Etapas do cockpit" id="topStepNav">
+    <nav class="nav-steps" aria-label="Etapas do cockpit" data-i18n-aria="nav.steps.aria" id="topStepNav">
       <button class="nav-step-btn" data-step="1" aria-current="step"><span class="sn">1</span><span data-i18n="st.1.short">Diagnóstico</span></button>
       <button class="nav-step-btn" data-step="2"><span class="sn">2</span><span data-i18n="st.2.short">Projeção</span></button>
       <button class="nav-step-btn" data-step="3"><span class="sn">3</span><span data-i18n="st.3.short">Pipeline</span></button>
@@ -1334,36 +1522,52 @@
         <span>✦</span>
         <span class="ai-lbl" data-i18n="nav.ai">AI Analysis ON</span>
       </button>
-      <button class="nav-ico" id="openSettings" data-i18n-aria="nav.settings" title="Configurações / Settings">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
-        <span class="set-dot" aria-hidden="true"></span>
-      </button>
+      <!-- Secondary controls: inline on wide screens, collapsed into the "more" menu on narrower ones (see 10-topbar.css) -->
+      <div class="tb-menu" id="topbarMenu">
+        <div class="tb-tools">
       <button class="of-btn" id="openOF" type="button" aria-haspopup="dialog" aria-label="Integração Open Finance" title="Integração Open Finance">
         <img src="data:image/png;base64,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" alt="" width="62" height="11">
         <i class="of-dot" id="of-dot" hidden aria-hidden="true"></i>
       </button>
-      <button class="nav-ghost" id="openData" data-i18n="nav.data">Dados CSV</button>
-      <button class="nav-ghost" id="openBrief" data-i18n="nav.brief">Briefing</button>
+          <button class="nav-ghost nav-guide" id="openGuide" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="guideMenu">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.3"/><path d="M6.2 6.3a1.9 1.9 0 1 1 2.7 1.7c-.6.3-.9.7-.9 1.3"/><path d="M8 11.6h.01"/></svg>
+            <span data-i18n="gd.btn">Guia</span>
+          </button>
+          <button class="nav-ghost" id="openData" data-i18n="nav.data">Dados CSV</button>
+          <button class="nav-ghost" id="openBrief" data-i18n="nav.brief">Briefing</button>
+        </div>
+        <div class="tb-prefs">
+          <div class="pill-switch ccy-switch" role="group" aria-label="Moeda / Currency" title="PTAX BCB 19/11/2026: R$ 5,89 / US$">
+            <button data-ccy="BRL" aria-pressed="true">BRL</button>
+            <button data-ccy="USD" aria-pressed="false">USD</button>
+          </div>
+          <div class="pill-switch lang" role="group" aria-label="Idioma / Language">
+            <button data-lang="pt" aria-pressed="true">PT</button>
+            <button data-lang="en" aria-pressed="false">EN</button>
+          </div>
+          <div class="pill-switch theme-switch" role="group" aria-label="Tema / Theme">
+            <button data-theme="light" aria-pressed="true" title="Modo claro / Light mode" aria-label="Light">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.7M8 12.8v1.7M1.5 8h1.7M12.8 8h1.7M3.4 3.4l1.2 1.2M11.4 11.4l1.2 1.2M12.6 3.4l-1.2 1.2M4.6 11.4l-1.2 1.2"/></svg>
+            </button>
+            <button data-theme="dark" aria-pressed="false" title="Modo escuro / Dark mode" aria-label="Dark">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3Z"/></svg>
+            </button>
+          </div>
+          <button class="nav-ico" id="openSettings" data-i18n-aria="nav.settings" title="Configurações / Settings">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+            <span class="set-dot" aria-hidden="true"></span>
+            <span class="nav-ico-lbl" data-i18n="nav.settings.short">Configurações</span>
+          </button>
+        </div>
+      </div>
       <button class="btn-present" id="openDeck">
         <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5l8 4.5-8 4.5z" fill="currentColor"/></svg>
-        <span data-i18n="nav.present">Apresentar (17)</span>
+        <span data-i18n="nav.present">Apresentar</span>
       </button>
-      <div class="pill-switch ccy-switch" role="group" aria-label="Moeda / Currency" title="PTAX BCB 19/11/2026: R$ 5,89 / US$">
-        <button data-ccy="BRL" aria-pressed="true">BRL</button>
-        <button data-ccy="USD" aria-pressed="false">USD</button>
-      </div>
-      <div class="pill-switch lang" role="group" aria-label="Idioma / Language">
-        <button data-lang="pt" aria-pressed="true">PT</button>
-        <button data-lang="en" aria-pressed="false">EN</button>
-      </div>
-      <div class="pill-switch theme-switch" role="group" aria-label="Tema / Theme">
-        <button data-theme="light" aria-pressed="true" title="Modo claro / Light mode" aria-label="Light">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.7M8 12.8v1.7M1.5 8h1.7M12.8 8h1.7M3.4 3.4l1.2 1.2M11.4 11.4l1.2 1.2M12.6 3.4l-1.2 1.2M4.6 11.4l-1.2 1.2"/></svg>
-        </button>
-        <button data-theme="dark" aria-pressed="false" title="Modo escuro / Dark mode" aria-label="Dark">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3Z"/></svg>
-        </button>
-      </div>
+      <button class="nav-more" id="topbarMoreBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="topbarMenu" data-i18n-aria="nav.more">
+        <span class="nav-more-lbl" id="topbarMoreLbl" aria-hidden="true">PT · BRL</span>
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11"/></svg>
+      </button>
     </div>
     <div id="scrollProg" aria-hidden="true"></div>
   </div>
@@ -1433,7 +1637,7 @@
   </section>
 
   <!-- 4-STEP INTUITIVE JOURNEY SELECTOR -->
-  <section class="journey-bar" aria-label="Fluxo de decisão em 4 etapas" id="journeyBar">
+  <section class="journey-bar" aria-label="Fluxo de decisão em 4 etapas" data-i18n-aria="jr.aria" id="journeyBar">
     <button class="step-card" data-step="1" aria-pressed="true">
       <div class="step-card-top"><span class="step-num"><i>1</i><span data-i18n="st.1.tag">Decisão 1</span></span><span class="step-cadence" data-i18n="ms.d1c">Semanal · operacional</span></div>
       <strong data-i18n="st.1.title">Diagnosticar programa e adesão</strong>
@@ -1463,7 +1667,7 @@
   <!-- VIEW MODE BAR -->
   <div class="step-toolbar">
     <div class="step-context" id="stepContext"></div>
-    <div class="view-toggle" role="group" aria-label="Modo de visualização">
+    <div class="view-toggle" role="group" aria-label="Modo de visualização" data-i18n-aria="vm.aria">
       <button id="modeStep" aria-pressed="true" data-i18n="vm.step">Passo a passo</button>
       <button id="modeAll" aria-pressed="false" data-i18n="vm.all">Visão completa</button>
     </div>
@@ -1478,6 +1682,11 @@
       </div>
       <span class="sub-meta" data-i18n="sec.perf.n">Clique em qualquer card para abrir a memória de cálculo e a prova</span>
     </div>
+    <aside class="tip-card" id="tip-1" data-tip="1" role="note">
+      <span class="tip-ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.6 10.2A4.3 4.3 0 1 1 10.4 10.2c-.5.4-.8.9-.8 1.5H6.4c0-.6-.3-1.1-.8-1.5Z"/><path d="M6.6 14h2.8"/></svg></span>
+      <p><b data-i18n="tip.lbl">Como usar esta etapa</b> <span data-i18n="tip.1">Comece pelo plano de ação e depois confira os indicadores e alertas que o sustentam. Mova o controle de semanas no topo para ver a evolução do programa e clique em qualquer card para ver o cálculo.</span></p>
+      <button type="button" class="tip-x" data-tip-close="1" data-i18n-aria="tip.close" aria-label="Dispensar esta dica">✕</button>
+    </aside>
 
     <!-- Auto-Generated Monday Action Plan -->
     <div class="subhead" style="margin-top:6px">
@@ -1622,6 +1831,11 @@
       </div>
       <span class="sub-meta" data-i18n="st.2.meta">Previsibilidade de saldo, limite aprovado e backtest (meta ≤ 8%)</span>
     </div>
+    <aside class="tip-card" id="tip-2" data-tip="2" role="note">
+      <span class="tip-ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.6 10.2A4.3 4.3 0 1 1 10.4 10.2c-.5.4-.8.9-.8 1.5H6.4c0-.6-.3-1.1-.8-1.5Z"/><path d="M6.6 14h2.8"/></svg></span>
+      <p><b data-i18n="tip.lbl">Como usar esta etapa</b> <span data-i18n="tip.2">Veja se o saldo projetado cabe no limite aprovado. Altere o limite, o cenário e o horizonte: o gráfico, o veredito e o plano de ação se atualizam na hora.</span></p>
+      <button type="button" class="tip-x" data-tip-close="2" data-i18n-aria="tip.close" aria-label="Dispensar esta dica">✕</button>
+    </aside>
 
     <div class="card">
       <div class="chead">
@@ -1715,6 +1929,11 @@
       </div>
       <span class="sub-meta" data-i18n="sec.pipe.n">Receitas públicas 3T26 (nov/2026) + hipóteses editáveis</span>
     </div>
+    <aside class="tip-card" id="tip-3" data-tip="3" role="note">
+      <span class="tip-ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.6 10.2A4.3 4.3 0 1 1 10.4 10.2c-.5.4-.8.9-.8 1.5H6.4c0-.6-.3-1.1-.8-1.5Z"/><path d="M6.6 14h2.8"/></svg></span>
+      <p><b data-i18n="tip.lbl">Como usar esta etapa</b> <span data-i18n="tip.3">Veja qual âncora oferece o maior fluxo potencial. Edite as hipóteses na tabela ou escolha um cenário rápido: fluxo, saldo e receita de spread são recalculados.</span></p>
+      <button type="button" class="tip-x" data-tip-close="3" data-i18n-aria="tip.close" aria-label="Dispensar esta dica">✕</button>
+    </aside>
     <div class="ds-bar" data-ds-bar="3"></div>
 
     <div class="card">
@@ -1795,6 +2014,11 @@
       </div>
       <span class="sub-meta" data-i18n="sec.mkt.n">Inteligência externa · protótipo funcional ilustrativo pronto para integração</span>
     </div>
+    <aside class="tip-card" id="tip-4" data-tip="4" role="note">
+      <span class="tip-ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.6 10.2A4.3 4.3 0 1 1 10.4 10.2c-.5.4-.8.9-.8 1.5H6.4c0-.6-.3-1.1-.8-1.5Z"/><path d="M6.6 14h2.8"/></svg></span>
+      <p><b data-i18n="tip.lbl">Como usar esta etapa</b> <span data-i18n="tip.4">Compare concorrentes, preços e participação por âncora e mova o controle da taxa proposta para testar um CDI + contra as faixas de mercado. Os números de concorrentes e de mercado desta etapa são fabricados para a demonstração, não dados reais de mercado.</span></p>
+      <button type="button" class="tip-x" data-tip-close="4" data-i18n-aria="tip.close" aria-label="Dispensar esta dica">✕</button>
+    </aside>
     <div class="fab-banner" role="note">
       <span class="fab-badge" data-i18n="ds.fab.badge">Números fabricados</span>
       <span data-i18n="ds.fab.banner">Nomes reais, números fabricados: valores, ratings e sinais não representam relações reais de financiamento.</span>
@@ -2250,6 +2474,47 @@
   </div>
 </div>
 
+<!-- ==================== GUIDE: MENU, FIRST-RUN TOUR, FIELD HINTS (js/30-guide.js) ==================== -->
+<div class="guide-menu" id="guideMenu" role="group" aria-labelledby="guideMenuTitle" hidden>
+  <strong id="guideMenuTitle" data-i18n="gd.menu.h">Ajuda para usar o cockpit</strong>
+  <button type="button" class="guide-menu-item primary" id="guideStart">
+    <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5l8 4.5-8 4.5z" fill="currentColor"/></svg>
+    <span><b data-i18n="gd.menu.tour">Fazer o tour guiado</b><small data-i18n="gd.menu.tour.n">8 paradas, cerca de 1 minuto</small></span>
+  </button>
+  <button type="button" class="guide-menu-item" id="guideTips">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.6 10.2A4.3 4.3 0 1 1 10.4 10.2c-.5.4-.8.9-.8 1.5H6.4c0-.6-.3-1.1-.8-1.5Z"/><path d="M6.6 14h2.8"/></svg>
+    <span><b data-i18n="gd.menu.tips">Mostrar as dicas de novo</b><small id="guideTipsNote"></small></span>
+  </button>
+  <button type="button" class="guide-menu-item" id="guideHints" role="switch" aria-checked="true">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z"/></svg>
+    <span><b data-i18n="gd.menu.hints">Explicações dos campos</b><small id="guideHintsNote"></small></span>
+    <i class="guide-switch" aria-hidden="true"></i>
+  </button>
+</div>
+
+<div class="guide-layer" id="guideLayer" hidden>
+  <div class="guide-spot" id="guideSpot" aria-hidden="true"></div>
+  <div class="guide-card" id="guideCard" role="dialog" aria-modal="true" aria-labelledby="guideTitle" aria-describedby="guideText" tabindex="-1">
+    <div class="guide-card-top">
+      <span class="guide-count" id="guideCount"></span>
+      <span class="guide-dots" id="guideDots" aria-hidden="true"></span>
+    </div>
+    <div aria-live="polite">
+      <h3 id="guideTitle"></h3>
+      <p id="guideText"></p>
+    </div>
+    <div class="guide-btns">
+      <button type="button" class="guide-skip" id="guideSkip"></button>
+      <span class="guide-btns-right">
+        <button type="button" class="guide-btn" id="guideBack"></button>
+        <button type="button" class="guide-btn primary" id="guideNext"></button>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="hint-pop" id="hintPop" role="tooltip" hidden></div>
+
 <script>
 (() => {
   // ========== UNIFIED DESIGN TOKENS (LIGHT + DARK) ==========
@@ -2529,7 +2794,53 @@
     3:() => ({role:T("Corporate / SCF Leadership","Liderança Corporate / SCF"), cadence:T("Monthly / Quarterly","Mensal / Trimestral"), question:T("Which anchor to prioritize (3Q26 scale), with what offer and credit limit?","Qual âncora priorizar (escala 3T26), com qual oferta e quanto crédito pedir?")}),
     4:() => ({role:T("Leadership · Product","Liderança · Produto"), cadence:T("External Intelligence","Inteligência Externa"), question:T("How do competitors, CDI+x pricing, registrars and 3Q26 credit signals shape our strategy?","Como concorrentes, preço CDI+x, registradoras e sinais 3T26 orientam nossa estratégia?")})
   };
-  function updateStepView(scrollToPanel = false) {
+  Object.assign(I18N, {
+    "hdr.notice":["Functional use proven, but for now this version is illustrative only and belongs to J.E.M.Costa.","Uso funcional comprovado porém esta versão é somente por ora, ilustrativa e pertence a J.E.M.Costa."],
+    "nav.present":["Present","Apresentar"], // the slide count is appended at refresh time, from SLIDES.length
+    "nav.more":["More options: tools, currency, language, theme and settings","Mais opções: ferramentas, moeda, idioma, tema e configurações"],
+    "nav.settings.short":["Settings","Configurações"],
+    "nav.steps.aria":["Cockpit steps","Etapas do cockpit"],
+    "jr.aria":["Decision flow in 4 steps","Fluxo de decisão em 4 etapas"],
+    "vm.aria":["View mode","Modo de visualização"]
+  });
+  const topbarEl = document.querySelector(".topbar");
+  const reducedMotion = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+  // Height of the sticky header as it sits when stuck (on phones the notice scrolls away: see --notice-h in 10-topbar.css).
+  function stickyHeaderH() {
+    if (!topbarEl) return 0;
+    const top = parseFloat(getComputedStyle(topbarEl).top) || 0;
+    return Math.max(0, topbarEl.offsetHeight + Math.min(0, top));
+  }
+  function scrollToY(y) { window.scrollTo({top:Math.max(0, Math.round(y)), behavior:reducedMotion() ? "instant" : "smooth"}); }
+  // Brings the heading of a step panel right under the sticky header. Does nothing when it is already there.
+  function scrollToPanel(step, force = false) {
+    const panel = $("panel-" + step); if (!panel || panel.hidden) return;
+    const bar = document.querySelector(".step-toolbar");
+    // On wide screens keep the context line (role and question) attached to the heading.
+    const first = [...document.querySelectorAll("[data-step-panel]")].find(p => !p.hidden) === panel;
+    const anchor = (first && innerWidth > 980 && bar) ? bar : (panel.querySelector(".step-banner") || panel);
+    // Layout position (offsetTop chain), so the panel's entrance animation does not skew the target.
+    let y = 0; for (let e = anchor; e; e = e.offsetParent) y += e.offsetTop;
+    const h = stickyHeaderH(), top = y - scrollY;
+    if (!force && top >= h && top <= h + innerHeight * 0.22) return;
+    scrollToY(y - h - 10);
+  }
+  // Scroll spy: in the "everything" view, highlight the step that is being read.
+  let spyStep = 0, spyPending = false;
+  function stepSpy() {
+    spyPending = false;
+    if (viewMode !== "all") { if (spyStep) { spyStep = 0; document.querySelectorAll(".step-card.in-view").forEach(c => c.classList.remove("in-view")); } return; }
+    const line = stickyHeaderH() + Math.min(220, innerHeight * 0.3);
+    let cur = 0;
+    document.querySelectorAll("[data-step-panel]").forEach(p => { if (!p.hidden && p.getBoundingClientRect().top <= line) cur = +p.dataset.stepPanel; });
+    if (cur === spyStep) return;
+    spyStep = cur; if (cur) activeStep = cur;
+    document.querySelectorAll(".nav-step-btn").forEach(b => { if (+b.dataset.step === cur) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); });
+    document.querySelectorAll(".step-card").forEach(c => c.classList.toggle("in-view", +c.dataset.step === cur));
+    const on = cur && document.querySelector(`.nav-step-btn[data-step="${cur}"]`), nav = $("topStepNav");
+    if (on && nav && nav.scrollWidth > nav.clientWidth) nav.scrollLeft = on.offsetLeft - (nav.clientWidth - on.offsetWidth) / 2;
+  }
+  function updateStepView(scrollToTarget = false) {
     document.querySelectorAll(".nav-step-btn").forEach(b => {
       if (viewMode === "step" && +b.dataset.step === activeStep) b.setAttribute("aria-current", "step");
       else b.removeAttribute("aria-current");
@@ -2545,26 +2856,89 @@
       const m = STEP_META[activeStep]();
       $("stepContext").innerHTML = `<span class="role-chip">${m.role} · ${m.cadence}</span> <strong>${m.question}</strong>`;
     }
-    if (scrollToPanel) { const t = $("panel-" + activeStep); if (t) t.scrollIntoView({behavior:"smooth", block:"start"}); }
+    const target = activeStep;
+    spyStep = -1; stepSpy();          // in the "everything" view the spy follows the reading position...
+    if (scrollToTarget) { activeStep = target; scrollToPanel(target); }   // ...but an explicit choice wins
   }
   function goStep(step, scroll = true) {
     activeStep = step;
-    if (viewMode === "all") updateStepView(true);
-    else { updateStepView(false); if (scroll) $("journeyBar").scrollIntoView({behavior:"smooth", block:"nearest"}); }
+    updateStepView(scroll);
   }
   document.querySelectorAll("[data-step]").forEach(b => b.addEventListener("click", () => goStep(+b.dataset.step, true)));
-  document.querySelectorAll("[data-go-step]").forEach(b => b.addEventListener("click", () => {
-    activeStep = +b.dataset.goStep; updateStepView(false); $("panel-" + activeStep).scrollIntoView({behavior:"smooth", block:"start"});
-  }));
-  $("modeStep").onclick = () => { viewMode = "step"; updateStepView(false); };
-  $("modeAll").onclick  = () => { viewMode = "all";  updateStepView(false); };
+  document.querySelectorAll("[data-go-step]").forEach(b => b.addEventListener("click", () => goStep(+b.dataset.goStep, true)));
+  $("modeStep").onclick = () => { viewMode = "step"; updateStepView(true); };
+  $("modeAll").onclick  = () => { const keep = activeStep; viewMode = "all"; updateStepView(false); activeStep = keep; scrollToPanel(keep); };
 
-  // Scroll progress bar
+  // Scroll progress bar + scroll spy
   addEventListener("scroll", () => {
     const max = document.documentElement.scrollHeight - innerHeight;
     $("scrollProg").style.width = (max > 0 ? Math.min(100, 100 * scrollY / max) : 0) + "%";
+    if (viewMode === "all" && !spyPending) { spyPending = true; requestAnimationFrame(stepSpy); }
   }, {passive:true});
 
+  // ========== HEADER: "MORE" MENU, STICKY METRICS, DERIVED LABELS ==========
+  // Which controls collapse into the menu is decided by CSS breakpoints; this only opens and closes it.
+  const topbarMoreBtn = $("topbarMoreBtn"), topbarMenu = $("topbarMenu");
+  // The dropdown is the whole menu when collapsed, otherwise only the preferences group.
+  const topbarMenuItems = () => {
+    const box = !topbarMenu ? null : topbarEl.classList.contains("tb-collapsed") ? topbarMenu : topbarMenu.querySelector(".tb-prefs");
+    return box ? [...box.querySelectorAll("button,a[href],input,select")].filter(e => e.getClientRects().length > 0) : [];
+  };
+  function setTopbarMenu(open, focusFirst = false) {
+    if (!topbarEl || !topbarMoreBtn) return;
+    topbarEl.classList.toggle("menu-open", !!open);
+    topbarMoreBtn.setAttribute("aria-expanded", String(!!open));
+    if (open && focusFirst) { const f = topbarMenuItems()[0]; if (f) f.focus(); }
+  }
+  const topbarMenuOpen = () => !!topbarEl && topbarEl.classList.contains("menu-open");
+  if (topbarMoreBtn && topbarMenu) {
+    topbarMoreBtn.addEventListener("click", e => setTopbarMenu(!topbarMenuOpen(), e.detail === 0));
+    // Choosing a tool closes the menu; the currency, language and theme switches keep it open.
+    topbarMenu.addEventListener("click", e => { const b = e.target.closest("button,a"); if (b && !b.closest(".pill-switch")) setTopbarMenu(false); });
+    document.addEventListener("click", e => {
+      if (!topbarMenuOpen() || e.target.closest("#topbarMenu,#topbarMoreBtn,.guide-layer")) return;
+      setTopbarMenu(false);
+    });
+    document.addEventListener("keydown", e => {
+      if (e.key !== "Escape" || !topbarMenuOpen() || document.querySelector(".guide-layer:not([hidden])")) return;
+      const inside = topbarMenu.contains(document.activeElement);
+      setTopbarMenu(false); if (inside) topbarMoreBtn.focus();
+    });
+    topbarMenu.addEventListener("focusout", e => {
+      if (topbarMenuOpen() && e.relatedTarget && !e.relatedTarget.closest("#topbarMenu,#topbarMoreBtn,.guide-layer")) setTopbarMenu(false);
+    });
+  }
+  // Below 1440px the tools join the "more" menu. Above it they stay inline unless the bar would wrap
+  // (for instance when other modules add buttons through the "topbar-actions" slot).
+  function syncTopbarTier() {
+    if (!topbarEl) return;
+    const brand = topbarEl.querySelector(".brand-lockup"), right = topbarEl.querySelector(".topbar-right");
+    let collapse = innerWidth < 1440;
+    if (!collapse && brand && right) {
+      topbarEl.classList.remove("tb-collapsed");
+      collapse = right.getBoundingClientRect().top - brand.getBoundingClientRect().top > 14;
+    }
+    topbarEl.classList.toggle("tb-collapsed", collapse);
+  }
+  syncTopbarTier();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { syncTopbarTier(); syncHeaderMetrics(); });
+  function syncHeaderMetrics() {
+    const n = document.querySelector(".header-notice"), root = document.documentElement;
+    root.style.setProperty("--notice-h", (n ? n.offsetHeight : 0) + "px");
+    root.style.scrollPaddingTop = (stickyHeaderH() + 12) + "px";
+  }
+  addEventListener("resize", () => { syncTopbarTier(); syncHeaderMetrics(); if (viewMode === "all") stepSpy(); }, {passive:true});
+  onRefresh(() => {
+    // The slide count comes from the deck itself (SLIDES is defined later, in 16-deck.js).
+    let n = 0; try { n = SLIDES.length; } catch (e) {}
+    if (n) {
+      I18N["nav.present"] = [`Present (${n})`, `Apresentar (${n})`];
+      I18N["nav.present.end"] = [`Open executive presentation (${n} slides)`, `Abrir apresentação executiva (${n} slides)`];
+      document.querySelectorAll('[data-i18n="nav.present"],[data-i18n="nav.present.end"]').forEach(e => { e.textContent = L(I18N[e.dataset.i18n]); });
+    }
+    const ml = $("topbarMoreLbl"); if (ml) ml.textContent = lang.toUpperCase() + " · " + ccy;
+    syncTopbarTier(); syncHeaderMetrics();
+  });
   // ========== PILOT DATA + CONFIGURABLE PARAMETERS ==========
   let W = 12, SPEND = 6000, BASE_SUP = 300;
   const TENOR = 75; // default average days discounted (also the pipeline default in 09-pipeline)
@@ -5635,6 +6009,352 @@ Write ALL prose fields strictly in ${lang === "pt" ? "Brazilian Portuguese (PT-B
     if (typeof syncParamInputs === "function") syncParamInputs(true);
     if (typeof edLoad === "function") edLoad();
   }
+
+  // ========== GUIDE: FIRST-RUN TOUR, STEP TIPS, FIELD HINTS ==========
+  // Markup: html/slots/guide-button.html, guide-layer.html, tips-N.html. Styles: css/60-guide.css.
+  // Persistence (localStorage): scf-tour-done, scf-tip-1..4, scf-hints.
+  Object.assign(I18N, {
+    "gd.btn":["Guide","Guia"],
+    "gd.menu.h":["Help with using the cockpit","Ajuda para usar o cockpit"],
+    "gd.menu.tour":["Take the guided tour","Fazer o tour guiado"],
+    "gd.menu.tour.n":["8 stops, about 1 minute","8 paradas, cerca de 1 minuto"],
+    "gd.menu.tips":["Show the tips again","Mostrar as dicas de novo"],
+    "gd.menu.hints":["Field explanations","Explicações dos campos"],
+    "tip.lbl":["How to use this step","Como usar esta etapa"],
+    "tip.close":["Dismiss this tip","Dispensar esta dica"],
+    "tip.1":["Start with the action plan, then check the indicators and alerts behind it. Move the week slider at the top to see how the program evolved, and click any card to see its calculation.",
+             "Comece pelo plano de ação e depois confira os indicadores e alertas que o sustentam. Mova o controle de semanas no topo para ver a evolução do programa e clique em qualquer card para ver o cálculo."],
+    "tip.2":["Check whether the projected balance fits the approved limit. Change the limit, the scenario and the horizon: the chart, the verdict and the action plan update at once.",
+             "Veja se o saldo projetado cabe no limite aprovado. Altere o limite, o cenário e o horizonte: o gráfico, o veredito e o plano de ação se atualizam na hora."],
+    "tip.3":["See which anchor offers the largest potential flow. Edit the assumptions in the table or pick a quick scenario: flow, balance and spread revenue are recalculated.",
+             "Veja qual âncora oferece o maior fluxo potencial. Edite as hipóteses na tabela ou escolha um cenário rápido: fluxo, saldo e receita de spread são recalculados."],
+    "tip.4":["Compare competitors, prices and share by anchor, and move the proposed-rate slider to test a CDI + rate against the market bands. The competitor and market figures in this step are fabricated for the demo, not real market data.",
+             "Compare concorrentes, preços e participação por âncora e mova o controle da taxa proposta para testar um CDI + contra as faixas de mercado. Os números de concorrentes e de mercado desta etapa são fabricados para a demonstração, não dados reais de mercado."]
+  });
+  const guideStore = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+    del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  };
+  const guideLayer = $("guideLayer"), guideCard = $("guideCard"), guideSpot = $("guideSpot"), guideMenu = $("guideMenu"), hintPop = $("hintPop");
+  const guideSmall = () => innerWidth <= 680;
+  const guideVisible = el => !!el && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== "hidden";
+  const guideSlideCount = () => { try { return SLIDES.length; } catch (e) { return 0; } };
+  const tourOpen = () => !!guideLayer && !guideLayer.hidden;
+  // True while a modal, the proof view or the presentation deck is showing: the guide never starts on top of them.
+  const guideBlocked = () => !!document.querySelector('.modal-backdrop:not([hidden]),[role="dialog"]:not([hidden]):not(#guideCard)');
+
+  // ---------- 1. Guided tour ----------
+  // sel: CSS selector (several matches are framed together); selSmall replaces it on phones.
+  // step: step panel that must be showing; menu: open the header "more" menu when the target sits inside it.
+  const TOUR = [
+    { sel:".hero > div:first-child",
+      title:["Welcome to the weekly cockpit","Bem-vindo ao cockpit semanal"],
+      text:() => SRCINFO
+        ? T("This cockpit helps a supply chain finance specialist review the program every week: its health, the approved-limit check and where to grow next. It is now running on the data you loaded.",
+            "Este cockpit ajuda o especialista de risco sacado a revisar o programa toda semana: a saúde, a checagem do limite aprovado e onde crescer. Agora ele roda com os dados que você carregou.")
+        : T("This cockpit helps a supply chain finance specialist review the program every week: its health, the approved-limit check and where to grow next. It runs on example data until you load your own.",
+            "Este cockpit ajuda o especialista de risco sacado a revisar o programa toda semana: a saúde, a checagem do limite aprovado e onde crescer. Ele roda com dados de exemplo até você carregar os seus.") },
+    { sel:".week-bar",
+      title:["Move through the weeks","Navegue pelas semanas"],
+      text:() => T("Drag the slider or press play to move through the weekly history. The indicators, the projection and the action plan are recalculated for the week you choose.",
+                   "Arraste o controle ou aperte o play para percorrer o histórico semanal. Os indicadores, a projeção e o plano de ação são recalculados para a semana escolhida.") },
+    { sel:"#journeyBar", selSmall:"#topStepNav",
+      title:["Four steps, one decision in each","Quatro etapas, uma decisão em cada"],
+      text:() => T(`The work is split into four steps: diagnose, project the balance, size the pipeline and read the market. Open a step here, or choose "${L(I18N["vm.all"])}" to see all four on one page.`,
+                   `O trabalho se divide em quatro etapas: diagnosticar, projetar o saldo, dimensionar o pipeline e ler o mercado. Abra uma etapa aqui ou escolha "${L(I18N["vm.all"])}" para ver as quatro em uma só página.`) },
+    { sel:".actions-card", step:1,
+      title:["Your action plan for the week","Seu plano de ação da semana"],
+      text:() => T("This list is generated from the limit check, the forecast error, risk alerts, the onboarding funnel, the pipeline and market pricing. Tick an action when it is done; the tick is saved on this device.",
+                   "Esta lista é gerada a partir da checagem de limite, do erro de projeção, dos alertas de risco, do funil de adesão, do pipeline e do preço de mercado. Marque uma ação quando concluir; a marcação fica salva neste dispositivo.") },
+    { sel:"#kpis > :first-child", step:1,
+      title:["Every number can be checked","Todo número pode ser conferido"],
+      text:() => T("Click any indicator or card in this step to open the calculation behind it: the formula and the numbers that feed it.",
+                   "Clique em qualquer indicador ou card desta etapa para abrir o cálculo por trás dele: a fórmula e os números que a alimentam.")
+        + (SRCINFO ? "" : T(" The values are example data, so the proof shows how a number is built; it is not an audited figure.",
+                            " Os valores são dados de exemplo, então a prova mostra como o número é construído; não é um valor auditado.")) },
+    { sel:"#openData", menu:true,
+      title:["Use your own data","Use os seus dados"],
+      text:() => T("Download the CSV template, replace the example with your weekly extract and load it back. Everything stays in this browser; nothing is sent anywhere.",
+                   "Baixe o modelo CSV, troque o exemplo pela sua extração semanal e carregue de volta. Tudo fica neste navegador; nada é enviado para fora.") },
+    { sel:".topbar .ccy-switch, .topbar .lang, .topbar .theme-switch", menu:true,
+      title:["Currency, language and theme","Moeda, idioma e tema"],
+      text:() => T("Switch between reais and dollars, Portuguese and English, light and dark. Your choices are remembered on this device.",
+                   "Alterne entre reais e dólares, português e inglês, claro e escuro. Suas escolhas ficam salvas neste dispositivo.") },
+    { sel:"#openDeck",
+      title:["Presentation mode","Modo apresentação"],
+      text:() => { const n = guideSlideCount(), sl = n ? T(` (${n} slides)`, ` (${n} slides)`) : "";
+        return T(`Opens the executive presentation${sl} over the cockpit, in the language and currency you selected. You can reopen this tour at any time from the Guide button.`,
+                 `Abre a apresentação executiva${sl} sobre o cockpit, no idioma e na moeda selecionados. Você pode reabrir este tour a qualquer momento pelo botão Guia.`); } }
+  ];
+  let tourIdx = 0, tourRaf = 0, tourPlace = "below", tourReturn = null;
+  function tourTargets(st) {
+    const sel = guideSmall() && st.selSmall ? st.selSmall : st.sel;
+    return [...document.querySelectorAll(sel)].filter(guideVisible);
+  }
+  function tourRect(els) {
+    let l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
+    els.forEach(e => { const q = e.getBoundingClientRect(); l = Math.min(l, q.left); t = Math.min(t, q.top); r = Math.max(r, q.right); b = Math.max(b, q.bottom); });
+    return {left:l, top:t, right:r, bottom:b, width:r - l, height:b - t};
+  }
+  // Runs every frame while the tour is open, so the frame follows scrolling, re-renders and resizes.
+  function tourFrame() {
+    if (!tourOpen()) return;
+    const st = TOUR[tourIdx], els = tourTargets(st), pad = 6, vw = innerWidth, vh = innerHeight;
+    const cardH = guideCard.offsetHeight, cardW = guideCard.offsetWidth;
+    const docked = guideSmall() || tourPlace === "docked" || !els.length;
+    guideCard.classList.toggle("docked", docked);
+    if (!els.length) {
+      guideSpot.classList.add("none");
+      Object.assign(guideSpot.style, {left:"50%", top:"50%", width:"0px", height:"0px"});
+    } else {
+      const r = tourRect(els);
+      // Never frame more than the free area: tall targets are clipped above the docked card.
+      const floor = Math.max(0, r.top - pad), ceil = Math.min(docked ? vh - cardH - (guideSmall() ? 8 : 36) : vh, r.bottom + pad);
+      guideSpot.classList.remove("none");
+      Object.assign(guideSpot.style, {left:Math.max(4, r.left - pad) + "px", top:floor + "px", width:Math.min(vw - 8, r.right + pad) - Math.max(4, r.left - pad) + "px", height:Math.max(0, ceil - floor) + "px"});
+      if (!docked) {
+        const left = Math.min(vw - cardW - 12, Math.max(12, r.left + r.width / 2 - cardW / 2));
+        const top = Math.min(vh - cardH - 12, Math.max(12, r.bottom + pad + 12));
+        guideCard.style.left = left + "px"; guideCard.style.top = top + "px";
+      }
+    }
+    if (docked) { guideCard.style.left = ""; guideCard.style.top = ""; }
+    tourRaf = requestAnimationFrame(tourFrame);
+  }
+  function tourShow(i) {
+    tourIdx = Math.max(0, Math.min(TOUR.length - 1, i));
+    const st = TOUR[tourIdx], last = tourIdx === TOUR.length - 1;
+    if (st.step && viewMode === "step" && activeStep !== st.step) goStep(st.step, false);
+    // Targets that collapse into the header menu on this screen size: open the menu to show them.
+    if (st.menu && !tourTargets(st).length) setTopbarMenu(true); else if (!st.menu) setTopbarMenu(false);
+    $("guideCount").textContent = T(`Step ${tourIdx + 1} of ${TOUR.length}`, `Passo ${tourIdx + 1} de ${TOUR.length}`);
+    $("guideDots").innerHTML = TOUR.map((_, k) => `<i${k === tourIdx ? ' class="on"' : ""}></i>`).join("");
+    $("guideTitle").textContent = L(st.title);
+    $("guideText").textContent = st.text();
+    $("guideSkip").textContent = T("Skip the tour","Pular o tour"); $("guideSkip").hidden = last;
+    $("guideBack").textContent = T("Back","Voltar"); $("guideBack").hidden = tourIdx === 0;
+    $("guideNext").textContent = last ? T("Done","Concluir") : T("Next","Próximo");
+    guideCard.setAttribute("aria-label", T("Guided tour","Tour guiado"));
+    // Keep the target in view: under the sticky header, with room for the card.
+    const els = tourTargets(st), cardH = guideCard.offsetHeight, small = guideSmall();
+    tourPlace = "below";
+    if (els.length) {
+      const r = tourRect(els), fixed = !!els[0].closest(".topbar");
+      const top0 = (typeof stickyHeaderH === "function" ? stickyHeaderH() : 0) + 14;
+      const freeH = innerHeight - top0 - 12;
+      if (fixed) { if (r.bottom + 18 + cardH > innerHeight - 12) tourPlace = "docked"; }
+      else {
+        const need = r.height + 18 + cardH;
+        let want;
+        if (small) { const room = innerHeight - cardH - top0 - 14; want = r.height < room ? top0 + (room - r.height) / 2 : top0; }
+        else if (need <= freeH) want = top0 + Math.min(120, (freeH - need) / 2);
+        else { tourPlace = "docked"; want = top0; }
+        const maxY = document.documentElement.scrollHeight - innerHeight;
+        const y = Math.max(0, Math.min(maxY, scrollY + r.top - want));
+        // If the page cannot scroll far enough for the card to sit below the target, dock the card instead.
+        if (!small && tourPlace === "below" && (r.top - (y - scrollY)) + need > innerHeight - 12) tourPlace = "docked";
+        if (Math.abs(y - scrollY) > 2) window.scrollTo({top:y, behavior:reducedMotion() ? "instant" : "smooth"});
+      }
+    }
+    guideCard.style.animation = "none"; void guideCard.offsetWidth; guideCard.style.animation = "";
+    $("guideNext").focus({preventScroll:true});
+  }
+  function startTour() {
+    if (!guideLayer || tourOpen() || guideBlocked()) return false;
+    setPlaying(false); closeGuideMenu(false); hideHint();
+    tourReturn = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
+    guideLayer.hidden = false;
+    tourShow(0);
+    cancelAnimationFrame(tourRaf); tourRaf = requestAnimationFrame(tourFrame);
+    return true;
+  }
+  function endTour() {
+    if (!tourOpen()) return;
+    guideLayer.hidden = true; cancelAnimationFrame(tourRaf);
+    guideStore.set("scf-tour-done", "1");
+    setTopbarMenu(false);
+    window.scrollTo({top:0, behavior:reducedMotion() ? "instant" : "smooth"});
+    const back = [tourReturn, $("openGuide"), $("topbarMoreBtn")].find(guideVisible);
+    if (back) back.focus({preventScroll:true});
+  }
+  if (guideLayer) {
+    $("guideNext").onclick = () => { if (tourIdx >= TOUR.length - 1) endTour(); else tourShow(tourIdx + 1); };
+    $("guideBack").onclick = () => tourShow(tourIdx - 1);
+    $("guideSkip").onclick = endTour;
+    // Capture phase: while the tour is open its keys never reach the week / deck shortcuts.
+    document.addEventListener("keydown", e => {
+      if (!tourOpen()) return;
+      const k = e.key;
+      if (k === "Escape") { e.preventDefault(); e.stopPropagation(); endTour(); return; }
+      if (k === "ArrowRight" || k === "ArrowLeft") {
+        e.preventDefault(); e.stopPropagation();
+        if (k === "ArrowRight") $("guideNext").click(); else if (tourIdx > 0) $("guideBack").click();
+        return;
+      }
+      if (k === "Enter" && !(e.target.closest && e.target.closest("#guideCard button"))) { e.preventDefault(); e.stopPropagation(); $("guideNext").click(); return; }
+      if (k === "Tab") {
+        const f = [...guideCard.querySelectorAll("button")].filter(guideVisible), at = f.indexOf(document.activeElement);
+        e.preventDefault(); e.stopPropagation();
+        if (f.length) f[(at < 0 ? 0 : at + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus({preventScroll:true});
+        return;
+      }
+      e.stopPropagation();
+    }, true);
+    // Focus cannot leave the card while the tour is open.
+    document.addEventListener("focusin", e => { if (tourOpen() && !guideCard.contains(e.target)) $("guideNext").focus({preventScroll:true}); });
+    // First visit: start once the first render is done, never over the deck or a modal.
+    if (guideStore.get("scf-tour-done") !== "1") setTimeout(() => { if (guideStore.get("scf-tour-done") !== "1" && !guideBlocked() && !topbarMenuOpen()) startTour(); }, 600);
+  }
+
+  // ---------- 2. Guide menu + contextual tips ----------
+  const TIP_IDS = [1, 2, 3, 4];
+  const tipEl = n => document.querySelector(`[data-tip="${n}"]`);
+  const hintsOn = () => guideStore.get("scf-hints") !== "0";
+  function syncTips() { TIP_IDS.forEach(n => { const el = tipEl(n); if (el) el.hidden = guideStore.get("scf-tip-" + n) === "1"; }); }
+  function syncGuideMenu() {
+    if (!guideMenu) return;
+    const hiddenTips = TIP_IDS.filter(n => tipEl(n) && guideStore.get("scf-tip-" + n) === "1").length;
+    $("guideTips").disabled = false;
+    $("guideTipsNote").textContent = hiddenTips
+      ? T(`${hiddenTips} of ${TIP_IDS.length} step tips dismissed`, `${hiddenTips} de ${TIP_IDS.length} dicas de etapa dispensadas`)
+      : T("All step tips are showing","Todas as dicas de etapa estão visíveis");
+    $("guideHints").setAttribute("aria-checked", String(hintsOn()));
+    $("guideHintsNote").textContent = hintsOn()
+      ? T("On: shown when you hover or focus a control","Ligadas: aparecem ao passar o mouse ou focar um controle")
+      : T("Off","Desligadas");
+  }
+  function placeGuideMenu() {
+    if (guideSmall()) { guideMenu.style.left = guideMenu.style.top = ""; return; }
+    const a = [$("openGuide"), $("topbarMoreBtn")].find(guideVisible);
+    const r = a ? a.getBoundingClientRect() : {right:innerWidth - 16, bottom:60};
+    const w = guideMenu.offsetWidth;
+    guideMenu.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.right - w)) + "px";
+    guideMenu.style.top = (r.bottom + 8) + "px";
+  }
+  function openGuideMenu() {
+    if (!guideMenu) return;
+    setTopbarMenu(false); hideHint(); syncGuideMenu();
+    guideMenu.hidden = false; placeGuideMenu();
+    const b = $("openGuide"); if (b) b.setAttribute("aria-expanded", "true");
+    $("guideStart").focus({preventScroll:true});
+  }
+  function closeGuideMenu(refocus = true) {
+    if (!guideMenu || guideMenu.hidden) return;
+    guideMenu.hidden = true;
+    const b = $("openGuide"); if (b) b.setAttribute("aria-expanded", "false");
+    if (refocus) { const back = [b, $("topbarMoreBtn")].find(guideVisible); if (back) back.focus({preventScroll:true}); }
+  }
+  if (guideMenu) {
+    const gb = $("openGuide");
+    // stopPropagation: the header menu must not treat this click as "tool chosen" before the guide menu is placed.
+    if (gb) gb.addEventListener("click", e => { e.stopPropagation(); if (guideMenu.hidden) openGuideMenu(); else closeGuideMenu(); });
+    $("guideStart").onclick = () => { closeGuideMenu(false); startTour(); };
+    $("guideTips").onclick = () => {
+      TIP_IDS.forEach(n => guideStore.del("scf-tip-" + n)); syncTips(); syncGuideMenu();
+      closeGuideMenu(false);
+      // Take the reader to the tip of the step that is showing.
+      const el = tipEl(activeStep);
+      if (guideVisible(el)) { scrollToPanel(activeStep, true); el.setAttribute("tabindex", "-1"); el.focus({preventScroll:true}); }
+    };
+    $("guideHints").onclick = () => { guideStore.set("scf-hints", hintsOn() ? "0" : "1"); hideHint(); syncGuideMenu(); };
+    document.addEventListener("click", e => { if (!guideMenu.hidden && !e.target.closest("#guideMenu,#openGuide")) closeGuideMenu(false); });
+    document.addEventListener("keydown", e => {
+      if (guideMenu.hidden) return;
+      if (e.key === "Escape") { e.stopPropagation(); closeGuideMenu(); }
+      else if (e.key === "Tab") {
+        const f = [...guideMenu.querySelectorAll("button")], at = f.indexOf(document.activeElement);
+        if ((e.shiftKey && at <= 0) || (!e.shiftKey && at === f.length - 1)) { e.preventDefault(); closeGuideMenu(); }
+      }
+    }, true);
+    addEventListener("resize", () => { if (!guideMenu.hidden) placeGuideMenu(); }, {passive:true});
+  }
+  document.addEventListener("click", e => {
+    const x = e.target.closest("[data-tip-close]"); if (!x) return;
+    guideStore.set("scf-tip-" + x.dataset.tipClose, "1"); syncTips(); syncGuideMenu();
+  });
+  syncTips();
+
+  // ---------- 3. Field hints ----------
+  // selector -> hint. Resolved at event time through delegation, so re-rendered controls keep working.
+  const HINTS = [
+    ["#limit, .limit-ctl", () => T("Credit limit approved for the program, in millions of the selected currency. The chart and the action plan compare the projected balance with this number.",
+                                   "Limite de crédito aprovado para o programa, em milhões na moeda selecionada. O gráfico e o plano de ação comparam o saldo projetado com este número.")],
+    ["#scenarioGroup", () => T(`Growth assumed in the projection: ${L(I18N["sc.Base"])} keeps the recent weekly growth, ${L(I18N["sc.Downside"])} halves it and ${L(I18N["sc.Upside"])} raises it by 50%.`,
+                               `Crescimento assumido na projeção: ${L(I18N["sc.Base"])} mantém o crescimento semanal recente, ${L(I18N["sc.Downside"])} reduz à metade e ${L(I18N["sc.Upside"])} aumenta em 50%.`)],
+    ["#horizonGroup", () => T("How many weeks ahead the balance is projected. The limit check looks at every week of this horizon.",
+                              "Quantas semanas à frente o saldo é projetado. A checagem de limite considera todas as semanas desse horizonte.")],
+    [".pipe-presets", () => T("Fills coverage, adoption, utilization, tenor and spread for every anchor with a conservative, base or stretch set of assumptions.",
+                              "Preenche cobertura, adesão, utilização, prazo e spread de todas as âncoras com um conjunto de hipóteses conservador, base ou de expansão.")],
+    ["#pipe-rows input", () => T("Assumption for this anchor, in %. Change it and flow, balance and revenue are recalculated; the action plan follows the anchor ranked first.",
+                                 "Hipótese desta âncora, em %. Ao alterar, fluxo, saldo e receita são recalculados; o plano de ação acompanha a âncora em 1º lugar.")],
+    ["#g-tenor", () => T("Average number of days discounted. It turns the annual flow into the implied balance (flow × days ÷ 365).",
+                         "Prazo médio antecipado, em dias. Transforma o fluxo anual em saldo implícito (fluxo × dias ÷ 365).")],
+    ["#g-spread", () => T("Annual spread earned on the balance. Spread revenue = implied balance × this rate.",
+                          "Spread anual ganho sobre o saldo. Receita de spread = saldo implícito × esta taxa.")],
+    ["#mktSpreadSlider", () => T("The rate you would propose, as CDI + x% a year. Anchors whose example market band sits below it are flagged, and a pricing action enters the action plan.",
+                                 "A taxa que você proporia, em CDI + x% ao ano. As âncoras cuja faixa de mercado de exemplo fica abaixo dela são sinalizadas, e uma ação de preço entra no plano de ação.")],
+    [".view-toggle", () => T(`"${L(I18N["vm.step"])}" shows one step at a time. "${L(I18N["vm.all"])}" shows the four steps on one page.`,
+                             `"${L(I18N["vm.step"])}" mostra uma etapa por vez. "${L(I18N["vm.all"])}" mostra as quatro etapas em uma só página.`)],
+    ["#src-chip", () => T("Where the numbers come from: example data or the CSV you loaded. Click to load or replace the data.",
+                          "De onde vêm os números: dados de exemplo ou o CSV que você carregou. Clique para carregar ou trocar os dados.")],
+    ["#play", () => T("Plays the weekly history forward, one week every few seconds. Press again to pause.",
+                      "Reproduz o histórico semanal, uma semana a cada poucos segundos. Aperte de novo para pausar.")]
+  ];
+  let hintAnchor = null, hintTimer = 0, hintMuted = null, hintDescribed = null;
+  const hintFor = t => { if (!t || !t.closest) return null; for (const [sel, text] of HINTS) { const a = t.closest(sel); if (a) return {a, text}; } return null; };
+  function hideHint() {
+    clearTimeout(hintTimer);
+    if (hintDescribed) { if (hintDescribed.getAttribute("aria-describedby") === "hintPop") hintDescribed.removeAttribute("aria-describedby"); hintDescribed = null; }
+    hintAnchor = null; if (hintPop) hintPop.hidden = true;
+  }
+  function showHint(a, text, describe) {
+    if (!hintPop || !hintsOn() || tourOpen() || guideBlocked() || !a.isConnected || a === hintMuted) return;
+    hideHint();
+    hintAnchor = a; hintPop.textContent = text(); hintPop.hidden = false;
+    // Above the control when there is room, otherwise below; never on top of it.
+    const r = a.getBoundingClientRect(), w = hintPop.offsetWidth, h = hintPop.offsetHeight, gap = 8;
+    const top0 = typeof stickyHeaderH === "function" ? stickyHeaderH() : 0;
+    const above = r.top - gap - h >= top0 + 4, below = r.bottom + gap + h <= innerHeight - 4;
+    if (!above && !below) { hideHint(); return; }
+    hintPop.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)) + "px";
+    hintPop.style.top = (above ? r.top - gap - h : r.bottom + gap) + "px";
+    if (describe && !describe.hasAttribute("aria-describedby")) { describe.setAttribute("aria-describedby", "hintPop"); hintDescribed = describe; }
+  }
+  if (hintPop) {
+    document.addEventListener("pointerover", e => {
+      if (e.pointerType !== "mouse") return;
+      const hit = hintFor(e.target);
+      if (!hit) return;
+      if (hit.a === hintAnchor) return;
+      clearTimeout(hintTimer); hintTimer = setTimeout(() => showHint(hit.a, hit.text, null), 380);
+    });
+    document.addEventListener("pointerout", e => {
+      if (e.pointerType !== "mouse") return;
+      const hit = hintFor(e.target); if (!hit) return;
+      if (e.relatedTarget && hit.a.contains(e.relatedTarget)) return;
+      if (hit.a === hintMuted) hintMuted = null;
+      clearTimeout(hintTimer); if (hit.a === hintAnchor && !hit.a.contains(document.activeElement)) hideHint();
+    });
+    document.addEventListener("focusin", e => {
+      const hit = hintFor(e.target);
+      if (!hit) { if (hintAnchor) hideHint(); return; }
+      let kb = true; try { kb = e.target.matches(":focus-visible"); } catch (_) {}
+      if (kb && hit.a !== hintAnchor) showHint(hit.a, hit.text, e.target);
+    });
+    document.addEventListener("focusout", e => { const hit = hintFor(e.target); if (hit) { if (hit.a === hintMuted) hintMuted = null; if (hit.a === hintAnchor && !(e.relatedTarget && hit.a.contains(e.relatedTarget))) hideHint(); } });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && hintAnchor) { hintMuted = hintAnchor; hideHint(); } });
+    document.addEventListener("pointerdown", e => { if (hintAnchor && e.pointerType !== "mouse") hideHint(); });
+    addEventListener("scroll", () => { if (hintAnchor) hideHint(); }, {passive:true, capture:true});
+    addEventListener("resize", () => { if (hintAnchor) hideHint(); }, {passive:true});
+  }
+
+  // Language, currency, data or week changed: refresh the texts that are generated here.
+  onRefresh(() => {
+    syncGuideMenu();
+    if (hintAnchor && !hintAnchor.isConnected) hideHint();
+    if (tourOpen()) { const st = TOUR[tourIdx]; $("guideTitle").textContent = L(st.title); $("guideText").textContent = st.text(); }
+  });
 
   document.querySelectorAll(".lang button").forEach(b => b.onclick = () => setLang(b.dataset.lang));
   document.querySelectorAll(".theme-switch button").forEach(b => b.onclick = () => setTheme(b.dataset.theme, true));

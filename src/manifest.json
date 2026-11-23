@@ -24,6 +24,7 @@
     "css/52-datasets.css",
     "css/53-products.css",
     "css/54-open-finance.css",
+    "css/60-guide.css",
     "css/90-dark.css",
     "css/91-print.css",
     "css/92-responsive.css"
@@ -71,6 +72,7 @@
     "js/17-playback-clock.js",
     "js/18-switchers.js",
     "js/19-persistence.js",
+    "js/30-guide.js",
     "js/99-boot.js"
   ],
   "slots": {
@@ -81,10 +83,24 @@
       "html/slots/products.html"
     ],
     "topbar-actions": [
-      "html/slots/open-finance-button.html"
+      "html/slots/open-finance-button.html",
+      "html/slots/guide-button.html"
     ],
     "after-main": [
-      "html/slots/open-finance-modal.html"
+      "html/slots/open-finance-modal.html",
+      "html/slots/guide-layer.html"
+    ],
+    "panel-1-top": [
+      "html/slots/tips-1.html"
+    ],
+    "panel-2-top": [
+      "html/slots/tips-2.html"
+    ],
+    "panel-3-top": [
+      "html/slots/tips-3.html"
+    ],
+    "panel-4-top": [
+      "html/slots/tips-4.html"
     ]
   }
 }

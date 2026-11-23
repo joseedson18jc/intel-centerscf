@@ -115,3 +115,70 @@
   }
   .pill-switch button[aria-pressed="true"]{background:#fff;color:#00205B}
 
+
+  /* ---------- "More" menu: secondary controls collapse into one dropdown ----------
+     >= 1440px  tools (guide, data, briefing, slot buttons) inline; currency, language, theme and settings in the menu
+     <  1440px  tools join the menu (.tb-collapsed), so the bar holds in one row down to tablets
+     <=  980px  the step tabs take their own row; <= 680px the notice scrolls away and labels shrink */
+  .nav-more{
+    display:inline-flex;align-items:center;gap:7px;
+    border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.06);
+    color:#E8F2FC;font-size:11px;font-weight:700;letter-spacing:.02em;
+    height:32px;padding:0 10px;border-radius:999px;cursor:pointer;
+    white-space:nowrap;transition:all .15s;flex-shrink:0;
+  }
+  .nav-more:hover,.nav-more[aria-expanded="true"]{border-color:#67CFDA;background:rgba(255,255,255,.16);color:#fff}
+  .tb-menu,.tb-tools{display:contents}
+  .tb-prefs{
+    display:none;position:absolute;z-index:5;top:calc(100% + 6px);right:clamp(14px,3vw,32px);
+    align-items:center;gap:8px;flex-wrap:wrap;
+    width:max-content;max-width:calc(100vw - 24px);
+    padding:10px;border-radius:14px;
+    background:#002D72;border:1px solid rgba(255,255,255,.18);
+    box-shadow:0 14px 34px rgba(0,12,40,.42);
+  }
+  .topbar.menu-open .tb-prefs{display:flex}
+  .tb-prefs .nav-ico{width:auto;height:30px;border-radius:999px;padding:0 11px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+  .tb-prefs .nav-ico .set-dot{position:static;order:3}
+  .nav-ico-lbl{white-space:nowrap}
+  @media(max-width:1539px){
+    .brand-title span{display:none}
+    .topbar-right{gap:6px}
+    .nav-step-btn{padding:5px 9px}
+  }
+  /* .tb-collapsed is set by 03-step-nav.js below 1440px, or at any width where the bar would not fit in one row */
+  .tb-collapsed .tb-menu{
+    display:none;position:absolute;z-index:5;top:calc(100% + 6px);right:clamp(12px,3vw,32px);
+    flex-direction:column;gap:10px;
+    width:min(300px,calc(100vw - 24px));max-height:calc(100vh - 150px);overflow-y:auto;
+    padding:12px;border-radius:14px;
+    background:#002D72;border:1px solid rgba(255,255,255,.18);
+    box-shadow:0 14px 34px rgba(0,12,40,.42);
+  }
+  .tb-collapsed.menu-open .tb-menu{display:flex}
+  .tb-collapsed .tb-tools{display:flex;flex-direction:column;gap:6px}
+  .tb-collapsed .tb-tools>*{justify-content:flex-start;width:100%;min-height:36px;text-align:left}
+  .tb-collapsed .tb-prefs,.tb-collapsed.menu-open .tb-prefs{
+    display:flex;position:static;width:auto;max-width:none;padding:10px 0 0;border:0;border-radius:0;
+    border-top:1px solid rgba(255,255,255,.14);background:transparent;box-shadow:none;
+  }
+  .tb-collapsed .topbar-right{gap:8px}
+  @media(max-width:980px){
+    .nav-steps{order:3;width:100%;max-width:100%;justify-content:flex-start;overflow-x:auto}
+    .nav-step-btn{flex:1 0 auto;justify-content:center}
+  }
+  @media(max-width:680px){
+    /* The notice sits above the sticky part: it scrolls away with the page instead of eating screen height. */
+    .topbar{top:calc(-1 * var(--notice-h,0px))}
+    .header-notice{font-size:10.5px;line-height:1.35;padding:4px 12px;gap:6px;flex-wrap:nowrap;text-align:left}
+    .header-notice::before{width:6px;height:6px}
+    .topbar-inner{padding:6px 12px;gap:6px 8px}
+    .brand-divider{display:none}
+    .nav-steps{padding:2px}
+    .nav-step-btn{padding:4px 6px;font-size:11.5px;gap:5px}
+    .nav-ai,.btn-present{height:32px;padding:0 11px}
+    .nav-more{padding:0 8px}
+    .nav-more-lbl{display:none}
+    .tb-collapsed .tb-menu{max-height:calc(100vh - 110px)}
+  }
+  @media(max-width:560px){.btn-present span,.nav-ai .ai-lbl{display:none}}

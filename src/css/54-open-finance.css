@@ -26,16 +26,4 @@
   html[data-theme="dark"] .of-status.on{border-color:rgba(52,211,153,.35)}
   .of-note{font-size:11.5px;color:var(--subtle);line-height:1.45}
   @media(max-width:680px){.of-grid{grid-template-columns:1fr}}
-  /* Topbar fit. The base topbar fits one row at 1440px with about 16px to spare, so one more button would push the
-     right-hand group to a second row. Between 1340px and 1535px this tightens spacing only (nothing is hidden) so the
-     topbar stays on one row with the Open Finance button. Integrator: move to 10-topbar.css or drop if the topbar changes. */
-  @media(min-width:1340px) and (max-width:1535px){
-    .topbar-inner{gap:8px}
-    .topbar-right{gap:5px}
-    .nav-step-btn{padding:5px 8px;gap:5px}
-    .nav-ghost,.nav-ai{padding:6px 9px}
-    .btn-present{padding:6px 10px}
-    .pill-switch button{padding:4px 7px}
-    .brand-lockup{gap:9px}
-  }
 

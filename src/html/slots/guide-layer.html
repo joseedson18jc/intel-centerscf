@@ -1,0 +1,41 @@
+
+<!-- ==================== GUIDE: MENU, FIRST-RUN TOUR, FIELD HINTS (js/30-guide.js) ==================== -->
+<div class="guide-menu" id="guideMenu" role="group" aria-labelledby="guideMenuTitle" hidden>
+  <strong id="guideMenuTitle" data-i18n="gd.menu.h">Ajuda para usar o cockpit</strong>
+  <button type="button" class="guide-menu-item primary" id="guideStart">
+    <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5l8 4.5-8 4.5z" fill="currentColor"/></svg>
+    <span><b data-i18n="gd.menu.tour">Fazer o tour guiado</b><small data-i18n="gd.menu.tour.n">8 paradas, cerca de 1 minuto</small></span>
+  </button>
+  <button type="button" class="guide-menu-item" id="guideTips">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.6 10.2A4.3 4.3 0 1 1 10.4 10.2c-.5.4-.8.9-.8 1.5H6.4c0-.6-.3-1.1-.8-1.5Z"/><path d="M6.6 14h2.8"/></svg>
+    <span><b data-i18n="gd.menu.tips">Mostrar as dicas de novo</b><small id="guideTipsNote"></small></span>
+  </button>
+  <button type="button" class="guide-menu-item" id="guideHints" role="switch" aria-checked="true">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z"/></svg>
+    <span><b data-i18n="gd.menu.hints">Explicações dos campos</b><small id="guideHintsNote"></small></span>
+    <i class="guide-switch" aria-hidden="true"></i>
+  </button>
+</div>
+
+<div class="guide-layer" id="guideLayer" hidden>
+  <div class="guide-spot" id="guideSpot" aria-hidden="true"></div>
+  <div class="guide-card" id="guideCard" role="dialog" aria-modal="true" aria-labelledby="guideTitle" aria-describedby="guideText" tabindex="-1">
+    <div class="guide-card-top">
+      <span class="guide-count" id="guideCount"></span>
+      <span class="guide-dots" id="guideDots" aria-hidden="true"></span>
+    </div>
+    <div aria-live="polite">
+      <h3 id="guideTitle"></h3>
+      <p id="guideText"></p>
+    </div>
+    <div class="guide-btns">
+      <button type="button" class="guide-skip" id="guideSkip"></button>
+      <span class="guide-btns-right">
+        <button type="button" class="guide-btn" id="guideBack"></button>
+        <button type="button" class="guide-btn primary" id="guideNext"></button>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="hint-pop" id="hintPop" role="tooltip" hidden></div>

@@ -45,3 +45,8 @@
   .view-toggle button{border:0;background:transparent;color:var(--muted);font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer;transition:all .15s}
   .view-toggle button[aria-pressed="true"]{background:var(--navy);color:#fff}
 
+  /* "Everything" view: the step being read (scroll spy in 03-step-nav.js) */
+  .step-card.in-view{border-color:var(--blue);box-shadow:0 0 0 3px rgba(5,109,174,.12),var(--shadow-sm)}
+  .step-card.in-view .step-num i{background:var(--blue);color:#fff}
+  html[data-theme="dark"] .step-card.in-view{border-color:#38BDF8;box-shadow:0 0 0 3px rgba(56,189,248,.16),var(--shadow-sm)}
+  html[data-theme="dark"] .step-card.in-view .step-num i{background:#38BDF8;color:#041225}
