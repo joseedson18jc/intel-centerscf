@@ -19,6 +19,11 @@
     "css/30-proof-modals.css",
     "css/31-footer.css",
     "css/40-deck.css",
+    "css/50-data-editor.css",
+    "css/51-levers.css",
+    "css/52-datasets.css",
+    "css/53-products.css",
+    "css/54-open-finance.css",
     "css/90-dark.css",
     "css/91-print.css",
     "css/92-responsive.css"
@@ -49,18 +54,37 @@
     "js/05-kpi.js",
     "js/06-commentary-alerts.js",
     "js/07-adoption.js",
+    "js/07b-levers.js",
     "js/08-forecast-limit.js",
+    "js/09a-datasets.js",
     "js/09-pipeline.js",
     "js/10-market.js",
+    "js/10b-products.js",
     "js/11-action-plan.js",
     "js/12-csv-data.js",
+    "js/12b-data-editor.js",
+    "js/12c-open-finance.js",
     "js/13-briefing-modals.js",
     "js/14-ai-copilot.js",
     "js/15-proofs.js",
     "js/16-deck.js",
     "js/17-playback-clock.js",
     "js/18-switchers.js",
+    "js/19-persistence.js",
     "js/99-boot.js"
   ],
-  "slots": {}
+  "slots": {
+    "panel-1-before-friction": [
+      "html/slots/levers.html"
+    ],
+    "panel-4-end": [
+      "html/slots/products.html"
+    ],
+    "topbar-actions": [
+      "html/slots/open-finance-button.html"
+    ],
+    "after-main": [
+      "html/slots/open-finance-modal.html"
+    ]
+  }
 }

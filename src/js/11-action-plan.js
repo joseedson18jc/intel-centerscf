@@ -2,6 +2,17 @@
   const OWN = {spec:["SCF specialist","Especialista SCF"], rm:["Relationship manager","Gerente de relacionamento"], risk:["Credit & risk","Crédito e risco"], ops:["Onboarding ops","Operações de cadastro"], lead:["Commercial leadership","Liderança comercial"]};
   const DUE = {1:["by Wednesday","até quarta"], 2:["by Friday","até sexta"], 3:["monitor","acompanhar"], m:["monthly committee","comitê mensal"]};
   let ACTS = [];
+  // First untested lever for the weakest funnel step. firstLever() is provided by the adoption module when present;
+  // it may return a ready sentence, a bare lever name or an [en, pt] pair.
+  function leverNote(stepIndex) {
+    let lv = "";
+    try { lv = typeof firstLever === "function" ? firstLever(stepIndex) : ""; } catch (e) { lv = ""; }
+    if (Array.isArray(lv)) lv = L(lv);
+    lv = lv ? String(lv).trim() : "";
+    if (!lv) return "";
+    if (/[:.!?]/.test(lv)) return " " + lv;                                   // already a sentence
+    return T(` First lever to test: ${lv.charAt(0).toLowerCase() + lv.slice(1)}.`,` Primeira alavanca a testar: ${lv.charAt(0).toLowerCase() + lv.slice(1)}.`);
+  }
   function plan(w) {
     const i = w - 1, A = [];
     const add = (id, pri, dec, own, title, why, due) => A.push({id, pri, dec, own, title, why, due:due || DUE[pri]});
@@ -16,15 +27,21 @@
     else { const exp = Math.round(30 * (DEC[0] + DEC[1] + DEC[2]) / 300); add("scale", 2, 1, ["rm"], T("Scale campaign to next 30 suppliers by propensity score","Escalar campanha para próximos 30 fornecedores pelo score"), T(`Risk flags are low (${D.flags[i]}). Deciles D1–D3 activate at ${DEC[0]}/${DEC[1]}/${DEC[2]}%: expect ~${exp} new active suppliers.`,`Alertas baixos (${D.flags[i]}). Decis D1–D3 ativam ${DEC[0]}/${DEC[1]}/${DEC[2]}%: expectativa de ~${exp} novos ativos.`)); }
     const fv = mode === "after" ? F.after : F.before; let worst = 1, wr = 1;
     for (let s = 1; s < fv.length; s++) { const r = fv[s] / fv[s - 1]; if (r < wr) { wr = r; worst = s; } }
-    add("funnel", (!SRCINFO && w < 5 && worst === 3) ? 1 : 2, 1, ["ops","rm"], T(`Attack the "${L(STEPS[worst - 1])} → ${L(STEPS[worst])}" step`,`Atacar etapa "${L(STEPS[worst - 1])} → ${L(STEPS[worst])}"`), T(`Weakest conversion in funnel: ${nf(wr * 100, 0)}% (${fv[worst - 1] - fv[worst]} suppliers lost).`,`Pior conversão do funil: ${nf(wr * 100, 0)}% (${fv[worst - 1] - fv[worst]} fornecedores perdidos).`));
+    add("funnel", (!SRCINFO && w < 5 && worst === 3) ? 1 : 2, 1, ["ops","rm"], T(`Attack the "${L(STEPS[worst - 1])} → ${L(STEPS[worst])}" step`,`Atacar etapa "${L(STEPS[worst - 1])} → ${L(STEPS[worst])}"`), T(`Weakest conversion in funnel: ${nf(wr * 100, 0)}% (${fv[worst - 1] - fv[worst]} suppliers lost).`,`Pior conversão do funil: ${nf(wr * 100, 0)}% (${fv[worst - 1] - fv[worst]} fornecedores perdidos).`) + leverNote(worst));
     if (D.days[i] > 10) add("days", 2, 1, ["ops"], T(`Cut days to 1st discount from ${D.days[i]} to ≤10 days`,`Reduzir prazo até 1º desconto de ${D.days[i]} para ≤ 10 dias`), T("Suppliers waiting >10 days show materially higher abandonment before first discount.","Fornecedores que aguardam > 10 dias têm abandono bem maior antes da 1ª antecipação."));
-    // Decision 3: pipeline #1 + market pricing
-    const t = totals(), top = t.flows.indexOf(Math.max(...t.flows)), b = balOf(t.flows[top]);
-    add("grow", 2, 3, ["lead","spec"], T(`Take ${ANCHORS[top].name} to credit committee`,`Levar ${ANCHORS[top].name} ao comitê de crédito`), T(`#1 in pipeline: ${bn(t.flows[top])} annual flow, ${money(b)} balance, ${moneyD(revOf(b))}/yr spread.`, `Nº 1 do pipeline: fluxo anual de ${bn(t.flows[top])}, saldo de ${money(b)}, spread de ${moneyD(revOf(b))}/ano.`) + (MKT_STATE.bestWS ? T(` Largest open headroom: ${MKT_STATE.bestWS.name} (${bn(MKT_STATE.bestWS.ws, 1)}).`,` Maior espaço livre: ${MKT_STATE.bestWS.name} (${bn(MKT_STATE.bestWS.ws, 1)}).`) : ""), DUE.m);
-    if (MKT_STATE.above.length) add("price", 2, 3, ["lead","spec"], T(`Review CDI+${nf(mktSpread, 2)}% pricing for ${MKT_STATE.above.join(", ")}`,`Rever preço CDI+${nf(mktSpread, 2)}% para ${MKT_STATE.above.join(", ")}`), T("Proposed spread sits above market band for this rating tier — adjust spread or compete on Document AI onboarding.","Spread proposto está acima da faixa de mercado para esse rating — ajustar taxa ou diferenciar no cadastro via IA."), DUE.m);
+    // Decision 3: pipeline #1, with the white-space note from the market module (fabricated market figures)
+    const t = totals(), top = t.flows.indexOf(Math.max(...t.flows)), b = balOf(t.flows[top]), ws = MKT_STATE.bestWS;
+    add("grow", 2, 3, ["lead","spec"], T(`Take ${esc(ANCHORS[top].name)} to credit committee`,`Levar ${esc(ANCHORS[top].name)} ao comitê de crédito`), T(`#1 in pipeline: ${bn(t.flows[top])} annual flow, ${money(b)} balance, ${moneyD(revOf(b))}/yr spread.`, `Nº 1 do pipeline: fluxo anual de ${bn(t.flows[top])}, saldo de ${money(b)}, spread de ${moneyD(revOf(b))}/ano.`)
+      + (ws ? T(` Market (fabricated figures): ${esc(ws.name)} has the largest white space (${bn(ws.ws, 1)}).`,` Mercado (números fabricados): ${esc(ws.name)} tem o maior espaço livre (${bn(ws.ws, 1)}).`) : ""), DUE.m);
+    // Decision 3: pricing review, driven by the price bands of the active dataset (MKT_STATE is filled by the price module)
+    if (MKT_STATE.above.length) add("price", 2, 3, ["lead","spec"], T(`Review pricing for ${esc(MKT_STATE.above.join(", "))}`,`Rever o preço para ${esc(MKT_STATE.above.join(", "))}`), T(`The CDI + ${nf(mktSpread, 2)}% proposal sits above the market band for their rating (fabricated bands). Either cut the spread in the pipeline or build the offer on tenor and limit.`,`A proposta de CDI + ${nf(mktSpread, 2)}% fica acima da faixa de mercado para o rating dessas âncoras (faixas fabricadas). Reduzir o spread no pipeline ou montar a oferta em prazo e limite.`), DUE.m);
+    // Decision 3: red external signal holds the credit request (signals come from the active dataset and are fabricated)
+    ANCHORS.forEach(a => { const sg = sigOf(a.id); if (sg.sev !== "red") return;
+      const note = sg.note ? L(sg.note) : "", out = sg.out ? ` (${L(sg.out).toLowerCase()})` : "";
+      add("sig-" + a.id, 2, 3, ["risk","lead"], T(`Hold the credit request for ${esc(a.name)}`,`Segurar o pedido de crédito para ${esc(a.name)}`), T(`Red external signal (fabricated)${note ? ": " + note.charAt(0).toLowerCase() + note.slice(1) : ""}${out}.`,`Sinal externo vermelho (fabricado)${note ? ": " + note.charAt(0).toLowerCase() + note.slice(1) : ""}${out}.`), DUE.m); });
 
     A.sort((a, b2) => a.pri - b2.pri || a.dec - b2.dec);
-    ACTS = A.slice(0, 6);
+    ACTS = A.slice(0, 7);
     const openCnt = ACTS.filter(a => a.pri < 3).length;
     $("act-n").textContent = T(`Week ${w} · ${openCnt} priority action${openCnt === 1 ? "" : "s"} · auto-generated`,`Semana ${w} · ${openCnt} aç${openCnt === 1 ? "ão prioritária" : "ões prioritárias"} · gerado automaticamente`);
     const key = a => `scf-done-${w}-${a.id}`;

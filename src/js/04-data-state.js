@@ -1,6 +1,13 @@
   // ========== PILOT DATA + CONFIGURABLE PARAMETERS ==========
   let W = 12, SPEND = 6000, BASE_SUP = 300;
-  const TENOR = 75;
+  const TENOR = 75; // default average days discounted (also the pipeline default in 09-pipeline)
+  // Pilot programme assumptions. They belong to the pilot book only (Steps 1 and 2) and are independent
+  // of the pipeline assumptions G (Step 3): changing a pipeline preset never rewrites the pilot history.
+  const PILOT = { tenor: 75, spread: 1.2 };
+  // Accepted range of each editable programme parameter (spend in BRL bn, tenor in days, spread in % p.a.).
+  const PARAM_RANGE = { spend:[0.1, 500], base:[10, 50000], tenor:[1, 360], spread:[0, 10], fx:[FX_MIN, FX_MAX] };
+  const clampNum = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+  let appReady = false; // set by 99-boot after the first render
   const D = {
     spend:   [52,53,54,55,56,57,57,58,59,59,60,60],
     active:  [40,44,51,60,72,85,97,110,121,133,142,150],
@@ -14,12 +21,31 @@
   let rev = [];
   const DEMO = JSON.parse(JSON.stringify(D));
   function recomputeBook() {
-    const tenor = (typeof G !== "undefined" ? G.tenor : TENOR);
-    const spPct = (typeof G !== "undefined" ? G.spread : 1.2) / 100;
-    D.bal = D.spend.map((s, i) => +(SPEND * s / 100 * D.util[i] / 100 * tenor / 365).toFixed(1));
-    rev = D.bal.map(b => +(b * spPct).toFixed(1));
+    D.bal = D.spend.map((s, i) => +(SPEND * s / 100 * D.util[i] / 100 * PILOT.tenor / 365).toFixed(1));
+    rev = D.bal.map(b => +(b * PILOT.spread / 100).toFixed(1));
     KPIS.forEach(m => { m.series = m.k === "rev" ? rev : D[m.k]; });
   }
+  // The supplier base can never be smaller than the largest number of active suppliers in the weekly data.
+  const minBase = () => Math.max(PARAM_RANGE.base[0], Math.ceil(Math.max(0, ...D.active)));
+  // Full re-render after a parameter or data change made outside the core render paths.
+  // setCcy(ccy, true) is the existing "redraw everything that shows money" path (pipeline, market, week view,
+  // open deck / proof / briefing); KPI tiles are rebuilt because their unit shows the supplier base.
+  function refreshAll() {
+    if (!appReady) return;
+    recomputeBook();
+    buildKpis();
+    srcChip();
+    setCcy(ccy, true);
+  }
+  // Bridge for FX wording owned by other partials (hero badge, closing note, currency switch tooltip):
+  // keeps them in line with the editable rate until those partials call fxLabel() themselves.
+  function syncFxTexts() {
+    const badge = $("fxBadge"); if (badge) badge.textContent = fxLabel();
+    const note = $("csNote");
+    if (note && ccy === "USD") note.textContent = T(`Projected balance at the selected horizon, in millions of USD (${fxLabel(true)}, rate entered in the panel).`,`Saldo projetado no horizonte escolhido, em milhões de dólares (${fxLabel(true)}, câmbio informado no painel).`);
+    document.querySelectorAll(".ccy-switch").forEach(e => { e.title = fxLabel(); });
+  }
+  onRefresh(syncFxTexts);
 
   const KPIS = [
     {k:"spend",  lbl:["Spend under program","Gasto sob o programa"], q:["Are we capturing the anchor's flows?","Estamos capturando os fluxos da âncora?"], d:0, u:["%","%"], good:1},

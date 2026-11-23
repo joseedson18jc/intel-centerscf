@@ -1,0 +1,47 @@
+  /* ========== DATASET SELECTOR + FABRICATED-FIGURES LABELS (STEPS 3 AND 4) ========== */
+  .ds-bar{margin-bottom:14px;padding:12px 16px;border:1px solid var(--hair);border-left:4px solid var(--blue);border-radius:12px;background:var(--surface)}
+  .ds-bar:empty{display:none}
+  .ds-row{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap}
+  .ds-pick{display:flex;flex-direction:column;gap:6px;flex:0 0 auto;max-width:100%}
+  .ds-lbl{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--subtle);font-weight:700}
+  .ds-switch{display:inline-flex;gap:4px;flex-wrap:wrap;background:var(--canvas);border:1px solid var(--hair);border-radius:12px;padding:3px;max-width:100%}
+  .ds-switch button{border:0;background:transparent;color:var(--muted);font:600 12.5px var(--body);padding:6px 12px;border-radius:9px;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;transition:background .15s,color .15s}
+  .ds-switch button small{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--subtle)}
+  .ds-switch button:hover{color:var(--navy)}
+  .ds-switch button:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+  .ds-switch button[aria-pressed="true"]{background:var(--navy);color:#fff;box-shadow:0 1px 3px rgba(0,32,91,.18)}
+  .ds-switch button[aria-pressed="true"] small{color:rgba(255,255,255,.78)}
+  .ds-desc{flex:1 1 320px;min-width:0;font-size:12.5px;line-height:1.5;color:var(--muted);margin:0}
+  .ds-desc b{color:var(--navy)}
+  .ds-hint{color:var(--subtle)}
+  .ds-status{list-style:none;margin:10px 0 0;padding:10px 0 0;border-top:1px dashed var(--hair);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;font-size:12px;line-height:1.5;color:var(--muted)}
+  .ds-status li{min-width:0}
+  .ds-chip{display:inline-block;margin-right:7px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;white-space:nowrap}
+  .ds-chip.pub{background:#E6F2FB;color:var(--blue-dark);border:1px solid #B4D6F0}
+  .ds-chip.fab,.fab-tag{background:var(--red-soft);color:#B3141B;border:1px solid #F3B6B9}
+  .fab-tag{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:1px 7px;border-radius:999px;white-space:nowrap;vertical-align:1px}
+
+  .fab-banner{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;padding:12px 16px;border-radius:12px;background:var(--red-soft);border:1.5px solid #E9898D;color:#7A0F14;font-size:13.5px;font-weight:600;line-height:1.45}
+  .fab-badge{flex:0 0 auto;background:#B3141B;color:#fff;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 11px;border-radius:999px;white-space:nowrap}
+
+  .ds-na{font-size:11px;font-style:italic;color:var(--subtle);font-weight:500}
+  .ds-na-block{font-size:12.5px;color:var(--muted);font-style:italic;padding:12px 14px;border:1px dashed var(--hair-strong);border-radius:10px;background:var(--surface-alt);margin:0}
+  .brand-badge.ds-pilot{font:800 10px var(--head);color:var(--navy);background:var(--surface-alt);letter-spacing:.04em}
+
+  html[data-theme="dark"] .ds-switch button[aria-pressed="true"]{background:#0EA5E9;color:#041225}
+  html[data-theme="dark"] .ds-switch button[aria-pressed="true"] small{color:rgba(4,18,37,.72)}
+  html[data-theme="dark"] .ds-chip.pub{background:rgba(56,189,248,.16);color:#7DD3FC;border-color:rgba(56,189,248,.35)}
+  html[data-theme="dark"] .ds-chip.fab,html[data-theme="dark"] .fab-tag{background:rgba(248,113,113,.16);color:#FCA5A5;border-color:rgba(248,113,113,.4)}
+  html[data-theme="dark"] .fab-banner{background:rgba(248,113,113,.14);border-color:rgba(248,113,113,.55);color:#FECACA}
+  html[data-theme="dark"] .fab-badge{background:#F87171;color:#2A0608}
+  html[data-theme="dark"] .brand-badge.ds-pilot{background:#132946;color:#E8F1FC}
+
+  @media (max-width:760px){
+    .ds-status{grid-template-columns:1fr}
+    .ds-switch{display:flex}
+    .ds-switch button{flex:1 1 130px}
+  }
+  @media print{
+    .ds-switch button:not([aria-pressed="true"]){display:none}
+    .ds-hint{display:none}
+  }

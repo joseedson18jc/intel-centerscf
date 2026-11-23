@@ -1,29 +1,61 @@
-<!-- ==================== CSV DATA LOADER MODAL ==================== -->
+<!-- ==================== DATA MODAL: PROGRAMME PARAMETERS + WEEKLY DATA (EDITOR / CSV) ==================== -->
 <div class="modal-backdrop" id="m-data" hidden role="dialog" aria-modal="true" aria-labelledby="md-title" tabindex="-1">
-  <div class="modal-dialog">
+  <div class="modal-dialog wide">
     <div class="modal-head">
-      <div><div class="lbl" data-i18n="md.lbl">Camada de dados local · 100% no navegador</div><h3 id="md-title" data-i18n="md.h">Carregue os dados do programa</h3></div>
+      <div><div class="lbl" data-i18n="md.lbl">Camada de dados local · 100% no navegador</div><h3 id="md-title" data-i18n="md.h">Dados e parâmetros do programa</h3></div>
       <button class="modal-close" data-close aria-label="Fechar / Close">✕</button>
     </div>
     <div class="modal-body">
-      <p style="font-size:13px;color:var(--muted)" data-i18n="md.p"></p>
-      <div class="csv-opts">
-        <label><span data-i18n="md.spend">Compras no escopo (R$ bi)</span><input type="number" id="cfg-spend" value="6.0" min="0.1" max="500" step="0.1"></label>
-        <label><span data-i18n="md.base">Base de fornecedores</span><input type="number" id="cfg-base" value="300" min="10" max="50000" step="10"></label>
-      </div>
-      <div class="mbtns">
-        <button class="mbtn" id="d-tpl" data-i18n="md.tpl">Baixar modelo CSV</button>
-        <label class="mbtn pri" for="d-file" data-i18n="md.load">Carregar CSV</label>
-        <input type="file" id="d-file" accept=".csv,text/csv" hidden>
-        <button class="mbtn" id="d-reset" data-i18n="md.reset">Voltar aos dados de demonstração</button>
-      </div>
-      <p id="data-msg" role="status"></p>
-      <div class="proof-table-wrap">
-        <table class="proof-table">
-          <thead><tr><th data-i18n="md.col">Coluna</th><th data-i18n="md.mean">Significado</th></tr></thead>
-          <tbody id="d-fields"></tbody>
-        </table>
-      </div>
+      <p class="de-intro" data-i18n="md.p"></p>
+
+      <section class="de-block" aria-labelledby="md-par-h">
+        <div class="de-block-head">
+          <div><h4 id="md-par-h" data-i18n="md.par.h">Parâmetros do programa</h4><p data-i18n="md.par.p"></p></div>
+          <button class="mbtn de-quiet" id="d-defaults" type="button" data-i18n="md.defaults">Restaurar padrões</button>
+        </div>
+        <div class="de-params">
+          <label><span data-i18n="md.spend">Compras anuais no escopo (R$ bi)</span><input type="number" id="cfg-spend" value="6" min="0.1" max="500" step="0.1" inputmode="decimal"></label>
+          <label><span data-i18n="md.base">Base de fornecedores</span><input type="number" id="cfg-base" value="300" min="10" max="50000" step="10" inputmode="numeric"></label>
+          <label><span data-i18n="md.tenor">Prazo médio antecipado do piloto (dias)</span><input type="number" id="cfg-tenor" value="75" min="1" max="360" step="1" inputmode="decimal"></label>
+          <label><span data-i18n="md.pspread">Spread do piloto (% a.a.)</span><input type="number" id="cfg-pspread" value="1.2" min="0" max="10" step="0.05" inputmode="decimal"></label>
+          <label><span data-i18n="md.fx">Câmbio (R$ por US$)</span><input type="number" id="cfg-fx" value="5.8889" min="1" max="20" step="0.01" inputmode="decimal"></label>
+        </div>
+        <p id="par-msg" role="status"></p>
+        <p class="de-note" data-i18n="md.par.note"></p>
+      </section>
+
+      <section class="de-block" aria-labelledby="md-wk-h">
+        <div class="de-block-head">
+          <div><h4 id="md-wk-h" data-i18n="md.wk.h">Dados semanais</h4><p data-i18n="md.wk.p"></p></div>
+        </div>
+        <div class="mbtns">
+          <button class="mbtn" id="de-add" type="button" data-i18n="md.add">+ Adicionar semana</button>
+          <button class="mbtn" id="de-del" type="button" data-i18n="md.del">Remover última semana</button>
+          <button class="mbtn pri" id="de-apply" type="button" data-i18n="md.apply" disabled>Aplicar ao painel</button>
+          <button class="mbtn de-quiet" id="de-discard" type="button" data-i18n="md.discard" disabled>Descartar edições</button>
+        </div>
+        <div class="de-wrap" role="region" aria-labelledby="md-grid-lbl" tabindex="0">
+          <span id="md-grid-lbl" hidden data-i18n="md.grid">Editor dos dados semanais</span>
+          <table class="de-grid" id="de-grid"></table>
+        </div>
+        <p id="de-status" class="de-status" role="status"></p>
+        <div class="mbtns">
+          <button class="mbtn" id="d-tpl" type="button" data-i18n="md.tpl">Baixar CSV</button>
+          <button class="mbtn" id="d-load" type="button" data-i18n="md.load">Carregar CSV</button>
+          <input type="file" id="d-file" accept=".csv,text/csv" hidden>
+          <button class="mbtn de-quiet" id="d-reset" type="button" data-i18n="md.reset">Voltar aos dados de exemplo</button>
+        </div>
+        <p id="data-msg" role="status"></p>
+        <details class="de-cols">
+          <summary data-i18n="md.cols">Colunas do CSV e regras de validação</summary>
+          <div class="proof-table-wrap">
+            <table class="proof-table">
+              <thead><tr><th data-i18n="md.col">Coluna</th><th data-i18n="md.rule">Significado e regra</th></tr></thead>
+              <tbody id="d-fields"></tbody>
+            </table>
+          </div>
+        </details>
+      </section>
     </div>
   </div>
 </div>

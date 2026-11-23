@@ -118,3 +118,19 @@
   .sig-route-btn{border:1px solid #C6DCF2;background:#EDF5FC;color:var(--navy);font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;cursor:pointer;transition:all .15s}
   .sig-route-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff}
 
+
+  /* Dataset-aware additions: unit and result lines, cells and rows a dataset may not carry */
+  .mkt-unit{font-size:12.5px;color:var(--muted);line-height:1.5;margin:0 0 10px}
+  .mkt-res{font-size:13px;color:var(--ink);line-height:1.5;margin:12px 0 0;padding:10px 12px;border-radius:9px;background:var(--surface-alt);border:1px solid var(--hair)}
+  .mkt-res:empty{display:none}
+  .mkt-res b{color:var(--navy)}
+  .mkt-mod-head .lbl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .mcell.citi-cell.zero{background:transparent;border-style:dashed;font-weight:600}
+  .verdict.low{background:var(--amber-soft);color:#9A5B00}
+  .sh-over{display:block;margin-top:5px;font-size:11px;font-style:italic;color:var(--subtle)}
+  .sig-title{font-size:13.5px;color:var(--navy);line-height:1.35}
+  .sig-note{display:block;font-size:11.5px;color:var(--muted);line-height:1.4;padding-top:6px;border-top:1px dashed var(--hair)}
+  .sig-badge.na{background:transparent;color:var(--subtle)}
+  html[data-theme="dark"] .verdict.low{background:rgba(251,191,36,.16);color:#FCD34D}
+  html[data-theme="dark"] .mcell.citi-cell.zero{background:transparent;color:#7DD3FC}
+  .sig-feed .sig-asrep,.sig-feed .ds-na-block{grid-column:1/-1;margin-top:0}

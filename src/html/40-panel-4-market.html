@@ -8,6 +8,11 @@
       <span class="sub-meta" data-i18n="sec.mkt.n">Inteligência externa · protótipo funcional ilustrativo pronto para integração</span>
     </div>
     <!--slot:panel-4-top-->
+    <div class="fab-banner" role="note">
+      <span class="fab-badge" data-i18n="ds.fab.badge">Números fabricados</span>
+      <span data-i18n="ds.fab.banner">Nomes reais, números fabricados: valores, ratings e sinais não representam relações reais de financiamento.</span>
+    </div>
+    <div class="ds-bar" data-ds-bar="4"></div>
 
     <div class="card maturity-card">
       <div class="maturity-top">
@@ -17,7 +22,7 @@
         </div>
         <span class="proto-pill amber" data-i18n="mk.proto">Feeds ilustrativos · pronto p/ APIs</span>
       </div>
-      <div class="maturity-bar" role="img" aria-label="80% interno, 15% pipeline, 5% mercado">
+      <div class="maturity-bar" role="img" data-i18n-aria="ds.aria.mix" aria-label="80% interno, 15% pipeline, 5% mercado">
         <div class="m-seg-1"></div><div class="m-seg-2"></div><div class="m-seg-3"></div>
       </div>
       <div class="maturity-legend">
@@ -28,7 +33,7 @@
       <p class="note" style="margin-top:8px" data-i18n="mk.note"></p>
     </div>
 
-    <div class="mkt-subnav" role="group" aria-label="Módulos de mercado" id="mktSubnav">
+    <div class="mkt-subnav" role="group" data-i18n-aria="ds.aria.mods" aria-label="Módulos de mercado" id="mktSubnav">
       <button data-mmod="all" aria-pressed="true"><span data-i18n="mk.tab.all">Todos os 4 módulos</span></button>
       <button data-mmod="1" aria-pressed="false"><span class="mnum">4.1</span><span data-i18n="mk.1h">Concorrentes por âncora</span></button>
       <button data-mmod="2" aria-pressed="false"><span class="mnum">4.2</span><span data-i18n="mk.2h">Preço comparado</span></button>
@@ -40,7 +45,7 @@
     <article class="card mkt-mod" data-mkt-panel="1">
       <div class="mkt-mod-head">
         <div>
-          <div class="lbl" data-i18n="mk.1tag">4.1 · Matriz competitiva</div>
+          <div class="lbl"><span data-i18n="mk.1tag">4.1 · Matriz competitiva</span> <span class="fab-tag" data-i18n="ds.fab.tag">Fabricado</span></div>
           <h3 data-i18n="mk.1h">Concorrentes por âncora</h3>
           <p class="mkt-q" data-i18n="mk.1q">Quais bancos e FIDCs já operam o risco sacado de cada âncora?</p>
         </div>
@@ -50,7 +55,9 @@
           <button data-cf="fidc" aria-pressed="false" data-i18n="mk.cf.fidc">FIDCs (CVM)</button>
         </div>
       </div>
+      <p class="mkt-unit" id="compUnit"></p>
       <div class="matrix-wrap"><table class="matrix-table" id="compMatrix"></table></div>
+      <p class="mkt-res" id="compRes" aria-live="polite"></p>
       <div class="ias-drawer" id="iasDrawer" aria-live="polite"></div>
       <div class="mkt-source-bar">
         <div><b data-i18n="mk.src">Fonte de dado</b>: <span data-i18n="mk.1s"></span> · <b data-i18n="mk.out">Entrega</b>: <span data-i18n="mk.1o"></span></div>
@@ -62,7 +69,7 @@
     <article class="card mkt-mod" data-mkt-panel="2">
       <div class="mkt-mod-head">
         <div>
-          <div class="lbl" data-i18n="mk.2tag">4.2 · Benchmark de taxa (CDI + x)</div>
+          <div class="lbl"><span data-i18n="mk.2tag">4.2 · Benchmark de taxa (CDI + x)</span> <span class="fab-tag" data-i18n="ds.fab.tag">Fabricado</span></div>
           <h3 data-i18n="mk.2h">Preço comparado</h3>
           <p class="mkt-q" data-i18n="mk.2q">A taxa do Citi é competitiva contra o mercado (CDI + x)?</p>
         </div>
@@ -79,7 +86,7 @@
         <span class="spread-val-pill" id="mktSpreadVal">CDI + 1,20%</span>
         <div class="legend" style="margin-left:auto">
           <span><i style="background:#7CA9D4;height:8px"></i><span data-i18n="mk.2.lg.band">Faixa mercado (BCB + bancos)</span></span>
-          <span><i style="background:var(--amber);width:10px;height:10px;border-radius:2px"></i><span data-i18n="mk.2.lg.fidc">FIDC sênior (CVM)</span></span>
+          <span id="lgFidc"><i style="background:var(--amber);width:10px;height:10px;border-radius:2px"></i><span data-i18n="mk.2.lg.fidc">FIDC sênior (CVM)</span></span>
           <span><i style="background:var(--blue);width:10px;height:10px;transform:rotate(45deg)"></i><span data-i18n="mk.2.lg.citi">Proposta Citi</span></span>
         </div>
       </div>
@@ -93,6 +100,7 @@
           <div class="callout" style="margin-top:12px" id="rmLossNote"></div>
         </div>
       </div>
+      <p class="mkt-res" id="priceRes" aria-live="polite"></p>
       <div class="mkt-source-bar">
         <div><b data-i18n="mk.src">Fonte de dado</b>: <span data-i18n="mk.2s"></span> · <b data-i18n="mk.out">Entrega</b>: <span data-i18n="mk.2o"></span></div>
         <div class="infra-logos" id="infra-2" style="margin-top:0"></div>
@@ -103,7 +111,7 @@
     <article class="card mkt-mod" data-mkt-panel="3">
       <div class="mkt-mod-head">
         <div>
-          <div class="lbl" data-i18n="mk.3tag">4.3 · Reconciliação por registradora</div>
+          <div class="lbl"><span data-i18n="mk.3tag">4.3 · Reconciliação por registradora</span> <span class="fab-tag" data-i18n="ds.fab.tag">Fabricado</span></div>
           <h3 data-i18n="mk.3h">Share real</h3>
           <p class="mkt-q" data-i18n="mk.3q">Que parte do contas a pagar elegível de cada âncora o Citi já cobre frente aos pares?</p>
         </div>
@@ -112,7 +120,7 @@
       <div class="share-grid">
         <div class="donut-panel">
           <div class="lbl" data-i18n="mk.3.ring.lbl">Share consolidado (5 âncoras)</div>
-          <svg viewBox="0 0 180 180" id="realShareRing" role="img" aria-label="Share real consolidado"></svg>
+          <svg viewBox="0 0 180 180" id="realShareRing" role="img" data-i18n-aria="ds.aria.ring" aria-label="Share consolidado"></svg>
           <div class="donut-kpis" id="realShareKpis"></div>
           <p class="fnote" style="text-align:left;margin-top:10px" data-i18n="mk.3.ring.note"></p>
         </div>
@@ -126,6 +134,7 @@
           <div class="share-rows" id="realShareRows"></div>
         </div>
       </div>
+      <p class="mkt-res" id="shareRes" aria-live="polite"></p>
       <div class="mkt-source-bar">
         <div><b data-i18n="mk.src">Fonte de dado</b>: <span data-i18n="mk.3s"></span> · <b data-i18n="mk.out">Entrega</b>: <span data-i18n="mk.3o"></span></div>
         <div class="infra-logos" id="infra-3" style="margin-top:0"></div>
@@ -136,7 +145,7 @@
     <article class="card mkt-mod" data-mkt-panel="4">
       <div class="mkt-mod-head">
         <div>
-          <div class="lbl" data-i18n="mk.4tag">4.4 · Monitor de crédito e infraestrutura</div>
+          <div class="lbl"><span data-i18n="mk.4tag">4.4 · Monitor de crédito e infraestrutura</span> <span class="fab-tag" data-i18n="ds.fab.tag">Fabricado</span></div>
           <h3 data-i18n="mk.4h">Sinais externos</h3>
           <p class="mkt-q" data-i18n="mk.4q">O crédito da âncora e a infraestrutura de mercado estão a favor ou contra?</p>
         </div>

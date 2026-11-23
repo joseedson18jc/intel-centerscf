@@ -1,0 +1,25 @@
+  /* ========== LEVERS BY STAGE (Step 1, before the friction card) ========== */
+  .lev-pill{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;font-weight:800;color:#8A5600;background:var(--amber-soft);border:1px solid #F3D4A0;border-radius:999px;padding:3px 9px;white-space:nowrap}
+  .levers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+  .lev{border:1px solid var(--hair);border-radius:12px;padding:12px 12px 10px;display:flex;flex-direction:column;gap:6px;min-width:0;background:var(--surface-alt)}
+  .lev.worst{border-color:var(--red);box-shadow:inset 0 3px 0 var(--red);background:var(--red-soft)}
+  .lev-st{font-family:var(--head);font-size:12px;font-weight:700;color:var(--navy);line-height:1.3;min-height:48px;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+  .lev-flag{font-style:normal;font-family:var(--body);font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#fff;background:var(--red);border-radius:999px;padding:1px 7px}
+  .lev-cv{font-family:var(--head);font-size:27px;font-weight:800;color:var(--navy);letter-spacing:-.03em;line-height:1}
+  .lev.worst .lev-cv{color:var(--red)}
+  .lev-cv small{font-family:var(--body);font-size:11.5px;font-weight:600;color:var(--subtle);letter-spacing:0;margin-left:6px}
+  .lev-k{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--subtle);font-weight:700;margin-top:4px}
+  .lev p{font-size:12px;color:var(--muted);line-height:1.4}
+  .lev ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+  .lev li{font-size:12px;color:var(--ink);line-height:1.38;padding-left:11px;position:relative}
+  .lev li::before{content:"";position:absolute;left:0;top:.55em;width:5px;height:5px;border-radius:50%;background:var(--blue)}
+  .lev-chip{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:999px;padding:0 7px;border:1px solid var(--hair-strong);color:var(--subtle);white-space:nowrap;vertical-align:1px;background:var(--surface)}
+  .lev-chip.live{border-color:var(--green);color:var(--green);background:var(--green-soft)}
+  .lev-own{font-size:11px;color:var(--muted);margin-top:auto;padding-top:7px;border-top:1px solid var(--hair);line-height:1.4}
+  .lev-own b{color:var(--navy);font-weight:700}
+  html[data-theme="dark"] .lev-pill{color:#FCD34D;border-color:rgba(251,191,36,.35)}
+  html[data-theme="dark"] .lev-flag{color:#2A0A0A}
+  @media(max-width:1180px){.levers{grid-template-columns:repeat(2,minmax(0,1fr))}.lev-st{min-height:0}}
+  @media(max-width:680px){.levers{grid-template-columns:1fr}}
+  @media print{.lev{break-inside:avoid}}
+

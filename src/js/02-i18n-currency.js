@@ -1,5 +1,8 @@
   // ========== LANGUAGE, CURRENCY & LOCALE HELPERS ==========
-  const FX_RATE = 5.8889; // BCB PTAX closing rate 19/Nov/2026
+  // FX rate (BRL per USD). It is a number typed into the panel: the default is only a starting value,
+  // the app cannot verify it against any source, so labels call it "rate entered in the panel".
+  const FX_DEFAULT = 5.8889, FX_MIN = 1, FX_MAX = 20;
+  let FX_RATE = FX_DEFAULT;
   let lang = "pt", ccy = "BRL";
   try {
     const qp = new URLSearchParams(location.search);
@@ -20,12 +23,32 @@
   const moneyD = (v, d = 1) => { const x = v / fx(); return lang === "pt" ? sym() + nf(x, d) + " mi" : sym() + nf(x, d) + "m"; };
   const bn = (v, d = 2) => { const x = v / fx(); return lang === "pt" ? sym() + nf(x, d) + " bi" : sym() + nf(x, d) + "bn"; };
   const WL = () => T("W", "S");
+  // Rate as text: at least 2 and at most 4 decimals, in the current locale.
+  const fxNum = () => Number(FX_RATE).toLocaleString(loc(), {minimumFractionDigits: 2, maximumFractionDigits: 4});
+  // fxLabel()     -> "FX entered in the panel: R$5.8889 / US$ (editable)"
+  // fxLabel(true) -> "R$5.8889 / US$"  (short form for tight places)
+  function fxLabel(short) {
+    const pair = T(`R$${fxNum()} / US$`, `R$ ${fxNum()} / US$`);
+    return short ? pair : T(`FX entered in the panel: ${pair} (editable)`, `Câmbio informado no painel: ${pair} (editável)`);
+  }
+  // Sets the BRL per USD rate. Returns the value actually applied (clamped to FX_MIN..FX_MAX), or null when
+  // v is not a number. Re-renders once the app has booted; persist=true also saves the parameters right away.
+  function setFxRate(v, persist) {
+    const n = typeof v === "number" ? v : parseFloat(String(v).replace(",", "."));
+    if (!isFinite(n)) return null;
+    const r = +Math.min(FX_MAX, Math.max(FX_MIN, n)).toFixed(4);
+    const changed = r !== FX_RATE;
+    FX_RATE = r;
+    if (changed && typeof refreshAll === "function") refreshAll();
+    if (persist && typeof saveParams === "function") saveParams();
+    return r;
+  }
 
   const I18N = {
     "nav.brand":["Supplier finance","Risco sacado"],"nav.sub":["Corporate Banking · Brazil","Corporate Banking · Brasil"],
     "nav.ai":["AI Analysis ON","AI Analysis ON"],"nav.ai.aria":["Open AI Analysis ON","Abrir AI Analysis ON"],
     "nav.settings":["Dashboard settings & Anthropic API key","Configurações do painel e chave Anthropic"],
-    "nav.data":["CSV Data","Dados CSV"],"nav.brief":["Briefing","Briefing"],
+    "nav.data":["Data","Dados"],"nav.brief":["Briefing","Briefing"],
     "nav.present":["Present (17)","Apresentar (17)"],"nav.present.end":["Open executive presentation (17 slides)","Abrir apresentação executiva (17 slides)"],
     "nav.next2":["Next · Step 2: Balance forecast","Próximo · Etapa 2: Projeção de saldo"],
     "nav.prev1":["Step 1: Diagnose & onboarding","Etapa 1: Diagnóstico e adesão"],
@@ -106,10 +129,22 @@
     "mk.4s":["Electronic duplicata adoption by anchor, 3Q26 rating/leverage signals and supply-chain stress indicators.","Adesão à duplicata escritural por âncora, rating/alavancagem do 3T26 e sinais de estresse na cadeia."],"mk.4o":["Alerts feeding Step 1 (risk & actions) and Step 3 (credit requests).","Alertas que alimentam a Etapa 1 (risco e ações) e a Etapa 3 (pedido de crédito)."],
     "mk.sf.all":["All signals","Todos os sinais"],"mk.sf.s1":["Feeds Step 1 · Risk","Alimenta Etapa 1 · Risco"],"mk.sf.s3":["Feeds Step 3 · Credit","Alimenta Etapa 3 · Crédito"],"mk.4.feed.lbl":["Actionable alerts routed to cockpit steps","Alertas acionáveis roteados para o cockpit"],
     "mk.note":["Today about 80% of this cockpit is internal program data, 15% internal/3Q26 pipeline and 5% market. The 4 modules below demonstrate the Phase 2 intelligence layer with illustrative feeds ready for live IAS 7/IFRS 7, CVM, BCB and registrar APIs.","Hoje cerca de 80% deste cockpit é dado interno do programa, 15% pipeline interno/3T26 e 5% mercado. Os 4 módulos abaixo entregam a camada de inteligência da Fase 2 com dados ilustrativos prontos para integrações reais de IAS 7/IFRS 7, CVM, BCB e registradoras."],
-    "md.lbl":["Local data layer · 100% in-browser","Camada de dados local · 100% no navegador"],"md.h":["Load your program data (CSV)","Carregue os dados do programa (CSV)"],
-    "md.p":["The cockpit runs on a weekly CSV, one row per week. Download the template (holding current data), replace it with your extract and load it back. Everything stays in this browser; nothing is uploaded anywhere.","O cockpit roda sobre um CSV semanal, uma linha por semana. Baixe o modelo (com os dados atuais), substitua pela sua extração e carregue de volta. Tudo fica neste navegador; nada é enviado para fora."],
-    "md.spend":["In-scope spend (R$ bn)","Compras no escopo (R$ bi)"],"md.base":["Supplier base","Base de fornecedores"],
-    "md.tpl":["Download CSV template","Baixar modelo CSV"],"md.load":["Load CSV","Carregar CSV"],"md.reset":["Back to demo data","Voltar aos dados de demonstração"],"md.col":["Column","Coluna"],"md.mean":["Meaning","Significado"],
+    "md.lbl":["Local data layer · 100% in-browser","Camada de dados local · 100% no navegador"],"md.h":["Program data and parameters","Dados e parâmetros do programa"],
+    "md.p":["Everything on screen is recalculated from the parameters and the weekly table below. Edits are saved only in this browser and are never uploaded anywhere.","Tudo na tela é recalculado a partir dos parâmetros e da tabela semanal abaixo. As alterações ficam salvas só neste navegador e não são enviadas para lugar nenhum."],
+    "md.par.h":["Program parameters","Parâmetros do programa"],
+    "md.par.p":["Size and pricing of the pilot program, plus the exchange rate of the USD view. Changes apply as you type.","Tamanho e preço do programa piloto, mais o câmbio da visão em dólar. As alterações valem enquanto você digita."],
+    "md.spend":["Annual spend in scope (R$ bn)","Compras anuais no escopo (R$ bi)"],"md.base":["Supplier base","Base de fornecedores"],
+    "md.tenor":["Pilot average days discounted","Prazo médio antecipado do piloto (dias)"],"md.pspread":["Pilot spread (% p.a.)","Spread do piloto (% a.a.)"],
+    "md.fx":["Exchange rate (R$ per US$)","Câmbio (R$ por US$)"],
+    "md.par.note":["Pilot tenor and spread drive the pilot balance and revenue in Steps 1 and 2; the Step 3 pipeline keeps its own assumptions. The exchange rate is whatever is typed here: the cockpit does not fetch or check it against any source.","Prazo e spread do piloto movem o saldo e a receita do piloto nas Etapas 1 e 2; o pipeline da Etapa 3 tem premissas próprias. O câmbio é o valor digitado aqui: o cockpit não busca nem confere essa taxa em nenhuma fonte."],
+    "md.defaults":["Restore defaults","Restaurar padrões"],
+    "md.defaults.t":["Clears the parameters and the weekly data saved in this browser and reloads the example state","Apaga os parâmetros e os dados semanais salvos neste navegador e recarrega o estado de exemplo"],
+    "md.wk.h":["Weekly data","Dados semanais"],
+    "md.wk.p":["One row per week. Edit the cells and press Apply, or load a CSV with the same columns.","Uma linha por semana. Edite as células e clique em Aplicar, ou carregue um CSV com as mesmas colunas."],
+    "md.tpl":["Download CSV","Baixar CSV"],"md.load":["Load CSV","Carregar CSV"],"md.reset":["Reset to example data","Voltar aos dados de exemplo"],
+    "md.add":["+ Add week","+ Adicionar semana"],"md.del":["Remove last week","Remover última semana"],"md.apply":["Apply to dashboard","Aplicar ao painel"],"md.discard":["Discard edits","Descartar edições"],
+    "md.cols":["CSV columns and validation rules","Colunas do CSV e regras de validação"],"md.col":["Column","Coluna"],"md.mean":["Meaning","Significado"],"md.rule":["Meaning and rule","Significado e regra"],
+    "md.grid":["Weekly data editor","Editor dos dados semanais"],
     "mb.lbl":["Monday executive summary","Resumo executivo de segunda-feira"],"mb.h":["Weekly briefing","Briefing semanal"],
     "mb.p":["One page for Monday's meeting: action plan, balance & limit outlook, KPIs and open alerts. Print to PDF or copy plain text for e-mail or Teams.","Uma página para a reunião de segunda: plano de ação, projeção de saldo e limite, indicadores e alertas abertos. Imprima em PDF ou copie o texto para e-mail ou Teams."],
     "mb.print":["Print / save as PDF","Imprimir / salvar em PDF"],"mb.copy":["Copy as text","Copiar como texto"],

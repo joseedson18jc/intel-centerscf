@@ -26,7 +26,10 @@
   }
 
   const STEPS = [["Invited","Convidados"],["Opened e-mail","Abriram o e-mail"],["Started KYC","Iniciaram o KYC"],["Uploaded documents","Enviaram documentos"],["Approved","Aprovados"],["First discount","Primeiro desconto"]];
+  // Example invitation wave: fixed example data (300 suppliers invited). It is NOT derived from the supplier
+  // base parameter, so it does not scale when BASE_SUP changes; funnelNote() says so on screen.
   const F = {before:[300,210,150,85,62,40], after:[300,210,150,124,102,66]};
+  const WAVE = F.before[0];
   let mode = "after", modeManual = false;
   function setMode(m) {
     mode = m;
@@ -42,7 +45,7 @@
       r.firstChild.textContent = L(STEPS[i]);
       r.classList.toggle("leak", mode === "before" && i === 3);
       r.classList.toggle("win", mode === "after" && i >= 3);
-      r.querySelector(".fill").style.width = (v[i] / 300 * 100) + "%";
+      r.querySelector(".fill").style.width = (v[i] / WAVE * 100) + "%";
       const n = r.querySelector(".n");
       tween("fn-" + i, +n.textContent || 0, v[i], 450, x => n.textContent = Math.round(x));
     });
@@ -50,7 +53,17 @@
     $("fcall").innerHTML = mode === "before"
       ? T(`Biggest leak: <b>−${lost}%</b> of suppliers lost at the documents step.`,`Maior perda: <b>−${lost}%</b> dos fornecedores na etapa de documentos.`)
       : T(`Document AI cuts the leak to <b style="color:var(--blue)">−${lost}%</b> and lifts first discounts from ${F.before[5]} to <b style="color:var(--blue)">${F.after[5]}</b>.`,`A IA de documentos reduz a perda para <b style="color:var(--blue)">−${lost}%</b> e eleva os primeiros descontos de ${F.before[5]} para <b style="color:var(--blue)">${F.after[5]}</b>.`);
+    funnelNote();
   }
+  // Labels the funnel as the example invitation wave and, when the supplier base differs from the wave,
+  // states that the two numbers are unrelated (the note element belongs to the Step 1 panel, key "fn.note").
+  function funnelNote() {
+    const n = document.querySelector('[data-i18n="fn.note"]'); if (!n) return;
+    n.textContent = T(`Example invitation wave: ${nf(WAVE)} suppliers invited. `,`Onda de convites de exemplo: ${nf(WAVE)} fornecedores convidados. `)
+      + (BASE_SUP !== WAVE ? T(`It is fixed example data and does not scale with the supplier base of ${nf(BASE_SUP)} set in the parameters. `,`É um dado de exemplo fixo e não acompanha a base de ${nf(BASE_SUP)} fornecedores definida nos parâmetros. `) : "")
+      + L(I18N["fn.note"]);
+  }
+  onRefresh(funnelNote);
   $("before").onclick = () => { modeManual = true; setMode("before"); };
   $("after").onclick  = () => { modeManual = true; setMode("after"); };
 

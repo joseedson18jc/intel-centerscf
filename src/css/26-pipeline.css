@@ -40,3 +40,7 @@
   .anchor-card dt{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--subtle);font-weight:700;margin-top:8px}
   .anchor-card dd{margin-top:2px}
 
+  .pipe-table .rev-sub{display:block;font-size:11px;color:var(--muted)}
+  .pipe-detail .as-rep{grid-column:1/-1;margin:0;font-size:11.5px;font-style:italic;color:var(--subtle)}
+  .anchor-kpis{padding:8px 4px;gap:2px}
+  .anchor-kpis b{display:block;font-size:12.5px;white-space:nowrap}
