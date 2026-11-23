@@ -1,0 +1,64 @@
+
+<main class="wrap" id="top">
+  <!-- HERO + FLOW ART + CONTROLS -->
+  <section class="hero">
+    <div>
+      <div class="kick-row">
+        <span class="kick" data-i18n="kick">Carteira Brasil · Revisão semanal, toda segunda</span>
+        <span class="badge" data-i18n="badge">Dados ilustrativos</span>
+        <span class="fx-badge" id="fxBadge" hidden>PTAX BCB 19/11/2026: R$ 5,89 / US$</span>
+      </div>
+      <h1 data-i18n="h1">Cockpit semanal do especialista de SCF</h1>
+      <p class="sub" id="heroSub"></p>
+      <button class="srcchip" id="src-chip" type="button"><i></i><span id="src-txt"></span></button>
+    </div>
+
+    <svg class="hero-art" viewBox="0 0 400 150" role="img" aria-label="Fluxo entre fornecedor, âncora e banco">
+      <defs>
+        <linearGradient id="hg-main" x1="0" x2="1"><stop offset="0" stop-color="#00BDF2"/><stop offset="1" stop-color="#056DAE"/></linearGradient>
+        <radialGradient id="hg-glow"><stop offset="0" stop-color="#00BDF2" stop-opacity=".28"/><stop offset="1" stop-color="#00BDF2" stop-opacity="0"/></radialGradient>
+      </defs>
+      <circle cx="200" cy="75" r="58" fill="url(#hg-glow)"/>
+      <g stroke="#7DAAD4" stroke-width="1.5" fill="none">
+        <path class="flow" d="M58 28 C120 30 140 60 176 70"/><path class="flow" d="M46 75 H176"/><path class="flow" d="M58 122 C120 120 140 90 176 80"/>
+        <path class="flow" d="M224 75 H316" stroke="#056DAE"/><path class="flow" d="M330 52 C300 10 120 0 60 22" stroke="#00BDF2" stroke-width="1.8"/>
+      </g>
+      <g class="ha-node" fill="#fff" stroke="#C8D6E6"><circle cx="46" cy="28" r="14"/><circle cx="34" cy="75" r="14"/><circle cx="46" cy="122" r="14"/></g>
+      <g fill="none" stroke="#056DAE" stroke-width="1.6" stroke-linecap="round">
+        <path d="M40 33v-3a6 6 0 0 1 12 0v3"/><circle cx="46" cy="24" r="3"/>
+        <path d="M28 80v-3a6 6 0 0 1 12 0v3"/><circle cx="34" cy="71" r="3"/>
+        <path d="M40 127v-3a6 6 0 0 1 12 0v3"/><circle cx="46" cy="118" r="3"/>
+      </g>
+      <rect x="176" y="51" width="48" height="48" rx="12" fill="url(#hg-main)"/>
+      <path d="M187 90V72l8 5v-5l8 5v-9h10v22z" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/>
+      <rect class="ha-bank" x="316" y="51" width="48" height="48" rx="12" fill="#002D72"/>
+      <path d="M326 68l14-8 14 8M329 68v14M335 68v14M345 68v14M351 68v14M326 86h28" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
+      <circle class="pulse" r="3.5" fill="#00BDF2"><animateMotion dur="2.6s" repeatCount="indefinite" path="M46 75 H176"/></circle>
+      <circle class="pulse" r="3.5" fill="#056DAE"><animateMotion dur="2.6s" begin=".8s" repeatCount="indefinite" path="M224 75 H316"/></circle>
+      <circle class="pulse" r="3.5" fill="#0E8A5F"><animateMotion dur="3.4s" begin="1.2s" repeatCount="indefinite" path="M330 52 C300 10 120 0 60 22"/></circle>
+      <g font-size="10.5" font-weight="600" fill="#4A5D73" text-anchor="middle" font-family="var(--body)">
+        <text x="46" y="146" data-i18n="hero.sup">Fornecedores</text><text x="200" y="116" data-i18n="hero.anc">Âncora</text><text x="340" y="116" data-i18n="hero.bank">Banco</text>
+        <text x="120" y="68" font-size="9" data-i18n="hero.inv">duplicatas</text><text x="270" y="68" font-size="9" data-i18n="hero.conf">confirmadas</text><text x="200" y="10" font-size="9" fill="#056DAE" data-i18n="hero.pay">antecipação de crédito</text>
+      </g>
+    </svg>
+
+    <div class="hero-right">
+      <aside class="quarter-pill" data-i18n-aria="aria.quarter">
+        <div><strong id="quarter-heading">Fechamento do trimestre</strong><span id="quarter-date"></span></div>
+        <div role="timer" id="quarter-clock" data-i18n-aria="aria.clock"></div>
+      </aside>
+      <div class="week-bar" role="group" data-i18n-aria="aria.weekctl">
+        <div class="week-bar-left">
+          <button class="btn-ico" id="prev" data-i18n-aria="aria.prev"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M10 3.5 5.5 8 10 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="btn-ico play" id="play" data-i18n-aria="aria.play"><svg id="playIcon" width="15" height="15" viewBox="0 0 16 16"><path d="M5 3l8 5-8 5z" fill="currentColor"/></svg></button>
+          <button class="btn-ico" id="next" data-i18n-aria="aria.next"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="wk-pill"><small data-i18n="wk.short">Sem</small><span id="wk">12</span></div>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="slider" min="1" max="12" value="12" data-i18n-aria="wk">
+          <div class="slider-ticks"><span id="tk-start">S1</span><span class="milestone" data-i18n="wk.docai">S5 · IA Docs</span><span id="tk-end">S12</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+

@@ -1,0 +1,11 @@
+  /* ========== PRINT (1-PAGE MONDAY BRIEFING) ========== */
+  @media print{
+    html,body{background:#fff!important}
+    body>*:not(#brief-print){display:none!important}
+    #brief-print{display:block;font-family:var(--body);color:#0A1628;padding:10mm}
+    #brief-print h1{font-family:var(--head);color:#00205B;font-size:20px;margin-bottom:8px}
+    #brief-print .brief-prev{border:0;padding:0;background:transparent!important}
+    #brief-print,#brief-print *{color:#0A1628!important;background:transparent!important}
+    #brief-print h1,#brief-print h4{color:#00205B!important}
+  }
+

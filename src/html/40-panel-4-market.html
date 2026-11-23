@@ -1,0 +1,165 @@
+  <!-- ==================== STEP 4: MARKET & COMPETITION (4 INTERACTIVE MODULES) ==================== -->
+  <section class="step-panel" id="panel-4" data-step-panel="4" hidden>
+    <div class="step-banner">
+      <div class="step-banner-left">
+        <span class="step-pill-lg" data-i18n="sp.4">Etapa 4 de 4</span>
+        <h2 data-i18n="sec.mkt">Mercado e concorrência</h2>
+      </div>
+      <span class="sub-meta" data-i18n="sec.mkt.n">Inteligência externa · protótipo funcional ilustrativo pronto para integração</span>
+    </div>
+
+    <div class="card maturity-card">
+      <div class="maturity-top">
+        <div>
+          <div class="lbl" data-i18n="mk.mat.lbl">Composição atual de dados no cockpit</div>
+          <h3 data-i18n="mk.mat.h">Arquitetura dos 4 módulos externos (Fase 2)</h3>
+        </div>
+        <span class="proto-pill amber" data-i18n="mk.proto">Feeds ilustrativos · pronto p/ APIs</span>
+      </div>
+      <div class="maturity-bar" role="img" aria-label="80% interno, 15% pipeline, 5% mercado">
+        <div class="m-seg-1"></div><div class="m-seg-2"></div><div class="m-seg-3"></div>
+      </div>
+      <div class="maturity-legend">
+        <span><i style="background:var(--bar-citi)"></i><strong data-i18n="mk.m1">80% dados internos do programa</strong></span>
+        <span><i style="background:var(--bar-peers)"></i><strong data-i18n="mk.m2">15% pipeline interno & 3T26 público</strong></span>
+        <span><i style="background:var(--bar-fidc)"></i><strong data-i18n="mk.m3">5% mercado (modelado abaixo p/ conectar)</strong></span>
+      </div>
+      <p class="note" style="margin-top:8px" data-i18n="mk.note"></p>
+    </div>
+
+    <div class="mkt-subnav" role="group" aria-label="Módulos de mercado" id="mktSubnav">
+      <button data-mmod="all" aria-pressed="true"><span data-i18n="mk.tab.all">Todos os 4 módulos</span></button>
+      <button data-mmod="1" aria-pressed="false"><span class="mnum">4.1</span><span data-i18n="mk.1h">Concorrentes por âncora</span></button>
+      <button data-mmod="2" aria-pressed="false"><span class="mnum">4.2</span><span data-i18n="mk.2h">Preço comparado</span></button>
+      <button data-mmod="3" aria-pressed="false"><span class="mnum">4.3</span><span data-i18n="mk.3h">Share real</span></button>
+      <button data-mmod="4" aria-pressed="false"><span class="mnum">4.4</span><span data-i18n="mk.4h">Sinais externos</span></button>
+    </div>
+
+    <!-- 4.1 Concorrentes -->
+    <article class="card mkt-mod" data-mkt-panel="1">
+      <div class="mkt-mod-head">
+        <div>
+          <div class="lbl" data-i18n="mk.1tag">4.1 · Matriz competitiva</div>
+          <h3 data-i18n="mk.1h">Concorrentes por âncora</h3>
+          <p class="mkt-q" data-i18n="mk.1q">Quais bancos e FIDCs já operam o risco sacado de cada âncora?</p>
+        </div>
+        <div class="seg-group" id="compFilter" role="group">
+          <button data-cf="all" aria-pressed="true" data-i18n="mk.cf.all">Todos</button>
+          <button data-cf="banks" aria-pressed="false" data-i18n="mk.cf.banks">Bancos</button>
+          <button data-cf="fidc" aria-pressed="false" data-i18n="mk.cf.fidc">FIDCs (CVM)</button>
+        </div>
+      </div>
+      <div class="matrix-wrap"><table class="matrix-table" id="compMatrix"></table></div>
+      <div class="ias-drawer" id="iasDrawer" aria-live="polite"></div>
+      <div class="mkt-source-bar">
+        <div><b data-i18n="mk.src">Fonte de dado</b>: <span data-i18n="mk.1s"></span> · <b data-i18n="mk.out">Entrega</b>: <span data-i18n="mk.1o"></span></div>
+        <div class="infra-logos" id="infra-1" style="margin-top:0"></div>
+      </div>
+    </article>
+
+    <!-- 4.2 Preço comparado -->
+    <article class="card mkt-mod" data-mkt-panel="2">
+      <div class="mkt-mod-head">
+        <div>
+          <div class="lbl" data-i18n="mk.2tag">4.2 · Benchmark de taxa (CDI + x)</div>
+          <h3 data-i18n="mk.2h">Preço comparado</h3>
+          <p class="mkt-q" data-i18n="mk.2q">A taxa do Citi é competitiva contra o mercado (CDI + x)?</p>
+        </div>
+        <div class="seg-group" id="ratingFilter" role="group">
+          <button data-rt="all" aria-pressed="true" data-i18n="mk.rt.all">Todos os ratings</button>
+          <button data-rt="AAA" aria-pressed="false">brAAA</button>
+          <button data-rt="AA+" aria-pressed="false">brAA+</button>
+          <button data-rt="AA" aria-pressed="false">brAA</button>
+          <button data-rt="AA-" aria-pressed="false">brAA−</button>
+        </div>
+      </div>
+      <div class="spread-bar-ctl">
+        <label><span data-i18n="mk.2.sim">Testar taxa proposta (CDI +):</span><input type="range" id="mktSpreadSlider" min="0.60" max="2.60" step="0.05" value="1.20"></label>
+        <span class="spread-val-pill" id="mktSpreadVal">CDI + 1,20%</span>
+        <div class="legend" style="margin-left:auto">
+          <span><i style="background:#7CA9D4;height:8px"></i><span data-i18n="mk.2.lg.band">Faixa mercado (BCB + bancos)</span></span>
+          <span><i style="background:var(--amber);width:10px;height:10px;border-radius:2px"></i><span data-i18n="mk.2.lg.fidc">FIDC sênior (CVM)</span></span>
+          <span><i style="background:var(--blue);width:10px;height:10px;transform:rotate(45deg)"></i><span data-i18n="mk.2.lg.citi">Proposta Citi</span></span>
+        </div>
+      </div>
+      <div class="price-grid">
+        <div class="rating-band-list" id="ratingBands"></div>
+        <div class="loss-card">
+          <div class="lbl" data-i18n="mk.2.rm.lbl">Feedback dos RMs · negócios perdidos</div>
+          <h4 style="margin-top:4px;font-size:15px" data-i18n="mk.2.rm.h">Por que perdemos disputas recentes</h4>
+          <p class="note" data-i18n="mk.2.rm.sub"></p>
+          <div id="rmLossBars" style="margin-top:12px"></div>
+          <div class="callout" style="margin-top:12px" id="rmLossNote"></div>
+        </div>
+      </div>
+      <div class="mkt-source-bar">
+        <div><b data-i18n="mk.src">Fonte de dado</b>: <span data-i18n="mk.2s"></span> · <b data-i18n="mk.out">Entrega</b>: <span data-i18n="mk.2o"></span></div>
+        <div class="infra-logos" id="infra-2" style="margin-top:0"></div>
+      </div>
+    </article>
+
+    <!-- 4.3 Share real -->
+    <article class="card mkt-mod" data-mkt-panel="3">
+      <div class="mkt-mod-head">
+        <div>
+          <div class="lbl" data-i18n="mk.3tag">4.3 · Reconciliação por registradora</div>
+          <h3 data-i18n="mk.3h">Share real</h3>
+          <p class="mkt-q" data-i18n="mk.3q">Que parte do contas a pagar elegível de cada âncora o Citi já cobre frente aos pares?</p>
+        </div>
+        <span class="proto-pill" data-i18n="mk.3.sync">Sincronizado com compras elegíveis da Etapa 3</span>
+      </div>
+      <div class="share-grid">
+        <div class="donut-panel">
+          <div class="lbl" data-i18n="mk.3.ring.lbl">Share consolidado (5 âncoras)</div>
+          <svg viewBox="0 0 180 180" id="realShareRing" role="img" aria-label="Share real consolidado"></svg>
+          <div class="donut-kpis" id="realShareKpis"></div>
+          <p class="fnote" style="text-align:left;margin-top:10px" data-i18n="mk.3.ring.note"></p>
+        </div>
+        <div>
+          <div class="legend" style="margin-bottom:10px">
+            <span><i style="background:var(--bar-citi);height:9px"></i><span data-i18n="mk.3.lg.citi">Citi (coberto)</span></span>
+            <span><i style="background:var(--bar-peers);height:9px"></i><span data-i18n="mk.3.lg.peers">Bancos pares</span></span>
+            <span><i style="background:var(--bar-fidc);height:9px"></i><span data-i18n="mk.3.lg.fidc">FIDCs</span></span>
+            <span><i style="background:var(--bar-free);height:9px"></i><span data-i18n="mk.3.lg.free">Não financiado (espaço livre)</span></span>
+          </div>
+          <div class="share-rows" id="realShareRows"></div>
+        </div>
+      </div>
+      <div class="mkt-source-bar">
+        <div><b data-i18n="mk.src">Fonte de dado</b>: <span data-i18n="mk.3s"></span> · <b data-i18n="mk.out">Entrega</b>: <span data-i18n="mk.3o"></span></div>
+        <div class="infra-logos" id="infra-3" style="margin-top:0"></div>
+      </div>
+    </article>
+
+    <!-- 4.4 Sinais externos -->
+    <article class="card mkt-mod" data-mkt-panel="4">
+      <div class="mkt-mod-head">
+        <div>
+          <div class="lbl" data-i18n="mk.4tag">4.4 · Monitor de crédito e infraestrutura</div>
+          <h3 data-i18n="mk.4h">Sinais externos</h3>
+          <p class="mkt-q" data-i18n="mk.4q">O crédito da âncora e a infraestrutura de mercado estão a favor ou contra?</p>
+        </div>
+        <div class="seg-group" id="sigFilter" role="group">
+          <button data-sf="all" aria-pressed="true" data-i18n="mk.sf.all">Todos os sinais</button>
+          <button data-sf="step1" aria-pressed="false" data-i18n="mk.sf.s1">Alimenta Etapa 1 · Risco</button>
+          <button data-sf="step3" aria-pressed="false" data-i18n="mk.sf.s3">Alimenta Etapa 3 · Crédito</button>
+        </div>
+      </div>
+      <div class="sig-health-grid" id="sigHealthGrid"></div>
+      <div class="lbl" style="margin-top:4px" data-i18n="mk.4.feed.lbl">Alertas acionáveis roteados para o cockpit</div>
+      <div class="sig-feed" id="sigFeed"></div>
+      <div class="mkt-source-bar">
+        <div><b data-i18n="mk.src">Fonte de dado</b>: <span data-i18n="mk.4s"></span> · <b data-i18n="mk.out">Entrega</b>: <span data-i18n="mk.4o"></span></div>
+        <div class="infra-logos" id="infra-4" style="margin-top:0"></div>
+      </div>
+    </article>
+
+    <div class="step-footer-nav" data-step-nav>
+      <button class="step-nav-btn" data-go-step="3">← <span data-i18n="nav.prev3">Etapa 3: Pipeline de âncoras</span></button>
+      <button class="step-nav-btn primary" id="openDeckFooter">
+        <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5l8 4.5-8 4.5z" fill="currentColor"/></svg>
+        <span data-i18n="nav.present.end">Abrir apresentação executiva (17 slides)</span>
+      </button>
+    </div>
+  </section>
+

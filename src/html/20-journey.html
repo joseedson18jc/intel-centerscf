@@ -1,0 +1,37 @@
+  <!-- 4-STEP INTUITIVE JOURNEY SELECTOR -->
+  <section class="journey-bar" aria-label="Fluxo de decisão em 4 etapas" id="journeyBar">
+    <button class="step-card" data-step="1" aria-pressed="true">
+      <div class="step-card-top"><span class="step-num"><i>1</i><span data-i18n="st.1.tag">Decisão 1</span></span><span class="step-cadence" data-i18n="ms.d1c">Semanal · operacional</span></div>
+      <strong data-i18n="st.1.title">Diagnosticar programa e adesão</strong>
+      <p data-i18n="st.1.desc">Plano de ação, KPIs auditáveis, briefing, alertas, funil com IA de documentos e propensão.</p>
+      <div class="step-owner"><span data-i18n="st.who">Quem usa:</span> <b data-i18n="st.1.who">Especialista SCF & RM</b></div>
+    </button>
+    <button class="step-card" data-step="2" aria-pressed="false">
+      <div class="step-card-top"><span class="step-num"><i>2</i><span data-i18n="st.2.tag">Decisão 2</span></span><span class="step-cadence" data-i18n="ms.d2c">Semanal · previsibilidade</span></div>
+      <strong data-i18n="st.2.title">Projetar saldo e testar limites</strong>
+      <p data-i18n="st.2.desc">O saldo projetado cabe no limite aprovado? Erro de projeção dentro de 8%?</p>
+      <div class="step-owner"><span data-i18n="st.who">Quem usa:</span> <b data-i18n="st.2.who">Especialista SCF & Risco</b></div>
+    </button>
+    <button class="step-card" data-step="3" aria-pressed="false">
+      <div class="step-card-top"><span class="step-num"><i>3</i><span data-i18n="st.3.tag">Decisão 3</span></span><span class="step-cadence" data-i18n="ms.d3c">Mensal / trimestral</span></div>
+      <strong data-i18n="st.3.title">Dimensionar pipeline de âncoras</strong>
+      <p data-i18n="st.3.desc">Priorizar 5 âncoras (receitas 3T26), editar hipóteses e estimar crédito e receita.</p>
+      <div class="step-owner"><span data-i18n="st.who">Quem usa:</span> <b data-i18n="st.3.who">Liderança Corporate / SCF</b></div>
+    </button>
+    <button class="step-card" data-step="4" aria-pressed="false">
+      <div class="step-card-top"><span class="step-num"><i>4</i><span data-i18n="st.4.tag">Mercado</span></span><span class="step-cadence" data-i18n="st.4.cad">Inteligência externa</span></div>
+      <strong data-i18n="st.4.title">Mercado, preços e sinais externos</strong>
+      <p data-i18n="st.4.desc">Matriz de concorrentes (IAS 7), benchmark CDI+x, share real (B3/CERC/Núclea) e sinais 3T26.</p>
+      <div class="step-owner"><span data-i18n="st.who">Quem usa:</span> <b data-i18n="st.4.who">Liderança & Produto</b></div>
+    </button>
+  </section>
+
+  <!-- VIEW MODE BAR -->
+  <div class="step-toolbar">
+    <div class="step-context" id="stepContext"></div>
+    <div class="view-toggle" role="group" aria-label="Modo de visualização">
+      <button id="modeStep" aria-pressed="true" data-i18n="vm.step">Passo a passo</button>
+      <button id="modeAll" aria-pressed="false" data-i18n="vm.all">Visão completa</button>
+    </div>
+  </div>
+

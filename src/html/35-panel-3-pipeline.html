@@ -1,0 +1,79 @@
+  <!-- ==================== STEP 3: ANCHOR PIPELINE (UPDATED TO 3T26) ==================== -->
+  <section class="step-panel" id="panel-3" data-step-panel="3" hidden>
+    <div class="step-banner">
+      <div class="step-banner-left">
+        <span class="step-pill-lg" data-i18n="sp.3">Etapa 3 de 4</span>
+        <h2 data-i18n="sec.pipe">Pipeline de âncoras · cross-sell de risco sacado</h2>
+      </div>
+      <span class="sub-meta" data-i18n="sec.pipe.n">Receitas públicas 3T26 (nov/2026) + hipóteses editáveis</span>
+    </div>
+
+    <div class="card">
+      <div class="chead">
+        <div style="max-width:78ch">
+          <div class="lbl" data-i18n="pp.lbl">Modelo de dimensionamento</div>
+          <h3 data-i18n="pp.h">Fluxo anual potencial de antecipação por âncora</h3>
+          <p class="note" style="margin-top:6px" data-i18n="pp.intro"></p>
+        </div>
+        <button class="btn-present" id="pipeDeck">
+          <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5l8 4.5-8 4.5z" fill="currentColor"/></svg>
+          <span data-i18n="pp.present">Apresentar caso de cross-sell</span>
+        </button>
+      </div>
+
+      <div class="formula" id="formula"></div>
+
+      <div class="pipe-presets">
+        <span data-i18n="pp.presets">Cenário rápido:</span>
+        <button class="pill-btn" data-preset="cons" data-i18n="pp.p.cons">Conservador</button>
+        <button class="pill-btn active" data-preset="base" data-i18n="pp.p.base">Base (padrão)</button>
+        <button class="pill-btn" data-preset="stretch" data-i18n="pp.p.stretch">Expansão</button>
+      </div>
+
+      <div class="pipe-wrap">
+        <table class="pipe-table">
+          <thead>
+            <tr>
+              <th data-i18n="pp.th.anchor">Âncora</th>
+              <th data-i18n="pp.th.revenue">Anual 2026 / 3T26</th>
+              <th data-i18n="pp.th.addr">% endereçável</th>
+              <th data-i18n="pp.th.elig">Compras elegíveis</th>
+              <th data-i18n="pp.th.cov">Cobertura %</th>
+              <th data-i18n="pp.th.adh">Adesão %</th>
+              <th data-i18n="pp.th.util">Utilização %</th>
+              <th data-i18n="pp.th.flow">Fluxo anual</th>
+              <th data-i18n="pp.th.bal">Saldo implícito</th>
+              <th data-i18n="pp.th.rev">Receita spread / ano</th>
+            </tr>
+          </thead>
+          <tbody id="pipe-rows"></tbody>
+          <tfoot>
+            <tr>
+              <td data-i18n="pp.total">Total do pipeline</td>
+              <td id="pt-revenue"></td><td></td><td id="pt-elig"></td><td></td><td></td><td></td>
+              <td id="pt-flow"></td><td id="pt-bal"></td><td id="pt-rev"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="pipe-globals">
+        <label><span data-i18n="pp.tenor">Prazo médio antecipado (dias)</span><input type="number" id="g-tenor" min="1" max="360" step="1"></label>
+        <label><span data-i18n="pp.spread">Spread anual %</span><input type="number" id="g-spread" min="0" max="10" step="0.1"></label>
+        <button class="pill-btn" id="pipeReset" data-i18n="pp.reset">Restaurar hipóteses</button>
+      </div>
+      <p class="caveat" data-i18n="pp.caveat"></p>
+    </div>
+
+    <div class="subhead">
+      <h3 data-i18n="pp.cards.h">Fichas rápidas por âncora (3T26)</h3>
+      <span data-i18n="pp.cards.n">Onde investigar e qual validação destrava cada conta</span>
+    </div>
+    <div class="pipe-detail" id="pipe-detail"></div>
+
+    <div class="step-footer-nav" data-step-nav>
+      <button class="step-nav-btn" data-go-step="2">← <span data-i18n="nav.prev2">Etapa 2: Projeção de saldo</span></button>
+      <button class="step-nav-btn primary" data-go-step="4"><span data-i18n="nav.next4">Próximo · Etapa 4: Mercado</span> →</button>
+    </div>
+  </section>
+

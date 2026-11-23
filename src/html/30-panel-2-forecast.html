@@ -1,0 +1,93 @@
+  <!-- ==================== STEP 2: FORECAST & APPROVED LIMIT CHECK ==================== -->
+  <section class="step-panel" id="panel-2" data-step-panel="2" hidden>
+    <div class="step-banner">
+      <div class="step-banner-left">
+        <span class="step-pill-lg" data-i18n="sp.2">Etapa 2 de 4</span>
+        <h2 data-i18n="st.2.title">Projetar saldo e testar limites</h2>
+      </div>
+      <span class="sub-meta" data-i18n="st.2.meta">Previsibilidade de saldo, limite aprovado e backtest (meta ≤ 8%)</span>
+    </div>
+
+    <div class="card">
+      <div class="chead">
+        <div>
+          <div class="lbl" data-i18n="fc.lbl">Previsibilidade</div>
+          <h3 data-i18n="fc.h">Projeção do saldo do programa</h3>
+          <div class="fc-controls">
+            <div>
+              <span class="fc-ctrl-lbl" data-i18n="fc.scenario">Cenário</span>
+              <div class="seg-group" id="scenarioGroup" role="group">
+                <button data-sc="Downside" aria-pressed="false" data-i18n="sc.Downside">Pessimista</button>
+                <button data-sc="Base" aria-pressed="true" data-i18n="sc.Base">Base</button>
+                <button data-sc="Upside" aria-pressed="false" data-i18n="sc.Upside">Otimista</button>
+              </div>
+            </div>
+            <div>
+              <span class="fc-ctrl-lbl" data-i18n="fc.horizon">Horizonte</span>
+              <div class="seg-group" id="horizonGroup" role="group">
+                <button data-hz="4" aria-pressed="false" data-i18n="hz.4">4 semanas</button>
+                <button data-hz="8" aria-pressed="false" data-i18n="hz.8">8 semanas</button>
+                <button data-hz="13" aria-pressed="true" data-i18n="hz.13">13 semanas</button>
+              </div>
+            </div>
+            <label class="limit-ctl">
+              <span data-i18n="fc.limit">Limite aprovado</span>
+              <input type="number" id="limit" value="650" min="50" max="5000" step="10">
+              <span id="limUnit">R$ mi</span>
+            </label>
+          </div>
+        </div>
+        <div class="legend">
+          <span><i style="background:var(--navy)"></i><span data-i18n="lg.actual">Realizado</span></span>
+          <span><i style="background:var(--blue)"></i><span data-i18n="lg.fc">Projeção</span></span>
+          <span><i style="background:rgba(0,189,242,.35);height:9px"></i><span data-i18n="lg.band">Faixa de erro</span></span>
+          <span><i style="background:var(--red)"></i><span data-i18n="fc.limit">Limite aprovado</span></span>
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-tip" id="fcTip" role="status" aria-live="polite"></div>
+        <svg id="fc" viewBox="0 0 900 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+      </div>
+
+      <p id="outlook" class="result-banner"></p>
+      <p id="limit-status" class="limitst"></p>
+
+      <details>
+        <summary data-i18n="fc.details">Premissas da projeção e valores semanais</summary>
+        <p id="assumption"></p>
+        <div style="overflow-x:auto">
+          <table class="data-table">
+            <thead><tr><th data-i18n="wk">Semana</th><th data-i18n="lg.fc">Projeção</th><th data-i18n="th.low">Mínimo</th><th data-i18n="th.high">Máximo</th></tr></thead>
+            <tbody id="forecast-rows"></tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:14px">
+      <div class="card">
+        <div class="lbl" data-i18n="cs.lbl">Sensibilidade de fechamento</div>
+        <h3 data-i18n="cs.h">Saldo final por cenário</h3>
+        <p class="note" id="csNote"></p>
+        <div id="case-bars" style="margin-top:10px"></div>
+      </div>
+      <div class="card">
+        <div class="lbl" data-i18n="acc.lbl">Backtest semanal</div>
+        <h3 data-i18n="acc.h">Precisão da projeção de uma semana</h3>
+        <p class="note" data-i18n="acc.n"></p>
+        <div class="legend" style="margin-top:10px">
+          <span><i style="background:var(--blue)"></i><span data-i18n="lg.model">Modelo base</span></span>
+          <span><i style="background:#9FB4CA"></i><span data-i18n="lg.prior">Saldo anterior</span></span>
+        </div>
+        <svg id="accuracy" viewBox="0 0 490 135" role="img" data-i18n-aria="acc.h"></svg>
+        <p id="accuracy-note"></p>
+      </div>
+    </div>
+
+    <div class="step-footer-nav" data-step-nav>
+      <button class="step-nav-btn" data-go-step="1">← <span data-i18n="nav.prev1">Etapa 1: Diagnóstico</span></button>
+      <button class="step-nav-btn primary" data-go-step="3"><span data-i18n="nav.next3">Próximo · Etapa 3: Pipeline de âncoras</span> →</button>
+    </div>
+  </section>
+

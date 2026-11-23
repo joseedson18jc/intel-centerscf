@@ -1,0 +1,20 @@
+<!-- ==================== PRINTABLE / COPYABLE MONDAY BRIEFING MODAL ==================== -->
+<div class="modal-backdrop" id="m-brief" hidden role="dialog" aria-modal="true" aria-labelledby="mb-title" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-head">
+      <div><div class="lbl" data-i18n="mb.lbl">Resumo executivo de segunda-feira</div><h3 id="mb-title" data-i18n="mb.h">Briefing semanal</h3></div>
+      <button class="modal-close" data-close aria-label="Fechar / Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--muted)" data-i18n="mb.p"></p>
+      <div class="mbtns">
+        <button class="mbtn pri" id="b-print" data-i18n="mb.print">Imprimir / salvar em PDF</button>
+        <button class="mbtn" id="b-copy" data-i18n="mb.copy">Copiar como texto</button>
+        <span id="b-msg" style="font-size:12.5px;font-weight:600;color:var(--green)"></span>
+      </div>
+      <div class="brief-prev" id="brief-body"></div>
+    </div>
+  </div>
+</div>
+<div id="brief-print"></div>
+

@@ -1,0 +1,126 @@
+  <!-- ==================== STEP 1: DIAGNOSE, ACTIONS & AUDITABLE PROOFS ==================== -->
+  <section class="step-panel" id="panel-1" data-step-panel="1">
+    <div class="step-banner">
+      <div class="step-banner-left">
+        <span class="step-pill-lg" data-i18n="sp.1">Etapa 1 de 4</span>
+        <h2 data-i18n="st.1.title">Diagnosticar programa e adesão</h2>
+      </div>
+      <span class="sub-meta" data-i18n="sec.perf.n">Clique em qualquer card para abrir a memória de cálculo e a prova</span>
+    </div>
+
+    <!-- Auto-Generated Monday Action Plan -->
+    <div class="subhead" style="margin-top:6px">
+      <h3 data-i18n="sec.act">Plano de ação da semana</h3>
+      <span id="act-n"></span>
+    </div>
+    <div class="card actions-card clickable-card" data-proof="actions" tabindex="0" role="button" aria-live="polite">
+      <ol class="actions-list" id="act-list"></ol>
+      <div class="actions-foot">
+        <span data-i18n="act.foot">Priorizado automaticamente por limite, erro, alertas de risco, funil e sinais externos.</span>
+        <span class="proof-cue" style="margin-top:0" data-i18n="pf.cue">Ver prova e memória de cálculo ↗</span>
+      </div>
+    </div>
+
+    <!-- 8 Clickable KPI Tiles -->
+    <div class="subhead">
+      <h3 data-i18n="sec.perf">Desempenho do programa</h3>
+      <span data-i18n="sec.perf.delta">Variação sobre a semana anterior · clique no card para auditar</span>
+    </div>
+    <div class="grid kpis" id="kpis"></div>
+
+    <!-- Weekly Briefing + Alerts -->
+    <div class="subhead">
+      <h3 data-i18n="ai.h">O que mudou nesta semana</h3>
+      <span data-i18n="ai.sub">Síntese determinística e alertas antes de escalar a campanha</span>
+    </div>
+    <div class="card briefing-card clickable-card" data-proof="briefing" tabindex="0" role="button">
+      <div class="chead" style="margin-bottom:0">
+        <span class="aibadge"><span class="dot"></span><span data-i18n="ai.badge">Resumo semanal</span></span>
+        <span class="role-chip" id="briefingWeekTag">S12</span>
+      </div>
+      <div id="comment" aria-live="polite"></div>
+      <div class="ai-live-banner" id="aiLiveBriefing" hidden></div>
+      <div class="alerts-box">
+        <div class="lbl" data-i18n="ai.alerts">Alertas recentes</div>
+        <div class="grid grid-2" id="alerts"></div>
+      </div>
+      <div class="card-proof-foot"><span class="proof-cue" data-i18n="pf.cue">Ver prova e memória de cálculo ↗</span></div>
+    </div>
+
+    <!-- Adoption 3-col -->
+    <div class="subhead">
+      <h3 data-i18n="sec.adoption">Adesão de fornecedores e alavancas</h3>
+      <span data-i18n="sec.adoption.n">Onde intervir: documentos, propensão ou participação</span>
+    </div>
+    <div class="grid grid-3">
+      <div class="card clickable-card" data-proof="wallet" tabindex="0" role="button">
+        <div class="lbl" data-i18n="ws.lbl">Participação · três níveis</div>
+        <h3 data-i18n="ws.h">Share of wallet por segmento</h3>
+        <div class="rings">
+          <div class="ring"><svg viewBox="0 0 120 120" id="r1"></svg><div class="rl" data-i18n="ws.r1">Âncora: share of wallet</div></div>
+          <div class="ring"><svg viewBox="0 0 120 120" id="r2"></svg><div class="rl" data-i18n="ws.r2">Fornecedor: share de recebíveis*</div></div>
+        </div>
+        <div class="lbl" style="margin-top:14px" data-i18n="ws.sect">Mercado: share of wallet por setor</div>
+        <div class="bars" id="sectors"></div>
+        <div class="note" style="margin-top:10px" data-i18n="ws.note"></div>
+        <div class="card-proof-foot"><span class="proof-cue" data-i18n="pf.cue">Ver prova e memória de cálculo ↗</span></div>
+      </div>
+
+      <div class="card clickable-card" data-proof="funnel" tabindex="0" role="button">
+        <div class="chead">
+          <div>
+            <div class="lbl" data-i18n="fn.lbl">Mapa de fricção no cadastro</div>
+            <h3 data-i18n="fn.h">Funil de adesão</h3>
+          </div>
+          <div class="seg-group" role="group">
+            <button id="before" aria-pressed="true" data-i18n="fn.before">Antes</button>
+            <button id="after" aria-pressed="false" data-i18n="fn.after">Com IA de documentos</button>
+          </div>
+        </div>
+        <div class="funnel" id="funnel"></div>
+        <div class="callout" id="fcall"></div>
+        <div class="fnote" data-i18n="fn.note"></div>
+        <div class="card-proof-foot"><span class="proof-cue" data-i18n="pf.cue">Ver prova e memória de cálculo ↗</span></div>
+      </div>
+
+      <div class="card clickable-card" data-proof="propensity" tabindex="0" role="button">
+        <div class="lbl" data-i18n="pr.lbl">Score de propensão</div>
+        <h3 data-i18n="pr.h">Ativação por propensão</h3>
+        <div class="note" data-i18n="pr.n"></div>
+        <svg id="dec" viewBox="0 0 420 175" role="img" data-i18n-aria="pr.h"></svg>
+        <div class="uplift">
+          <div class="ub"><span class="lbl" data-i18n="up.camp">Grupo campanha</span><span class="v" id="ucamp">0%</span><div class="track"><div class="fill" id="ucampb"></div></div></div>
+          <div class="ub"><span class="lbl" data-i18n="up.ctrl">Grupo controle</span><span class="v" id="uctrl">0%</span><div class="track"><div class="fill" id="uctrlb" style="background:#A6B9CE"></div></div></div>
+          <div class="pp"><small data-i18n="up.lift">Ganho</small><span id="upp">+0 pp</span></div>
+        </div>
+        <div class="card-proof-foot"><span class="proof-cue" data-i18n="pf.cue">Ver prova e memória de cálculo ↗</span></div>
+      </div>
+    </div>
+
+    <!-- Friction Reduction -->
+    <div class="subhead">
+      <h3 data-i18n="sec.friction">Impacto da redução de fricção</h3>
+      <span data-i18n="fr.sub">Comparativo de conversão por etapa com e sem IA de documentos</span>
+    </div>
+    <div class="card friction-card clickable-card" data-proof="friction" tabindex="0" role="button">
+      <div class="friction-stat">
+        <div class="lbl" style="color:#0E6B4B" data-i18n="fr.lbl">Perda no envio de documentos</div>
+        <strong id="friction-gain"></strong>
+        <p id="friction-detail"></p>
+      </div>
+      <div class="friction-table">
+        <table>
+          <caption data-i18n="fr.cap">Conversão de fornecedores por etapa</caption>
+          <thead><tr><th data-i18n="fr.stage">Etapa</th><th data-i18n="fn.before">Antes</th><th data-i18n="fn.after">Com IA de documentos</th><th data-i18n="fr.change">Variação</th></tr></thead>
+          <tbody id="conversion-rows"></tbody>
+        </table>
+      </div>
+      <div class="card-proof-foot"><span class="proof-cue" data-i18n="pf.cue">Ver prova e memória de cálculo ↗</span></div>
+    </div>
+
+    <div class="step-footer-nav" data-step-nav>
+      <button class="step-nav-btn" disabled>←</button>
+      <button class="step-nav-btn primary" data-go-step="2"><span data-i18n="nav.next2">Próximo · Etapa 2: Projeção de saldo</span> →</button>
+    </div>
+  </section>
+

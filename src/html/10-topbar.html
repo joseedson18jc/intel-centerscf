@@ -1,0 +1,58 @@
+
+<header class="topbar">
+  <div class="header-notice" role="note">
+    <span>Uso funcional comprovado porém esta versão é somente por ora, ilustrativa e pertence a J.E.M.Costa.</span>
+  </div>
+  <div class="topbar-inner">
+    <a class="brand-lockup" href="#top" id="brandHome" aria-label="Risco Sacado · SCF Cockpit">
+      <span id="brandMark" class="brand-logo" aria-hidden="true"></span>
+      <span class="brand-divider" aria-hidden="true"></span>
+      <span class="brand-title">
+        <strong data-i18n="nav.brand">Risco sacado</strong>
+        <span data-i18n="nav.sub">Corporate Banking · Brasil</span>
+      </span>
+    </a>
+
+    <nav class="nav-steps" aria-label="Etapas do cockpit" id="topStepNav">
+      <button class="nav-step-btn" data-step="1" aria-current="step"><span class="sn">1</span><span data-i18n="st.1.short">Diagnóstico</span></button>
+      <button class="nav-step-btn" data-step="2"><span class="sn">2</span><span data-i18n="st.2.short">Projeção</span></button>
+      <button class="nav-step-btn" data-step="3"><span class="sn">3</span><span data-i18n="st.3.short">Pipeline</span></button>
+      <button class="nav-step-btn" data-step="4"><span class="sn">4</span><span data-i18n="st.4.short">Mercado</span></button>
+    </nav>
+
+    <div class="topbar-right">
+      <button class="nav-ai" id="openAI" data-i18n-aria="nav.ai.aria" title="AI Analysis ON">
+        <span class="ai-dot" id="aiDot" aria-hidden="true"></span>
+        <span>✦</span>
+        <span class="ai-lbl" data-i18n="nav.ai">AI Analysis ON</span>
+      </button>
+      <button class="nav-ico" id="openSettings" data-i18n-aria="nav.settings" title="Configurações / Settings">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        <span class="set-dot" aria-hidden="true"></span>
+      </button>
+      <button class="nav-ghost" id="openData" data-i18n="nav.data">Dados CSV</button>
+      <button class="nav-ghost" id="openBrief" data-i18n="nav.brief">Briefing</button>
+      <button class="btn-present" id="openDeck">
+        <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5l8 4.5-8 4.5z" fill="currentColor"/></svg>
+        <span data-i18n="nav.present">Apresentar (17)</span>
+      </button>
+      <div class="pill-switch ccy-switch" role="group" aria-label="Moeda / Currency" title="PTAX BCB 19/11/2026: R$ 5,89 / US$">
+        <button data-ccy="BRL" aria-pressed="true">BRL</button>
+        <button data-ccy="USD" aria-pressed="false">USD</button>
+      </div>
+      <div class="pill-switch lang" role="group" aria-label="Idioma / Language">
+        <button data-lang="pt" aria-pressed="true">PT</button>
+        <button data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <div class="pill-switch theme-switch" role="group" aria-label="Tema / Theme">
+        <button data-theme="light" aria-pressed="true" title="Modo claro / Light mode" aria-label="Light">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.7M8 12.8v1.7M1.5 8h1.7M12.8 8h1.7M3.4 3.4l1.2 1.2M11.4 11.4l1.2 1.2M12.6 3.4l-1.2 1.2M4.6 11.4l-1.2 1.2"/></svg>
+        </button>
+        <button data-theme="dark" aria-pressed="false" title="Modo escuro / Dark mode" aria-label="Dark">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3Z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="scrollProg" aria-hidden="true"></div>
+  </div>
+</header>
