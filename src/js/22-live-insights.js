@@ -36,8 +36,8 @@
       const f = engFc(), tone = engFcTone(f);
       add("limit", tone,
         f.kBase === 0 ? T(`The balance of ${money(f.now)} is already above the ${money(f.lim)} approved limit: request +${money(f.need)}.`, `O saldo de ${money(f.now)} já está acima do limite aprovado de ${money(f.lim)}: pedir +${money(f.need)}.`)
-        : f.kBase > 0 ? T(`The base forecast crosses the ${money(f.lim)} approved limit in ${engWk(week + f.kBase)}: request +${money(f.need)} before then.`, `A projeção-base cruza o limite aprovado de ${money(f.lim)} na ${engWk(week + f.kBase)}: pedir +${money(f.need)} antes disso.`)
-        : f.kHigh >= 0 ? T(`The base forecast fits, but the top of the range crosses the ${money(f.lim)} limit in ${engWk(week + f.kHigh)}: pre-approve +${money(f.need)}.`, `A projeção-base cabe, mas o topo da faixa cruza o limite de ${money(f.lim)} na ${engWk(week + f.kHigh)}: pré-aprovar +${money(f.need)}.`)
+        : f.kBase > 0 ? T(`The ${scName(f.sc)} forecast crosses the ${money(f.lim)} approved limit in ${engWk(week + f.kBase)}: request +${money(f.need)} before then.`, `A projeção do cenário ${scName(f.sc).toLowerCase()} cruza o limite aprovado de ${money(f.lim)} na ${engWk(week + f.kBase)}: pedir +${money(f.need)} antes disso.`)
+        : f.kHigh >= 0 ? T(`The ${scName(f.sc)} forecast fits, but the top of the range crosses the ${money(f.lim)} limit in ${engWk(week + f.kHigh)}: pre-approve +${money(f.need)}.`, `A projeção do cenário ${scName(f.sc).toLowerCase()} cabe, mas o topo da faixa cruza o limite de ${money(f.lim)} na ${engWk(week + f.kHigh)}: pré-aprovar +${money(f.need)}.`)
         : T(`The top of the forecast range peaks at ${money(f.peakHigh)}, ${nf(100 * f.peakHigh / f.lim, 0)}% of the ${money(f.lim)} limit: ${money(f.lim - f.peakHigh)} of headroom through ${engWk(week + f.h)}.`, `O topo da faixa projetada chega a ${money(f.peakHigh)}, ${nf(100 * f.peakHigh / f.lim, 0)}% do limite de ${money(f.lim)}: folga de ${money(f.lim - f.peakHigh)} até a ${engWk(week + f.h)}.`),
         tone === "good" ? T("Does the balance fit the approved limit?", "O saldo cabe no limite aprovado?") : T("When does the balance cross the approved limit?", "Quando o saldo passa do limite aprovado?"));
       const e = D.err[i];
@@ -47,7 +47,7 @@
         T("Is the forecast error inside the tolerance?", "O erro de projeção está dentro da tolerância?"));
       const b = engBacktestAvg();
       add("backtest", !b.n ? "info" : b.model < b.flat ? "good" : "warn",
-        !b.n ? T("The first one-week forecast can be scored when week 2 closes.", "A primeira projeção de uma semana pode ser avaliada quando a semana 2 fechar.")
+        !b.n ? week > 1 ? T("No forecast can be scored yet: the balances so far round to zero.", "Nenhuma projeção pode ser avaliada ainda: os saldos até aqui arredondam para zero.") : T("The first one-week forecast can be scored when week 2 closes.", "A primeira projeção de uma semana pode ser avaliada quando a semana 2 fechar.")
              : T(`One-week backtest over ${b.n} week${b.n === 1 ? "" : "s"}: the model misses by ${nf(b.model, 2)}% on average, against ${nf(b.flat, 2)}% for repeating the prior balance.`, `Backtest de uma semana em ${b.n} ${b.n === 1 ? "semana" : "semanas"}: o modelo erra ${nf(b.model, 2)}% em média, contra ${nf(b.flat, 2)}% ao repetir o saldo anterior.`),
         T("How accurate was the one-week forecast?", "Qual foi a precisão da projeção de uma semana?"));
     } else if (step === 3) {

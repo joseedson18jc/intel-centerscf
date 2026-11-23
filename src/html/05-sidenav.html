@@ -1,0 +1,89 @@
+<a class="skip-link" href="#top" id="skipLink" data-i18n="sn.skip">Pular para o conteúdo</a>
+<!-- ==================== SIDE NAVIGATION: steps and sections, tools, preferences (js/31-sidenav.js, css/61-sidenav.css) ==================== -->
+<div class="sn-backdrop" id="snBackdrop" hidden></div>
+<aside class="sidenav" id="sideNav" aria-label="Menu do cockpit" data-i18n-aria="sn.aria">
+  <div class="sn-head">
+    <a class="brand-lockup" href="#top" id="brandHome">
+      <span id="brandMark" class="brand-logo" aria-hidden="true"></span>
+      <span class="brand-title sn-lbl">
+        <strong data-i18n="nav.brand">Early Money</strong>
+        <span data-i18n="nav.sub">Corporate Banking · Brasil</span>
+      </span>
+    </a>
+    <button class="sn-ico-btn sn-collapse" id="snCollapse" type="button" aria-controls="sideNav" aria-expanded="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M9 4.5v15"/><path class="sn-chev" d="M15.5 9.5 13 12l2.5 2.5"/></svg>
+      <span class="sn-lbl" id="snCollapseLbl" data-i18n="sn.collapse">Recolher menu</span>
+    </button>
+    <button class="sn-ico-btn sn-close" id="snClose" type="button" data-i18n-aria="sn.close" aria-label="Fechar menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
+    </button>
+  </div>
+
+  <div class="sn-body" id="snBody">
+    <nav class="sn-group" aria-labelledby="snStepsLbl">
+      <div class="sn-group-lbl" id="snStepsLbl" data-i18n="sn.steps">Etapas</div>
+      <ol class="sn-steps" id="topStepNav">
+        <li><button class="sn-item sn-step" type="button" data-step="1" aria-current="step"><span class="sn-num" aria-hidden="true">1</span><span class="sn-lbl" data-i18n="st.1.short">Diagnóstico</span></button><ul class="sn-secs" data-sn-secs="1"></ul></li>
+        <li><button class="sn-item sn-step" type="button" data-step="2"><span class="sn-num" aria-hidden="true">2</span><span class="sn-lbl" data-i18n="st.2.short">Projeção</span></button><ul class="sn-secs" data-sn-secs="2" hidden></ul></li>
+        <li><button class="sn-item sn-step" type="button" data-step="3"><span class="sn-num" aria-hidden="true">3</span><span class="sn-lbl" data-i18n="st.3.short">Pipeline</span></button><ul class="sn-secs" data-sn-secs="3" hidden></ul></li>
+        <li><button class="sn-item sn-step" type="button" data-step="4"><span class="sn-num" aria-hidden="true">4</span><span class="sn-lbl" data-i18n="st.4.short">Mercado</span></button><ul class="sn-secs" data-sn-secs="4" hidden></ul></li>
+      </ol>
+    </nav>
+
+    <div class="sn-group sn-tools" role="group" aria-labelledby="snToolsLbl">
+      <div class="sn-group-lbl" id="snToolsLbl" data-i18n="sn.tools">Ferramentas</div>
+      <!--slot:nav-assistant-->
+      <button class="sn-item" id="openData" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10"/></svg>
+        <span class="sn-lbl" data-i18n="nav.data">Dados</span>
+      </button>
+      <button class="sn-item" id="openBrief" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3.5H7.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8Z"/><path d="M14 3.5V8h4.5M9 12.5h6M9 16h4"/></svg>
+        <span class="sn-lbl" data-i18n="nav.brief">Briefing</span>
+      </button>
+      <button class="sn-item" id="openDeck" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12.5" rx="2.5"/><path d="M8.5 20.5h7M12 16.5v4"/><path d="M10.6 7.9v4.7l3.9-2.35Z"/></svg>
+        <span class="sn-lbl" data-i18n="nav.present">Apresentar</span>
+      </button>
+      <!--slot:topbar-actions-->
+    </div>
+
+    <div class="sn-group sn-prefs" role="group" aria-labelledby="snPrefsLbl">
+      <div class="sn-group-lbl" id="snPrefsLbl" data-i18n="sn.prefs">Preferências</div>
+      <div class="sn-pref">
+        <svg class="sn-pref-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.2 2.4 3.3 5.2 3.3 8.5s-1.1 6.1-3.3 8.5c-2.2-2.4-3.3-5.2-3.3-8.5S9.8 5.9 12 3.5Z"/></svg>
+        <span class="sn-lbl" data-i18n="sn.lang" aria-hidden="true">Idioma</span>
+        <div class="pill-switch lang" role="group" aria-label="Idioma / Language">
+          <button type="button" data-lang="pt" aria-pressed="true">PT</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+      <div class="sn-pref">
+        <svg class="sn-pref-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.6"/><path d="M6 10v4M18 10v4"/></svg>
+        <span class="sn-lbl" data-i18n="sn.ccy" aria-hidden="true">Moeda</span>
+        <div class="pill-switch ccy-switch" role="group" aria-label="Moeda / Currency">
+          <button type="button" data-ccy="BRL" aria-pressed="true">BRL</button>
+          <button type="button" data-ccy="USD" aria-pressed="false">USD</button>
+        </div>
+      </div>
+      <div class="sn-pref">
+        <svg class="sn-pref-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17Z" fill="currentColor"/></svg>
+        <span class="sn-lbl" data-i18n="sn.theme" aria-hidden="true">Tema</span>
+        <div class="pill-switch theme-switch" role="group" aria-label="Tema / Theme">
+          <button type="button" data-theme="light" aria-pressed="true" title="Modo claro / Light mode" aria-label="Light">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.7M8 12.8v1.7M1.5 8h1.7M12.8 8h1.7M3.4 3.4l1.2 1.2M11.4 11.4l1.2 1.2M12.6 3.4l-1.2 1.2M4.6 11.4l-1.2 1.2"/></svg>
+          </button>
+          <button type="button" data-theme="dark" aria-pressed="false" title="Modo escuro / Dark mode" aria-label="Dark">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3Z"/></svg>
+          </button>
+        </div>
+      </div>
+      <button class="sn-item" id="openSettings" type="button" title="Configurações / Settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        <span class="sn-lbl" data-i18n="nav.settings.short">Configurações</span>
+        <span class="set-dot" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</aside>
+<div class="sn-tip" id="snTip" aria-hidden="true" hidden></div>

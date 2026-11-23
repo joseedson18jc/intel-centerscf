@@ -30,7 +30,8 @@
       return;
     }
     const v = +clampNum(n, lo, hi).toFixed(f.d), adjusted = v !== n;
-    if (v !== f.get()) { f.set(v); if (!f.self) refreshAll(); if (typeof saveParams === "function") saveParams(); }
+    let saved = typeof lsBlocked === "undefined" || !lsBlocked;
+    if (v !== f.get()) { f.set(v); if (!f.self) refreshAll(); if (typeof saveParams === "function") saved = saveParams() !== false; }
     if (commit) inp.value = v;
     if (adjusted && !commit) inp.setAttribute("aria-invalid", "true"); else inp.removeAttribute("aria-invalid");
     if (adjusted) {
@@ -38,7 +39,8 @@
       pmsg(outOfRange
         ? T(`Allowed range: ${nf(lo, lo % 1 ? 1 : 0)} to ${nf(hi)}. Using ${nf(v, f.d)}.`,`Faixa permitida: ${nf(lo, lo % 1 ? 1 : 0)} a ${nf(hi)}. Usando ${nf(v, f.d)}.`) + (f.why ? f.why() : "")
         : T(`Rounded to ${nf(v, f.d)}.`,`Arredondado para ${nf(v, f.d)}.`), outOfRange ? false : "info");
-    } else pmsg(T("Applied to the dashboard and saved in this browser.","Aplicado ao painel e salvo neste navegador."), true);
+    } else pmsg(saved ? T("Applied to the dashboard and saved in this browser.","Aplicado ao painel e salvo neste navegador.")
+      : T("Applied to the dashboard. This browser blocked storage, so the change lasts only until the page is closed.","Aplicado ao painel. Este navegador bloqueou o armazenamento, então a mudança vale só até fechar a página."), true);
   }
   PARAM_FIELDS.forEach(f => {
     const inp = $(f.id); if (!inp) return;
@@ -58,7 +60,7 @@
     spend:["Spend %","Gasto %"], active:["Active suppliers","Fornec. ativos"], util:["Utilization %","Utilização %"], days:["Days to 1st discount","Dias até 1º desc."],
     err:["Forecast error %","Erro proj. %"], sow:["Share of wallet %","Share of wallet %"], flags:["Risk flags","Alertas"], supShare:["Receivables share %","Share receb. %"]
   };
-  const ED = { rows:[], dirty:false, errs:[] };   // rows: one array of 8 raw strings per week
+  const ED = { rows:[], dirty:false, errs:[], sep:";" };   // rows: one array of 8 raw strings per week, typed with separator rules ED.sep
   const edSep = () => lang === "pt" ? ";" : ",";   // decimal comma in Portuguese, decimal point in English
   const edFmt = v => lang === "pt" ? String(v).replace(".", ",") : String(v);
   const edColFull = k => { const c = COLS.find(x => x[1] === k); return L([c[2], c[3]]); };
@@ -79,11 +81,17 @@
   // Loads the applied data into the grid, dropping unapplied edits.
   function edLoad() {
     ED.rows = Array.from({length:W}, (_, r) => DATA_COLS.map(([, k]) => edFmt(D[k][r])));
-    ED.dirty = false;
+    ED.dirty = false; ED.sep = edSep();
     edRender();
   }
   function edRender() {
     const g = $("de-grid"); if (!g) return;
+    // Language changed with unapplied edits: re-write every readable cell in the new decimal format, so "9,875"
+    // typed in Portuguese stays nine point eight seven five in English. Unreadable cells keep their text.
+    if (ED.sep !== edSep()) {
+      ED.rows = ED.rows.map(row => row.map(raw => { const v = parseLocaleNumber(raw, ED.sep); return isFinite(v) ? edFmt(v) : raw; }));
+      ED.sep = edSep();
+    }
     const act = document.activeElement, keep = act && g.contains(act) && act.dataset.r ? [act.dataset.r, act.dataset.c] : null;
     g.innerHTML = `<thead><tr><th scope="col">${esc(L(I18N["wk"]))}</th>${DATA_COLS.map(([pt, k]) => `<th scope="col" title="${esc(edColFull(k))} · ${esc(pt)}">${esc(L(ED_HEAD[k]))}</th>`).join("")}</tr></thead>`
       + `<tbody>${ED.rows.map((row, r) => `<tr><th scope="row">${WL()}${r + 1}</th>${DATA_COLS.map(([, k], c) =>
@@ -148,13 +156,14 @@
       const t = e.target, txt = (e.clipboardData || window.clipboardData).getData("text");
       if (!t.dataset || t.dataset.r === undefined || !/[\t\n]/.test(txt.trim())) return;
       e.preventDefault();
-      const r0 = +t.dataset.r, c0 = +t.dataset.c;
+      const r0 = +t.dataset.r, c0 = +t.dataset.c; let skipped = 0;
       txt.replace(/\r/g, "").split("\n").filter(l => l.trim() !== "").forEach((line, i) => {
-        const r = r0 + i; if (r >= MAX_WEEKS) return;
+        const r = r0 + i; if (r >= MAX_WEEKS) { skipped++; return; }
         while (ED.rows.length <= r) ED.rows.push(DATA_COLS.map(() => ""));
         line.split("\t").forEach((cell, j) => { if (c0 + j < DATA_COLS.length) ED.rows[r][c0 + j] = cell.trim(); });
       });
       ED.dirty = true; edRender(); edFocus(r0, c0);
+      if (skipped) dmsg(T(`${skipped} pasted row${skipped === 1 ? " was" : "s were"} left out: the grid holds at most ${MAX_WEEKS} weeks.`,`${skipped} ${skipped === 1 ? "linha colada ficou" : "linhas coladas ficaram"} de fora: a tabela comporta no máximo ${MAX_WEEKS} semanas.`), false);
     });
     $("de-add").onclick = () => {
       if (ED.rows.length >= MAX_WEEKS) return;
@@ -173,7 +182,8 @@
       const {obj, errs} = edRead();
       if (errs.length || !ED.dirty) { edValidate(); return; }
       applyData(obj, makeSrcInfo("manual", "", Date.now()));
-      if (typeof saveDataset === "function") saveDataset();
-      dmsg(T(`Applied: the dashboard now runs on your ${obj.spend.length} weeks, saved in this browser.`,`Aplicado: o painel agora usa as suas ${obj.spend.length} semanas, salvas neste navegador.`), true);
+      const saved = typeof saveDataset === "function" ? saveDataset() !== false : false;
+      dmsg(saved ? T(`Applied: the dashboard now runs on your ${obj.spend.length} weeks, saved in this browser.`,`Aplicado: o painel agora usa as suas ${obj.spend.length} semanas, salvas neste navegador.`)
+        : T(`Applied: the dashboard now runs on your ${obj.spend.length} weeks. This browser blocked storage, so they last only until the page is closed.`,`Aplicado: o painel agora usa as suas ${obj.spend.length} semanas. Este navegador bloqueou o armazenamento, então elas valem só até fechar a página.`), true);
     };
   }

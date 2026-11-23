@@ -27,11 +27,13 @@
     "css/55-insights.css",
     "css/56-assistant.css",
     "css/60-guide.css",
+    "css/61-sidenav.css",
     "css/90-dark.css",
     "css/91-print.css",
     "css/92-responsive.css"
   ],
   "body": [
+    "html/05-sidenav.html",
     "html/10-topbar.html",
     "html/15-hero.html",
     "html/20-journey.html",
@@ -79,6 +81,7 @@
     "js/22-live-insights.js",
     "js/23-consistency.js",
     "js/30-guide.js",
+    "js/31-sidenav.js",
     "js/99-boot.js"
   ],
   "slots": {
@@ -90,7 +93,9 @@
     ],
     "topbar-actions": [
       "html/slots/open-finance-button.html",
-      "html/slots/guide-button.html",
+      "html/slots/guide-button.html"
+    ],
+    "nav-assistant": [
       "html/slots/assistant-button.html"
     ],
     "after-main": [

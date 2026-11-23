@@ -27,6 +27,8 @@
   };
   const guideLayer = $("guideLayer"), guideCard = $("guideCard"), guideSpot = $("guideSpot"), guideMenu = $("guideMenu"), hintPop = $("hintPop");
   const guideSmall = () => innerWidth <= 680;
+  // Touch-first device: no hover, so field hints come from the first tap on a control (see section 3).
+  const hintTouch = () => !!(window.matchMedia && matchMedia("(hover: none)").matches);
   const guideVisible = el => !!el && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== "hidden";
   const guideSlideCount = () => { try { return SLIDES.length; } catch (e) { return 0; } };
   const tourOpen = () => !!guideLayer && !guideLayer.hidden;
@@ -35,7 +37,7 @@
 
   // ---------- 1. Guided tour ----------
   // sel: CSS selector (several matches are framed together); selSmall replaces it on phones.
-  // step: step panel that must be showing; menu: open the header "more" menu when the target sits inside it.
+  // step: step panel that must be showing; menu: the target sits in the side menu, so on narrow screens the drawer opens.
   const TOUR = [
     { sel:".hero > div:first-child",
       title:["Welcome to the weekly cockpit","Bem-vindo ao cockpit semanal"],
@@ -48,10 +50,10 @@
       title:["Move through the weeks","Navegue pelas semanas"],
       text:() => T("Drag the slider or press play to move through the weekly history. The indicators, the projection and the action plan are recalculated for the week you choose.",
                    "Arraste o controle ou aperte o play para percorrer o histórico semanal. Os indicadores, a projeção e o plano de ação são recalculados para a semana escolhida.") },
-    { sel:"#journeyBar", selSmall:"#topStepNav",
+    { sel:"#topStepNav", menu:true,
       title:["Four steps, one decision in each","Quatro etapas, uma decisão em cada"],
-      text:() => T(`The work is split into four steps: diagnose, project the balance, size the pipeline and read the market. Open a step here, or choose "${L(I18N["vm.all"])}" to see all four on one page.`,
-                   `O trabalho se divide em quatro etapas: diagnosticar, projetar o saldo, dimensionar o pipeline e ler o mercado. Abra uma etapa aqui ou escolha "${L(I18N["vm.all"])}" para ver as quatro em uma só página.`) },
+      text:() => T("The work is split into four steps: diagnose, project the balance, size the pipeline and read the market. Open a step in this menu; the sections of the open step are listed under it and the highlight follows your reading.",
+                   "O trabalho se divide em quatro etapas: diagnosticar, projetar o saldo, dimensionar o pipeline e ler o mercado. Abra uma etapa neste menu; as seções da etapa aberta aparecem logo abaixo dela e o destaque acompanha a leitura.") },
     { sel:".actions-card", step:1,
       title:["Your action plan for the week","Seu plano de ação da semana"],
       text:() => T("This list is generated from the limit check, the forecast error, risk alerts, the onboarding funnel, the pipeline and market pricing. Tick an action when it is done; the tick is saved on this device.",
@@ -66,15 +68,15 @@
       title:["Use your own data","Use os seus dados"],
       text:() => T("Download the CSV template, replace the example with your weekly extract and load it back. Everything stays in this browser; nothing is sent anywhere.",
                    "Baixe o modelo CSV, troque o exemplo pela sua extração semanal e carregue de volta. Tudo fica neste navegador; nada é enviado para fora.") },
-    { sel:".topbar .ccy-switch, .topbar .lang, .topbar .theme-switch", menu:true,
+    { sel:".sidenav .sn-pref", menu:true,
       title:["Currency, language and theme","Moeda, idioma e tema"],
       text:() => T("Switch between reais and dollars, Portuguese and English, light and dark. Your choices are remembered on this device.",
                    "Alterne entre reais e dólares, português e inglês, claro e escuro. Suas escolhas ficam salvas neste dispositivo.") },
-    { sel:"#openDeck",
+    { sel:"#openDeck", menu:true,
       title:["Presentation mode","Modo apresentação"],
       text:() => { const n = guideSlideCount(), sl = n ? T(` (${n} slides)`, ` (${n} slides)`) : "";
-        return T(`Opens the executive presentation${sl} over the cockpit, in the language and currency you selected. You can reopen this tour at any time from the Guide button.`,
-                 `Abre a apresentação executiva${sl} sobre o cockpit, no idioma e na moeda selecionados. Você pode reabrir este tour a qualquer momento pelo botão Guia.`); } }
+        return T(`Opens the executive presentation${sl} over the cockpit, in the language and currency you selected. You can reopen this tour at any time from Guide, in the side menu.`,
+                 `Abre a apresentação executiva${sl} sobre o cockpit, no idioma e na moeda selecionados. Você pode reabrir este tour a qualquer momento pelo item Guia, no menu lateral.`); } }
   ];
   let tourIdx = 0, tourRaf = 0, tourPlace = "below", tourReturn = null;
   function tourTargets(st) {
@@ -102,7 +104,11 @@
       const floor = Math.max(0, r.top - pad), ceil = Math.min(docked ? vh - cardH - (guideSmall() ? 8 : 36) : vh, r.bottom + pad);
       guideSpot.classList.remove("none");
       Object.assign(guideSpot.style, {left:Math.max(4, r.left - pad) + "px", top:floor + "px", width:Math.min(vw - 8, r.right + pad) - Math.max(4, r.left - pad) + "px", height:Math.max(0, ceil - floor) + "px"});
-      if (!docked) {
+      if (!docked && tourPlace === "side") {
+        // Targets in the side menu: the card sits beside the menu, level with the target.
+        guideCard.style.left = Math.min(vw - cardW - 12, r.right + pad + 14) + "px";
+        guideCard.style.top = Math.min(vh - cardH - 12, Math.max(12, r.top + r.height / 2 - cardH / 2)) + "px";
+      } else if (!docked) {
         const left = Math.min(vw - cardW - 12, Math.max(12, r.left + r.width / 2 - cardW / 2));
         const top = Math.min(vh - cardH - 12, Math.max(12, r.bottom + pad + 12));
         guideCard.style.left = left + "px"; guideCard.style.top = top + "px";
@@ -115,8 +121,8 @@
     tourIdx = Math.max(0, Math.min(TOUR.length - 1, i));
     const st = TOUR[tourIdx], last = tourIdx === TOUR.length - 1;
     if (st.step && viewMode === "step" && activeStep !== st.step) goStep(st.step, false);
-    // Targets that collapse into the header menu on this screen size: open the menu to show them.
-    if (st.menu && !tourTargets(st).length) setTopbarMenu(true); else if (!st.menu) setTopbarMenu(false);
+    // Targets in the side menu: on narrow screens it is a drawer, opened (without taking focus) to show them.
+    if (st.menu && !tourTargets(st).length) setNavDrawer(true, {focus:false}); else if (!st.menu) setNavDrawer(false, {back:false});
     $("guideCount").textContent = T(`Step ${tourIdx + 1} of ${TOUR.length}`, `Passo ${tourIdx + 1} de ${TOUR.length}`);
     $("guideDots").innerHTML = TOUR.map((_, k) => `<i${k === tourIdx ? ' class="on"' : ""}></i>`).join("");
     $("guideTitle").textContent = L(st.title);
@@ -128,11 +134,17 @@
     // Keep the target in view: under the sticky header, with room for the card.
     const els = tourTargets(st), cardH = guideCard.offsetHeight, small = guideSmall();
     tourPlace = "below";
+    // Inside the menu, scroll its own list so the target clears the card docked at the bottom of a phone screen.
+    const menuBody = els.length && els[0].closest(".sn-body");
+    // On a phone the card covers the bottom of the drawer: room below the list lets it scroll the target clear of it.
+    const snb = $("snBody"); if (snb) snb.style.paddingBottom = menuBody && small ? (cardH + 16) + "px" : "";
+    if (menuBody) { const r0 = tourRect(els), mb = menuBody.getBoundingClientRect(), room = innerHeight - (small ? cardH + 16 : 24); if (r0.bottom > room || r0.top < mb.top) menuBody.scrollTop += r0.top - Math.max(mb.top + 8, Math.min(r0.top, room - r0.height)); }
     if (els.length) {
-      const r = tourRect(els), fixed = !!els[0].closest(".topbar");
+      const r = tourRect(els), fixed = !!els[0].closest(".topbar,.sidenav");
       const top0 = (typeof stickyHeaderH === "function" ? stickyHeaderH() : 0) + 14;
       const freeH = innerHeight - top0 - 12;
-      if (fixed) { if (r.bottom + 18 + cardH > innerHeight - 12) tourPlace = "docked"; }
+      if (fixed && !small && els[0].closest(".sidenav") && r.right + 14 + guideCard.offsetWidth <= innerWidth - 12) tourPlace = "side";
+      else if (fixed) { if (r.bottom + 18 + cardH > innerHeight - 12) tourPlace = "docked"; }
       else {
         const need = r.height + 18 + cardH;
         let want;
@@ -162,9 +174,11 @@
     if (!tourOpen()) return;
     guideLayer.hidden = true; cancelAnimationFrame(tourRaf);
     guideStore.set("scf-tour-done", "1");
-    setTopbarMenu(false);
+    setNavDrawer(false, {back:false});
+    const snb = $("snBody"); if (snb) snb.style.paddingBottom = "";
     window.scrollTo({top:0, behavior:reducedMotion() ? "instant" : "smooth"});
-    const back = [tourReturn, $("openGuide"), $("topbarMoreBtn")].find(guideVisible);
+    // The drawer is closing (its items stay painted for a moment): never send focus into it.
+    const back = [tourReturn, $("openGuide"), $("navMenuBtn")].find(el => guideVisible(el) && !(snDrawerMode() && el.closest(".sidenav")));
     if (back) back.focus({preventScroll:true});
   }
   if (guideLayer) {
@@ -193,7 +207,9 @@
     // Focus cannot leave the card while the tour is open.
     document.addEventListener("focusin", e => { if (tourOpen() && !guideCard.contains(e.target)) $("guideNext").focus({preventScroll:true}); });
     // First visit: start once the first render is done, never over the deck or a modal.
-    if (guideStore.get("scf-tour-done") !== "1") setTimeout(() => { if (guideStore.get("scf-tour-done") !== "1" && !guideBlocked() && !topbarMenuOpen()) startTour(); }, 600);
+    // Owner's rule: the quick tutorial opens on EVERY load, for every user (it has a visible Skip). "?notour" in the
+    // address skips it (used by the automated tests and handy for a deep link).
+    if (!/[?&]notour\b/.test(location.search)) setTimeout(() => { if (!guideBlocked() && !navDrawerOpen()) startTour(); }, 600);
   }
 
   // ---------- 2. Guide menu + contextual tips ----------
@@ -209,21 +225,27 @@
       ? T(`${hiddenTips} of ${TIP_IDS.length} step tips dismissed`, `${hiddenTips} de ${TIP_IDS.length} dicas de etapa dispensadas`)
       : T("All step tips are showing","Todas as dicas de etapa estão visíveis");
     $("guideHints").setAttribute("aria-checked", String(hintsOn()));
-    $("guideHintsNote").textContent = hintsOn()
-      ? T("On: shown when you hover or focus a control","Ligadas: aparecem ao passar o mouse ou focar um controle")
-      : T("Off","Desligadas");
+    $("guideHintsNote").textContent = !hintsOn() ? T("Off","Desligadas")
+      : hintTouch() ? T("On: shown the first time you tap each control, and when you type in a field","Ligadas: aparecem no primeiro toque em cada controle e ao digitar em um campo")
+      : T("On: shown when you hover or focus a control","Ligadas: aparecem ao passar o mouse ou focar um controle");
   }
   function placeGuideMenu() {
     if (guideSmall()) { guideMenu.style.left = guideMenu.style.top = ""; return; }
-    const a = [$("openGuide"), $("topbarMoreBtn")].find(guideVisible);
-    const r = a ? a.getBoundingClientRect() : {right:innerWidth - 16, bottom:60};
-    const w = guideMenu.offsetWidth;
+    const a = [$("openGuide"), $("navMenuBtn")].find(guideVisible);
+    const r = a ? a.getBoundingClientRect() : {left:16, right:innerWidth - 16, top:60, bottom:60};
+    const w = guideMenu.offsetWidth, h = guideMenu.offsetHeight;
+    // Opened from the side menu: beside the Guide item; otherwise under the button that opened it.
+    if (a && a.closest(".sidenav")) {
+      guideMenu.style.left = Math.min(innerWidth - w - 8, r.right + 10) + "px";
+      guideMenu.style.top = Math.max(8, Math.min(innerHeight - h - 8, r.top - 8)) + "px";
+      return;
+    }
     guideMenu.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.right - w)) + "px";
     guideMenu.style.top = (r.bottom + 8) + "px";
   }
   function openGuideMenu() {
     if (!guideMenu) return;
-    setTopbarMenu(false); hideHint(); syncGuideMenu();
+    hideHint(); syncGuideMenu();
     guideMenu.hidden = false; placeGuideMenu();
     const b = $("openGuide"); if (b) b.setAttribute("aria-expanded", "true");
     $("guideStart").focus({preventScroll:true});
@@ -232,11 +254,11 @@
     if (!guideMenu || guideMenu.hidden) return;
     guideMenu.hidden = true;
     const b = $("openGuide"); if (b) b.setAttribute("aria-expanded", "false");
-    if (refocus) { const back = [b, $("topbarMoreBtn")].find(guideVisible); if (back) back.focus({preventScroll:true}); }
+    if (refocus) { const back = [b, $("navMenuBtn")].find(guideVisible); if (back) back.focus({preventScroll:true}); }
   }
   if (guideMenu) {
     const gb = $("openGuide");
-    // stopPropagation: the header menu must not treat this click as "tool chosen" before the guide menu is placed.
+    // stopPropagation: the document click handler below must not close the menu this click opens.
     if (gb) gb.addEventListener("click", e => { e.stopPropagation(); if (guideMenu.hidden) openGuideMenu(); else closeGuideMenu(); });
     $("guideStart").onclick = () => { closeGuideMenu(false); startTour(); };
     $("guideTips").onclick = () => {
@@ -269,8 +291,8 @@
   const HINTS = [
     ["#limit, .limit-ctl", () => T("Credit limit approved for the program, in millions of the selected currency. The chart and the action plan compare the projected balance with this number.",
                                    "Limite de crédito aprovado para o programa, em milhões na moeda selecionada. O gráfico e o plano de ação comparam o saldo projetado com este número.")],
-    ["#scenarioGroup", () => T(`Growth assumed in the projection: ${L(I18N["sc.Base"])} keeps the recent weekly growth, ${L(I18N["sc.Downside"])} halves it and ${L(I18N["sc.Upside"])} raises it by 50%.`,
-                               `Crescimento assumido na projeção: ${L(I18N["sc.Base"])} mantém o crescimento semanal recente, ${L(I18N["sc.Downside"])} reduz à metade e ${L(I18N["sc.Upside"])} aumenta em 50%.`)],
+    ["#scenarioGroup", () => T(`Growth assumed in the projection: ${L(I18N["sc.Base"])} keeps the recent weekly growth, ${L(I18N["sc.Downside"])} takes off half of that growth and ${L(I18N["sc.Upside"])} adds half.`,
+                               `Crescimento assumido na projeção: ${L(I18N["sc.Base"])} mantém o crescimento semanal recente, ${L(I18N["sc.Downside"])} tira metade desse crescimento e ${L(I18N["sc.Upside"])} soma metade.`)],
     ["#horizonGroup", () => T("How many weeks ahead the balance is projected. The limit check looks at every week of this horizon.",
                               "Quantas semanas à frente o saldo é projetado. A checagem de limite considera todas as semanas desse horizonte.")],
     [".pipe-presets", () => T("Fills coverage, adoption, utilization, tenor and spread for every anchor with a conservative, base or stretch set of assumptions.",
@@ -288,9 +310,12 @@
     ["#src-chip", () => T("Where the numbers come from: example data or the CSV you loaded. Click to load or replace the data.",
                           "De onde vêm os números: dados de exemplo ou o CSV que você carregou. Clique para carregar ou trocar os dados.")],
     ["#play", () => T("Plays the weekly history forward, one week every few seconds. Press again to pause.",
-                      "Reproduz o histórico semanal, uma semana a cada poucos segundos. Aperte de novo para pausar.")]
+                      "Reproduz o histórico semanal, uma semana a cada poucos segundos. Aperte de novo para pausar.")],
+    ["#topStepNav", () => T("The four steps. The sections of the open step are listed under it: click one to go straight there. The highlight follows your reading.",
+                            "As quatro etapas. As seções da etapa aberta aparecem logo abaixo dela: clique em uma para ir direto até ela. O destaque acompanha a leitura.")]
   ];
-  let hintAnchor = null, hintTimer = 0, hintMuted = null, hintDescribed = null;
+  let hintAnchor = null, hintTimer = 0, hintMuted = null, hintDescribed = null, hintPointer = "", hintTouchT = 0, hintScrollT = 0;
+  const hintSeen = new Set();
   const hintFor = t => { if (!t || !t.closest) return null; for (const [sel, text] of HINTS) { const a = t.closest(sel); if (a) return {a, text}; } return null; };
   function hideHint() {
     clearTimeout(hintTimer);
@@ -302,12 +327,21 @@
     hideHint();
     hintAnchor = a; hintPop.textContent = text(); hintPop.hidden = false;
     // Above the control when there is room, otherwise below; never on top of it.
+    // In a table the headings above say which column is being edited, so there the hint goes below first.
+    // In the side menu (wide screens) it goes beside the menu, so it covers neither the menu nor the control.
     const r = a.getBoundingClientRect(), w = hintPop.offsetWidth, h = hintPop.offsetHeight, gap = 8;
     const top0 = typeof stickyHeaderH === "function" ? stickyHeaderH() : 0;
-    const above = r.top - gap - h >= top0 + 4, below = r.bottom + gap + h <= innerHeight - 4;
-    if (!above && !below) { hideHint(); return; }
-    hintPop.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)) + "px";
-    hintPop.style.top = (above ? r.top - gap - h : r.bottom + gap) + "px";
+    const side = a.closest(".sidenav");
+    if (side && !snDrawerMode()) {
+      hintPop.style.left = (side.getBoundingClientRect().right + 10) + "px";
+      hintPop.style.top = Math.max(8, Math.min(innerHeight - h - 8, r.top)) + "px";
+    } else {
+      const above = r.top - gap - h >= top0 + 4, below = r.bottom + gap + h <= innerHeight - 4;
+      if (!above && !below) { hideHint(); return; }
+      const up = above && !(below && a.closest("table"));
+      hintPop.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)) + "px";
+      hintPop.style.top = (up ? r.top - gap - h : r.bottom + gap) + "px";
+    }
     if (describe && !describe.hasAttribute("aria-describedby")) { describe.setAttribute("aria-describedby", "hintPop"); hintDescribed = describe; }
   }
   if (hintPop) {
@@ -333,8 +367,22 @@
     });
     document.addEventListener("focusout", e => { const hit = hintFor(e.target); if (hit) { if (hit.a === hintMuted) hintMuted = null; if (hit.a === hintAnchor && !(e.relatedTarget && hit.a.contains(e.relatedTarget))) hideHint(); } });
     document.addEventListener("keydown", e => { if (e.key === "Escape" && hintAnchor) { hintMuted = hintAnchor; hideHint(); } });
-    document.addEventListener("pointerdown", e => { if (hintAnchor && e.pointerType !== "mouse") hideHint(); });
-    addEventListener("scroll", () => { if (hintAnchor) hideHint(); }, {passive:true, capture:true});
+    document.addEventListener("pointerdown", e => { hintPointer = e.pointerType; if (hintAnchor && e.pointerType !== "mouse") hideHint(); });
+    // Touch: there is no hover, so a control explains itself on its first tap (once per control and page visit).
+    // Typed fields already get their hint on focus. Capture phase: the control's own handler may re-render what was tapped.
+    document.addEventListener("click", e => {
+      if (hintPointer === "mouse" || !hintPointer || e.detail === 0) return;
+      const hit = hintFor(e.target); if (!hit || e.target.closest("input:not([type=range]),textarea,select")) return;
+      const k = HINTS.findIndex(x => x[1] === hit.text); if (hintSeen.has(k)) return;
+      // A control that scrolls the page (the view switch, for one) explains itself once the page stops moving.
+      const show = n => {
+        if (performance.now() - hintScrollT < 160 && n < 20) { setTimeout(() => show(n + 1), 120); return; }
+        showHint(hit.a, hit.text, null);
+        if (hintAnchor === hit.a) { hintSeen.add(k); clearTimeout(hintTouchT); hintTouchT = setTimeout(() => { if (hintAnchor === hit.a) hideHint(); }, 5000); }
+      };
+      setTimeout(() => show(0), 120);
+    }, true);
+    addEventListener("scroll", () => { hintScrollT = performance.now(); if (hintAnchor) hideHint(); }, {passive:true, capture:true});
     addEventListener("resize", () => { if (hintAnchor) hideHint(); }, {passive:true});
   }
 

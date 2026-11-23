@@ -42,7 +42,7 @@
     KPIS.forEach(m => {
       const div = m.k === "rev" ? fx() : 1;
       const to = m.series[w - 1] / div, prev = (w > 1 ? m.series[w - 2] : m.series[w - 1]) / div;
-      $("v_" + m.k).textContent = (m.k === "rev" ? sym() : "") + nf(to, m.d);
+      $("v_" + m.k).textContent = (m.k === "rev" ? sym() : "") + nf(to, kpiDec(m));
       const d = +(to - prev).toFixed(m.k === "rev" && ccy === "USD" ? 2 : 1);
       const dEl = $("d_" + m.k);
       const better = d === 0 ? 0 : Math.sign(d) === m.good ? 1 : -1;

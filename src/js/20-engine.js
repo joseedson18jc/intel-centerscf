@@ -16,6 +16,7 @@
   const engSmall = s => `<small>${s}</small>`;
   const engPct = (v, d = 0) => nf(v, d) + "%";
   const engSigned = (v, fmt) => (v >= 0 ? "+" : "−") + fmt(Math.abs(v));
+  const engGrowthPct = () => { const g = growthAt(week) * 100; return (g < 0 ? "−" : "") + nf(Math.abs(g), 2) + "%"; };
 
   // Where the numbers of an answer come from, in words that never upgrade example data to real data.
   function engSource(kind) {
@@ -35,22 +36,14 @@
     return { title, html: html + (foot.trim() ? `<small class="eng-foot">${foot.trim()}</small>` : ""), step: step || null, chips: (chips || []).filter(Boolean).slice(0, 4) };
   }
 
-  // ---------- pure forecast (same model and band as forecast()/limitCheck() in 08, without touching FS or the DOM) ----------
-  // o: {w, h, sc, lim, scale}. scale multiplies the whole balance path (used by what-if questions).
-  function engFc(o = {}) {
-    const w = o.w || week, h = Math.max(1, Math.min(52, Math.round(o.h || curHorizon))), sc = o.sc || curScenario;
-    const lim = o.lim != null ? o.lim : limitBRL, k0 = o.scale != null ? o.scale : 1;
-    const values = projection(w, h, sc).map(v => v * k0);
-    const band = values.map((v, k) => v * D.err[w - 1] / 100 * Math.sqrt(k) / 2.2);
-    const high = values.map((v, k) => v + band[k]), peakHigh = Math.max(...high);
-    return { w, h, sc, lim, values, band, now: values[0], end: values[h], low: values[h] - band[h], high: values[h] + band[h], peakHigh,
-      kBase: values.findIndex(v => v > lim), kHigh: high.findIndex(v => v > lim), need: Math.max(0, Math.ceil(peakHigh - lim)) };
-  }
+  // ---------- forecast: the same pure model as Step 2 (fcModel in 08), so screen, insights and answers never differ ----------
+  // o: {w, h, sc, lim, scale, ceilScale}. scale multiplies the whole balance path (used by what-if questions).
+  function engFc(o = {}) { return fcModel(o); }
   const engFcTone = f => f.kBase >= 0 ? "bad" : f.kHigh >= 0 ? "warn" : "good";
   function engLimitLine(f) {
     if (f.kBase === 0) return T(`The balance (${money(f.now)}) is already above the ${money(f.lim)} limit; request +${money(f.need)}.`, `O saldo (${money(f.now)}) já está acima do limite de ${money(f.lim)}; pedir +${money(f.need)}.`);
-    if (f.kBase > 0) return T(`The balance crosses the ${money(f.lim)} limit in <b>${engWk(f.w + f.kBase)}</b>; request +${money(f.need)} before then.`, `O saldo passa do limite de ${money(f.lim)} na <b>${engWk(f.w + f.kBase)}</b>; pedir +${money(f.need)} antes disso.`);
-    if (f.kHigh >= 0) return T(`The base path stays under the ${money(f.lim)} limit, but the top of the range crosses it in <b>${engWk(f.w + f.kHigh)}</b>; pre-approve +${money(f.need)}.`, `A trajetória fica abaixo do limite de ${money(f.lim)}, mas o topo da faixa passa dele na <b>${engWk(f.w + f.kHigh)}</b>; pré-aprovar +${money(f.need)}.`);
+    if (f.kBase > 0) return T(`In the ${scName(f.sc)} case the balance crosses the ${money(f.lim)} limit in <b>${engWk(f.w + f.kBase)}</b>; request +${money(f.need)} before then.`, `No cenário ${scName(f.sc).toLowerCase()}, o saldo passa do limite de ${money(f.lim)} na <b>${engWk(f.w + f.kBase)}</b>; pedir +${money(f.need)} antes disso.`);
+    if (f.kHigh >= 0) return T(`The ${scName(f.sc)} path stays under the ${money(f.lim)} limit, but the top of the range crosses it in <b>${engWk(f.w + f.kHigh)}</b>; pre-approve +${money(f.need)}.`, `A trajetória do cenário ${scName(f.sc).toLowerCase()} fica abaixo do limite de ${money(f.lim)}, mas o topo da faixa passa dele na <b>${engWk(f.w + f.kHigh)}</b>; pré-aprovar +${money(f.need)}.`);
     return T(`It fits the ${money(f.lim)} limit through ${engWk(f.w + f.h)}: the top of the range peaks at ${money(f.peakHigh)}, ${engPct(100 * f.peakHigh / f.lim)} of the limit.`, `Cabe no limite de ${money(f.lim)} até a ${engWk(f.w + f.h)}: o topo da faixa chega a ${money(f.peakHigh)}, ${engPct(100 * f.peakHigh / f.lim)} do limite.`);
   }
 
@@ -95,7 +88,7 @@
     err:    { re: /\berro\b|error/, d: 1, pct: 1, step: 2 }
   };
   const engKpiDef = k => KPIS.find(m => m.k === k);
-  const engKpiVal = (k, v) => ENG_KPI[k].money ? moneyD(v) : nf(v, ENG_KPI[k].d) + (ENG_KPI[k].pct ? "%" : k === "days" ? T(" days", " dias") : "");
+  const engKpiVal = (k, v) => ENG_KPI[k].money ? moneyD(v, revDec()) : nf(v, ENG_KPI[k].d) + (ENG_KPI[k].pct ? "%" : k === "days" ? T(" days", " dias") : "");
   // Straight-line trend of the last (up to) four weeks: a simple extrapolation, labelled as such in the answer.
   function engTrend(k, ahead) {
     const s = engKpiDef(k).series, n = Math.min(4, week - 1), last = s[week - 1];
@@ -138,13 +131,13 @@
     const sc = engScenIn(q), tgt = engWeekIn(q) || week + curHorizon, now = D.bal[week - 1];
     const chips = [T("Does the balance fit the approved limit?", "O saldo cabe no limite aprovado?"), T("What if utilization rises 5 points?", "E se a utilização subir 5 pontos?"), T("How accurate was the one-week forecast?", "Qual foi a precisão da projeção de uma semana?")];
     if (tgt <= week && tgt >= 1) return engOut(T("Balance", "Saldo"), T(`In ${engWk(tgt)} the balance was <b>${money(D.bal[tgt - 1])}</b>${tgt === week ? " (the selected week)" : `; in ${engWk(week)}, the selected week, it is ${money(now)}`}.`, `Na ${engWk(tgt)} o saldo foi de <b>${money(D.bal[tgt - 1])}</b>${tgt === week ? " (a semana selecionada)" : `; na ${engWk(week)}, a semana selecionada, está em ${money(now)}`}.`), 2, "pilot", chips);
-    const f = engFc({ h: tgt - week, sc }), n = Math.min(4, week - 1);
-    const out = T(`${scName(sc)} case: the balance should close ${engWk(week + f.h)} at <b>${money(f.end)}</b>, with a modeled range of ${money(f.low)} to ${money(f.high)}. In ${engWk(week)} it is ${money(now)}, so that is ${engSigned((f.end / now - 1) * 100, v => nf(v, 1))}%. `,
-      `Cenário ${scName(sc).toLowerCase()}: o saldo deve fechar a ${engWk(week + f.h)} em <b>${money(f.end)}</b>, com faixa modelada de ${money(f.low)} a ${money(f.high)}. Na ${engWk(week)} ele está em ${money(now)}, ou seja, ${engSigned((f.end / now - 1) * 100, v => nf(v, 1))}%. `)
+    const f = engFc({ h: tgt - week, sc }), n = f.n;
+    const out = T(`${scName(sc)} case: the balance should close ${engWk(week + f.h)} at <b>${money(f.end)}</b>, with a modeled range of ${money(f.low)} to ${money(f.high)}. In ${engWk(week)} it is ${money(now)}${now > 0 ? `, so that is ${engSigned((f.end / now - 1) * 100, v => nf(v, 1))}%` : ""}. `,
+      `Cenário ${scName(sc).toLowerCase()}: o saldo deve fechar a ${engWk(week + f.h)} em <b>${money(f.end)}</b>, com faixa modelada de ${money(f.low)} a ${money(f.high)}. Na ${engWk(week)} ele está em ${money(now)}${now > 0 ? `, ou seja, ${engSigned((f.end / now - 1) * 100, v => nf(v, 1))}%` : ""}. `)
       + engLimitLine(f)
       + engSmall(week === 1
         ? T("Method: week 1 uses a 2.6% starting growth assumption, decaying 7% per week; the range comes from the forecast error of the week.", "Método: a semana 1 usa uma premissa inicial de crescimento de 2,6%, com decaimento de 7% por semana; a faixa vem do erro de projeção da semana.")
-        : T(`Method: geometric mean of the last ${n} weekly change${n === 1 ? "" : "s"} (${nf(growthAt(week) * 100, 2)}%), decaying 7% per week; downside and upside use 0.5× and 1.5× that growth; the range comes from the forecast error of the week (${nf(D.err[week - 1], 1)}%).`, `Método: média geométrica ${n === 1 ? "da última variação semanal" : "das últimas " + n + " variações semanais"} (${nf(growthAt(week) * 100, 2)}%), com decaimento de 7% por semana; pessimista e otimista usam 0,5× e 1,5× esse crescimento; a faixa vem do erro de projeção da semana (${nf(D.err[week - 1], 1)}%).`));
+        : T(`Method: geometric mean of the last ${n} weekly change${n === 1 ? "" : "s"} (${engGrowthPct()}), decaying 7% per week; downside and upside take off or add half of that growth (0.5× and 1.5× when it is positive); the range comes from the forecast error of the week (${nf(D.err[week - 1], 1)}%); every point is capped at ${money(f.cap)}, 100% of in-scope spend at 100% utilization.`, `Método: média geométrica ${n === 1 ? "da última variação semanal" : "das últimas " + n + " variações semanais"} (${engGrowthPct()}), com decaimento de 7% por semana; pessimista e otimista tiram ou somam metade desse crescimento (0,5× e 1,5× quando ele é positivo); a faixa vem do erro de projeção da semana (${nf(D.err[week - 1], 1)}%); todo ponto fica limitado a ${money(f.cap)}, 100% das compras no escopo com 100% de utilização.`));
     return engOut(T(`Balance forecast · ${engWk(week + f.h)}`, `Projeção de saldo · ${engWk(week + f.h)}`), out, 2, "pilot", chips);
   }
   function engAnsLimit(q) {
@@ -153,7 +146,7 @@
     let out = T(`${scName(sc)} case, ${f.h}-week horizon${h === curHorizon ? " (the one on screen)" : ""}: `, `Cenário ${scName(sc).toLowerCase()}, horizonte de ${f.h} semanas${h === curHorizon ? " (o da tela)" : ""}: `) + engLimitLine(f)
       + " " + T(`Balance in ${engWk(week)}: ${money(now)}, ${engPct(100 * now / f.lim)} of the limit.`, `Saldo na ${engWk(week)}: ${money(now)}, ${engPct(100 * now / f.lim)} do limite.`);
     if (far.h > f.h && engFcTone(f) !== "bad") out += " " + T(`Looking ${far.h} weeks ahead with the same model: `, `Olhando ${far.h} semanas à frente com o mesmo modelo: `) + engLimitLine(far);
-    out += engSmall(T("The limit is the value typed in the Step 2 field. The verdict compares it with the base path and with the top of the error range.", "O limite é o valor digitado no campo da Etapa 2. O veredito compara esse valor com a trajetória-base e com o topo da faixa de erro."));
+    out += engSmall(T("The limit is the value typed in the Step 2 field. The verdict compares it with the path of the scenario named above and with the top of the error range.", "O limite é o valor digitado no campo da Etapa 2. O veredito compara esse valor com a trajetória do cenário indicado acima e com o topo da faixa de erro."));
     return engOut(T("Approved limit check", "Checagem do limite aprovado"), out, 2, "pilot", [T(`And with a limit of ${nf(Math.round(limitBRL / fx() * 1.2 / 10) * 10)} million?`, `E com um limite de ${nf(Math.round(limitBRL / fx() * 1.2 / 10) * 10)} milhões?`), T("What is the balance forecast in the upside case?", "Qual a projeção de saldo no cenário otimista?"), T("What if the tenor is 90 days?", "E se o prazo for 90 dias?")]);
   }
   function engBacktestAvg() {
@@ -166,15 +159,15 @@
       `Erro de projeção na ${engWk(week)}: <b>${nf(e, 1)}%</b>, ${ok ? "dentro" : "acima"} da tolerância de 8%${ok ? ` (${nf(8 - e, 1)} pp de folga)` : ` em ${nf(e - 8, 1)} pp, por isso o plano de ação pede recalibrar a projeção`}. `);
     out += b.n
       ? T(`One-week backtest over ${b.n} completed forecast${b.n === 1 ? "" : "s"}: the base model misses by ${nf(b.model, 2)}% on average, against ${nf(b.flat, 2)}% for simply repeating the prior balance.`, `Backtest de uma semana em ${b.n} ${b.n === 1 ? "projeção apurada" : "projeções apuradas"}: o modelo base erra ${nf(b.model, 2)}% em média, contra ${nf(b.flat, 2)}% ao simplesmente repetir o saldo anterior.`)
-      : T("The first one-week forecast can be scored when week 2 closes.", "A primeira projeção de uma semana pode ser avaliada quando a semana 2 fechar.");
+      : week > 1 ? T("No forecast can be scored yet: the balances so far round to zero.", "Nenhuma projeção pode ser avaliada ainda: os saldos até aqui arredondam para zero.") : T("The first one-week forecast can be scored when week 2 closes.", "A primeira projeção de uma semana pode ser avaliada quando a semana 2 fechar.");
     out += engSmall(T("The forecast error is a weekly series of the data; the backtest is recomputed here from the balances up to the selected week.", "O erro de projeção é uma série semanal dos dados; o backtest é recalculado aqui com os saldos até a semana selecionada."));
     return engOut(T("Forecast error and backtest", "Erro de projeção e backtest"), out, 2, "pilot", [T("Does the balance fit the approved limit?", "O saldo cabe no limite aprovado?"), T(`What is the balance forecast for ${engWk(week + curHorizon)}?`, `Qual o saldo previsto para a ${engWk(week + curHorizon)}?`)]);
   }
   function engAnsMethod() {
     const i = week - 1;
-    const out = T(`<b>Pilot balance.</b> In-scope annual spend (${bn(SPEND / 1000, 1)}) × spend under programme (${D.spend[i]}%) × utilization (${D.util[i]}%) × average days discounted (${nf(PILOT.tenor)}) ÷ 365 = <b>${money(D.bal[i])}</b> in ${engWk(week)}. Spread revenue = balance × ${nf(PILOT.spread, 2)}% = ${moneyD(rev[i])} a year.`,
-      `<b>Saldo do piloto.</b> Compras anuais no escopo (${bn(SPEND / 1000, 1)}) × gasto sob o programa (${D.spend[i]}%) × utilização (${D.util[i]}%) × prazo médio antecipado (${nf(PILOT.tenor)} dias) ÷ 365 = <b>${money(D.bal[i])}</b> na ${engWk(week)}. Receita de spread = saldo × ${nf(PILOT.spread, 2)}% = ${moneyD(rev[i])} por ano.`)
-      + "<br>" + T(`<b>Forecast.</b> Geometric mean of the last weekly changes (${nf(growthAt(week) * 100, 2)}% now), decaying 7% per week; downside and upside use 0.5× and 1.5× that growth; the range widens with the forecast error and the square root of the weeks ahead.`, `<b>Projeção.</b> Média geométrica das últimas variações semanais (${nf(growthAt(week) * 100, 2)}% agora), com decaimento de 7% por semana; pessimista e otimista usam 0,5× e 1,5× esse crescimento; a faixa abre com o erro de projeção e a raiz quadrada das semanas à frente.`)
+    const out = T(`<b>Pilot balance.</b> In-scope annual spend (${bn(SPEND / 1000, 1)}) × spend under programme (${D.spend[i]}%) × utilization (${D.util[i]}%) × average days discounted (${nf(PILOT.tenor)}) ÷ 365 = <b>${money(D.bal[i])}</b> in ${engWk(week)}. Spread revenue = balance × ${nf(PILOT.spread, 2)}% = ${moneyD(rev[i], revDec())} a year.`,
+      `<b>Saldo do piloto.</b> Compras anuais no escopo (${bn(SPEND / 1000, 1)}) × gasto sob o programa (${D.spend[i]}%) × utilização (${D.util[i]}%) × prazo médio antecipado (${nf(PILOT.tenor)} dias) ÷ 365 = <b>${money(D.bal[i])}</b> na ${engWk(week)}. Receita de spread = saldo × ${nf(PILOT.spread, 2)}% = ${moneyD(rev[i], revDec())} por ano.`)
+      + "<br>" + T(`<b>Forecast.</b> Geometric mean of the last weekly changes (${engGrowthPct()} now), decaying 7% per week; downside and upside take off or add half of that growth (0.5× and 1.5× when it is positive); the range widens with the forecast error and the square root of the weeks ahead; no point goes above ${money(fcCeil())}, 100% of in-scope spend at 100% utilization.`, `<b>Projeção.</b> Média geométrica das últimas variações semanais (${engGrowthPct()} agora), com decaimento de 7% por semana; pessimista e otimista tiram ou somam metade desse crescimento (0,5× e 1,5× quando ele é positivo); a faixa abre com o erro de projeção e a raiz quadrada das semanas à frente; nenhum ponto passa de ${money(fcCeil())}, 100% das compras no escopo com 100% de utilização.`)
       + "<br>" + T(`<b>Pipeline.</b> Public revenue × addressable share × coverage × adoption × utilization = potential annual flow; implied balance = flow × ${nf(G.tenor)} days ÷ 365; revenue = balance × ${nf(G.spread, 2)}%.`, `<b>Pipeline.</b> Receita pública × parcela endereçável × cobertura × adesão × utilização = fluxo anual potencial; saldo implícito = fluxo × ${nf(G.tenor)} dias ÷ 365; receita = saldo × ${nf(G.spread, 2)}%.`)
       + engSmall(T("Every KPI card opens its own audit trail with the same arithmetic.", "Cada card de KPI abre a própria memória de cálculo com a mesma conta."));
     return engOut(T("How the numbers are computed", "Como os números são calculados"), out, null, ["pilot", "pipeline"], [T("What if the tenor is 90 days?", "E se o prazo for 90 dias?"), T("Are these real data?", "Esses dados são reais?")]);
@@ -191,10 +184,10 @@
       : b.below.length ? T(`is below the market band for ${esc(b.below.join(", "))} (margin left on the table)`, `fica abaixo da faixa de mercado em ${esc(b.below.join(", "))} (margem deixada na mesa)`)
       : T(`is inside the market band for all ${ANCHORS.length} anchors`, `fica dentro da faixa de mercado nas ${ANCHORS.length} âncoras`);
   }
-  function engPilotShift(r, why, title) {
-    const ob = D.bal[week - 1], nb = ob * r, f = engFc({ scale: r }), revAt = b => b * PILOT.spread / 100;
-    const out = why + " " + T(`the pilot balance in ${engWk(week)} would go from ${money(ob)} to <b>${money(nb)}</b> (${engSigned(nb - ob, money)}), and yearly spread revenue from ${moneyD(revAt(ob))} to <b>${moneyD(revAt(nb))}</b>. That is ${engPct(100 * nb / limitBRL)} of the ${money(limitBRL)} limit. `,
-      `o saldo do piloto na ${engWk(week)} iria de ${money(ob)} para <b>${money(nb)}</b> (${engSigned(nb - ob, money)}), e a receita anual de spread de ${moneyD(revAt(ob))} para <b>${moneyD(revAt(nb))}</b>. Isso equivale a ${engPct(100 * nb / limitBRL)} do limite de ${money(limitBRL)}. `)
+  function engPilotShift(r, why, title, ceilScale) {
+    const ob = D.bal[week - 1], nb = ob * r, f = engFc({ scale: r, ceilScale }), revAt = b => rev[week - 1] * (ob > 0 ? b / ob : 0);   // same rounded revenue as the KPI tile
+    const out = why + " " + T(`the pilot balance in ${engWk(week)} would go from ${money(ob)} to <b>${money(nb)}</b> (${engSigned(nb - ob, money)}), and yearly spread revenue from ${moneyD(revAt(ob), revDec())} to <b>${moneyD(revAt(nb), revDec())}</b>. That is ${engPct(100 * nb / limitBRL)} of the ${money(limitBRL)} limit. `,
+      `o saldo do piloto na ${engWk(week)} iria de ${money(ob)} para <b>${money(nb)}</b> (${engSigned(nb - ob, money)}), e a receita anual de spread de ${moneyD(revAt(ob), revDec())} para <b>${moneyD(revAt(nb), revDec())}</b>. Isso equivale a ${engPct(100 * nb / limitBRL)} do limite de ${money(limitBRL)}. `)
       + T(`Keeping today's growth path (${scName(curScenario)} case, ${f.h} weeks): `, `Mantendo a trajetória de crescimento de hoje (cenário ${scName(curScenario).toLowerCase()}, ${f.h} semanas): `) + engLimitLine(f)
       + engSmall(T("Simulation only: nothing on the panel was changed. Method: the balance is proportional to in-scope spend, spend under programme, utilization and days discounted, so the whole path is scaled by the same ratio.", "Apenas simulação: nada foi alterado no painel. Método: o saldo é proporcional a compras no escopo, gasto sob o programa, utilização e prazo antecipado, então toda a trajetória é escalada pela mesma razão."));
     return engOut(title, out, 2, "pilot", [T("Does the balance fit the approved limit?", "O saldo cabe no limite aprovado?"), T("How is the balance calculated?", "Como o saldo é calculado?")]);
@@ -230,15 +223,19 @@
     if (trig && /enderecavel|addressable/.test(q)) return engPipeShift("addr", q, n);
     if (trig && /prazo(?! ate)|tenor|days discounted|dias antecipad|\bdias\b|\bdays\b/.test(q) && !/primeiro desconto|first discount/.test(q)) {
       const tg = engTarget(PILOT.tenor, q, n.v), to = clampNum(tg.to, PARAM_RANGE.tenor[0], PARAM_RANGE.tenor[1]);
-      const res = engPilotShift(to / PILOT.tenor, T(`If the pilot's average days discounted went from ${nf(PILOT.tenor)} to ${nf(to)} days,`, `Se o prazo médio antecipado do piloto fosse de ${nf(PILOT.tenor)} para ${nf(to)} dias,`), T("What if · tenor", "E se · prazo"));
+      const res = engPilotShift(to / PILOT.tenor, T(`If the pilot's average days discounted went from ${nf(PILOT.tenor)} to ${nf(to)} days,`, `Se o prazo médio antecipado do piloto fosse de ${nf(PILOT.tenor)} para ${nf(to)} dias,`), T("What if · tenor", "E se · prazo"), to / PILOT.tenor);
       const t = totals(), pb = balOf(t.flow, to);
       res.html = res.html.replace("<small>", " " + T(`In the Step 3 pipeline (its own assumption, ${nf(G.tenor)} days today), ${nf(to)} days would put the implied balance at ${money(pb)} instead of ${money(t.bal)}.`, `No pipeline da Etapa 3 (premissa própria, hoje ${nf(G.tenor)} dias), ${nf(to)} dias levariam o saldo implícito a ${money(pb)} em vez de ${money(t.bal)}.`) + "<small>");
       return res;
     }
     if (trig && /spread|taxa|\brate\b|preco|pricing|cdi/.test(q)) {
-      const tg = engTarget(PILOT.spread, q, n.v), to = clampNum(tg.to, PARAM_RANGE.spread[0], PARAM_RANGE.spread[1]), ob = D.bal[i], t = totals();
-      const out = T(`With a spread of ${nf(to, 2)}% a year: the pilot's yearly spread revenue in ${engWk(week)} would go from ${moneyD(rev[i])} (at ${nf(PILOT.spread, 2)}%) to <b>${moneyD(ob * to / 100)}</b> on the same ${money(ob)} balance; the pipeline's from ${moneyD(t.rev)} (at ${nf(G.spread, 2)}%) to <b>${moneyD(t.bal * to / 100)}</b>. Against the Step 4 price bands, CDI + ${nf(to, 2)}% ${engBandText(to)}.`,
-        `Com spread de ${nf(to, 2)}% ao ano: a receita anual de spread do piloto na ${engWk(week)} iria de ${moneyD(rev[i])} (a ${nf(PILOT.spread, 2)}%) para <b>${moneyD(ob * to / 100)}</b> sobre o mesmo saldo de ${money(ob)}; a do pipeline, de ${moneyD(t.rev)} (a ${nf(G.spread, 2)}%) para <b>${moneyD(t.bal * to / 100)}</b>. Frente às faixas de preço da Etapa 4, CDI + ${nf(to, 2)}% ${engBandText(to)}.`)
+      // A relative move ("rises 0.2") shifts each book from its own spread; an absolute level ("is 1.5%") applies to both.
+      const tg = engTarget(PILOT.spread, q, n.v), cl = v => clampNum(v, PARAM_RANGE.spread[0], PARAM_RANGE.spread[1]), ob = D.bal[i], t = totals();
+      const to = cl(tg.abs ? tg.to : PILOT.spread + tg.delta), toG = cl(tg.abs ? tg.to : G.spread + tg.delta);
+      const lead = tg.abs ? T(`With a spread of ${nf(to, 2)}% a year:`, `Com spread de ${nf(to, 2)}% ao ano:`)
+        : T(`With the spread ${tg.delta > 0 ? "up" : "down"} ${nf(Math.abs(tg.delta), 2)} pp on each book:`, `Com o spread ${tg.delta > 0 ? "subindo" : "caindo"} ${nf(Math.abs(tg.delta), 2)} pp em cada carteira:`);
+      const out = T(`${lead} the pilot's yearly spread revenue in ${engWk(week)} would go from ${moneyD(rev[i], revDec())} (at ${nf(PILOT.spread, 2)}%) to <b>${moneyD(ob * to / 100, revDec())}</b> (at ${nf(to, 2)}%) on the same ${money(ob)} balance; the pipeline's from ${moneyD(t.rev, revDec())} (at ${nf(G.spread, 2)}%) to <b>${moneyD(t.bal * toG / 100, revDec())}</b> (at ${nf(toG, 2)}%). Against the Step 4 price bands, CDI + ${nf(toG, 2)}% ${engBandText(toG)}.`,
+        `${lead} a receita anual de spread do piloto na ${engWk(week)} iria de ${moneyD(rev[i], revDec())} (a ${nf(PILOT.spread, 2)}%) para <b>${moneyD(ob * to / 100, revDec())}</b> (a ${nf(to, 2)}%) sobre o mesmo saldo de ${money(ob)}; a do pipeline, de ${moneyD(t.rev, revDec())} (a ${nf(G.spread, 2)}%) para <b>${moneyD(t.bal * toG / 100, revDec())}</b> (a ${nf(toG, 2)}%). Frente às faixas de preço da Etapa 4, CDI + ${nf(toG, 2)}% ${engBandText(toG)}.`)
         + engSmall(T("Simulation only: nothing on the panel was changed. The balance is held constant; a different price would also change how much suppliers use the programme, which this arithmetic does not model.", "Apenas simulação: nada foi alterado no painel. O saldo é mantido constante; um preço diferente também mudaria o quanto os fornecedores usam o programa, o que esta conta não modela.")) + engFab();
       return engOut(T("What if · spread", "E se · spread"), out, 4, ["pilot", "market"], [T("Is our spread competitive against the market band?", "Nosso spread é competitivo frente à faixa de mercado?"), T("What is the pipeline total and ranking?", "Qual o total e o ranking do pipeline?")]);
     }
@@ -268,7 +265,7 @@
       `No funil da tela (${mode === "after" ? "com IA de documentos" : "antes da IA de documentos"}), a etapa mais fraca é <b>${esc(L(STEPS[w - 1]))} → ${esc(L(STEPS[w]))}</b>: ${cv}% de conversão, ${nf(v[w - 1] - v[w])} fornecedores perdidos. Causa provável: ${esc(L(g.cause))} Alavancas: ${g.lv.map((x, k) => `(${k + 1}) ${esc(L(x))}`).join("; ")}. De ${nf(v[0])} convidados, ${nf(v[5])} chegam ao primeiro desconto (${engPct(100 * v[5] / v[0])}).`);
     if (first) out += " " + T(`First lever still to test: (${g.lv.findIndex(x => L(x) === first) + 1}).`, `Primeira alavanca ainda a testar: (${g.lv.findIndex(x => L(x) === first) + 1}).`);
     out += " " + T(`Document AI moves the documents step: first discounts go from ${F.before[5]} to ${F.after[5]} in the example wave${!SRCINFO ? ", live since W5 in the pilot example" : ""}.`, `A IA de documentos mexe na etapa de documentos: os primeiros descontos vão de ${F.before[5]} para ${F.after[5]} na onda de exemplo${!SRCINFO ? ", em produção desde a S5 no exemplo do piloto" : ""}.`);
-    out += engSmall(T("Causes and levers are working hypotheses to validate with the anchor; only document AI has a measured effect. The funnel is a fixed example wave and does not follow the weekly data.", "Causas e alavancas são hipóteses de trabalho a validar com a âncora; só a IA de documentos tem efeito medido. O funil é uma onda de exemplo fixa e não acompanha os dados semanais."));
+    out += engSmall(T("Causes and levers are working hypotheses to validate with the anchor; document AI is the only lever whose effect the example data illustrates, and nothing here is a measured result. The funnel is a fixed example wave and does not follow the weekly data.", "Causas e alavancas são hipóteses de trabalho a validar com a âncora; a IA de documentos é a única alavanca com efeito ilustrado nos dados de exemplo, e nada aqui é um resultado medido. O funil é uma onda de exemplo fixa e não acompanha os dados semanais."));
     return engOut(T("Funnel bottleneck and levers", "Gargalo do funil e alavancas"), out, 1, "funnel", [T("How are the days to first discount evolving?", "Como estão os dias até o primeiro desconto?"), T("Who should the campaign target next?", "Quem a campanha deve abordar em seguida?"), T("What should I do this week?", "O que devo fazer nesta semana?")]);
   }
   function engAnsPropensity() {
@@ -411,10 +408,15 @@
   // ---------- router ----------
   function engRoute(raw) {
     const q = engNorm(raw); if (!q) return engFallback(raw);
+    // Subjects the panel has no numbers for: an honest "no rule" beats a confident answer on another topic.
+    if (/\bias ?7\b|\bifrs\b|\bselic\b|previsao do tempo|\bweather\b|\bclima\b|\bchuva\b|\brain\b/.test(q) || /(o que e|o que sao|what is|what's|what are|defin|explain|expliq)\b.*duplicata escritural/.test(q)) return engFallback(raw);
     const wi = engAnsWhatIf(q); if (wi) return wi;
+    if (/de onde (vem|veem|sai)|where (does|do) .*(data|numbers|figures)|come from|origem dos (dados|numeros)/.test(q)) return engAnsData();
+    if (/(share|participacao).*(contas a pagar|payables|compras elegiveis|eligible purchases)/.test(q)) return engAnsShare();
+    if (/prazo medio|average (tenor|days discounted)|\btenor\b/.test(q)) return engAnsMethod();
     if (/dados? (sao |e |eh )?reais|real data|(data|numbers|figures) (are |is )?real|sao reais|is (this|it) real|de exemplo|example data|fabricad|fabricated|ilustrativ|illustrative|\bfonte|data source|sources?\b.*(data|numbers)|conjunto de dados|dataset|cambio|\bfx\b|exchange rate|ptax|dolar/.test(q)) return engAnsData();
     if (/funil|funnel|gargalo|bottleneck|friccao|friction|alavanca|lever|desist|drop.?out|cadastro|onboarding|\bkyc\b|\bperda\b|\bloss\b|conversao|conversion/.test(q)) return engAnsFunnel();
-    if (/fianca|guarantee|cessao de credito|credit assignment|\besg\b|desconto de titulos|descontos? de duplicatas?|discount of trade|regresso|recourse|\bdso\b|\bdpo\b|cartao virtual|\bvca\b|cedente|o que e (o )?risco sacado|what is (scf|supply chain finance|reverse factoring|risco sacado)|produtos? do citi|citi products?|diferenca entre|difference between/.test(q)) return engAnsProducts(q);
+    if (/fianca|guarantee|cessao de credito|credit assignment|\besg\b|desconto de titulos|descontos? de duplicatas?|discount of trade|regresso|recourse|\bdso\b|\bdpo\b|cartao virtual|\bvca\b|cedente|o que e (o )?risco sacado|what is (scf|supply chain finance|reverse factoring|risco sacado)|produtos? do citi|citi products?|\bprodutos?\b.*\bciti\b|\bciti\b.*\b(produtos?|oferece|offers?)\b|\bproducts?\b.*\bciti\b|diferenca entre|difference between/.test(q)) return engAnsProducts(q);
     if (/calcul|comput|formula|metodolog|\bmetodo\b|\bmethod/.test(q)) return engAnsMethod();
     if (/concentra/.test(q)) return engAnsConcentration();
     const anc = ANCHORS.findIndex(a => q.includes(engNorm(a.name).split(" ")[0]) || new RegExp("\\b" + a.id + "\\b").test(q));
@@ -482,9 +484,10 @@
       weekly_series: { spend_under_programme_pct: D.spend, active_suppliers: D.active, utilization_pct: D.util, days_to_first_discount: D.days, forecast_error_pct: D.err, share_of_wallet_pct: D.sow, open_risk_flags: D.flags, balance: D.bal, spread_revenue_per_year: rev },
       forecast: f ? { scenario: f.sc, horizon_weeks: f.h, base_weekly_growth_pct: r2(growthAt(week) * 100), end_week: week + f.h, end_balance: r1(f.end), range_low: r1(f.low), range_high: r1(f.high),
         end_by_scenario: Object.fromEntries(Object.keys(multipliers).map(s => [s, r1(projection(week, f.h, s)[f.h])])),
-        limit: { approved_limit: r1(f.lim), status: engFcTone(f) === "good" ? "fits" : engFcTone(f) === "warn" ? "top of range crosses" : "base case crosses", peak_top_of_range: r1(f.peakHigh), peak_pct_of_limit: r1(100 * f.peakHigh / f.lim), base_crosses_in_week: f.kBase >= 0 ? week + f.kBase : null, top_of_range_crosses_in_week: f.kHigh >= 0 ? week + f.kHigh : null, extra_limit_needed: f.need },
+        limit: { approved_limit: r1(f.lim), status: engFcTone(f) === "good" ? "fits" : engFcTone(f) === "warn" ? "top of range crosses" : "selected scenario crosses", peak_top_of_range: r1(f.peakHigh), peak_pct_of_limit: r1(100 * f.peakHigh / f.lim), selected_scenario_crosses_in_week: f.kBase >= 0 ? week + f.kBase : null, top_of_range_crosses_in_week: f.kHigh >= 0 ? week + f.kHigh : null, extra_limit_needed: f.need },
         backtest_one_week: { forecasts_scored: bt.n, model_avg_abs_error_pct: r2(bt.model), carry_forward_avg_abs_error_pct: r2(bt.flat) },
-        method: "geometric mean of the last (up to 4) weekly changes, each future change = 93% of the previous; downside/upside = 0.5x/1.5x base growth; band = balance x forecast error x sqrt(weeks ahead) / 2.2" } : null,
+        ceiling_balance: r1(f.cap), ceiling_binds: f.capped,
+        method: "geometric mean of the last (up to 4) weekly changes, each future change = 93% of the previous; downside/upside = base growth minus/plus half of its size (0.5x/1.5x when positive); band = balance x forecast error x sqrt(weeks ahead) / 2.2; every point capped at in_scope_annual_spend x avg_days_discounted / 365 (100% spend at 100% utilization)" } : null,
       funnel_example: { view_on_screen: mode === "after" ? "with document AI" : "before document AI", steps: STEPS.map(en), before_document_ai: F.before, with_document_ai: F.after,
         weakest_step: en(STEPS[ws - 1]) + " -> " + en(STEPS[ws]), weakest_conversion_pct: Math.round(100 * v[ws] / v[ws - 1]), first_lever_to_test: safe(() => en((LEV[ws - 1].lv.find(x => !x[2]) || [""])), ""), note: "fixed example invitation wave; causes and levers are hypotheses" },
       pipeline: t ? { assumptions: { avg_days_discounted: G.tenor, spread_pct: G.spread }, totals: { eligible_purchases_brl_bn: r1(t.elig), potential_annual_flow_brl_bn: r2(t.flow), implied_balance: Math.round(t.bal), spread_revenue_per_year: r1(t.rev) },

@@ -3,64 +3,98 @@
   const multipliers = {Downside:0.5, Base:1, Upside:1.5};
   const scName = n => L(I18N["sc." + n]);
   const FS = {};
-  function growthAt(w) { const first = Math.max(1, w - 4); return w === 1 ? 0.026 : Math.pow(D.bal[w - 1] / D.bal[first - 1], 1 / (w - first)) - 1; }
-  function projection(w, horizon, scenario) {
-    const values = [D.bal[w - 1]], growth = growthAt(w) * multipliers[scenario];
-    for (let k = 0; k < horizon; k++) values.push(values[k] * (1 + growth * Math.pow(0.93, k)));
+  // Physical ceiling of the pilot balance: 100% of in-scope spend under the programme at 100% utilization,
+  // financed for the pilot tenor. No projection (path or top of range) may go above it.
+  const fcCeil = () => SPEND * PILOT.tenor / 365;
+  // Base weekly growth: geometric mean of the last (up to 4) weekly changes, counted from the first positive balance
+  // of that window, so a zero balance can never produce 0/0. n = number of weekly changes actually used.
+  function growthInfo(w) {
+    if (w === 1) return {g:0.026, n:0};
+    let j = Math.max(1, w - 4);
+    while (j < w && !(D.bal[j - 1] > 0)) j++;
+    const n = w - j, g = n > 0 && D.bal[w - 1] > 0 ? Math.pow(D.bal[w - 1] / D.bal[j - 1], 1 / n) - 1 : 0;
+    return {g:isFinite(g) ? g : 0, n};
+  }
+  function growthAt(w) { return growthInfo(w).g; }
+  // Scenario growth: base growth moved down or up by half of its size (0.5x and 1.5x of a positive growth),
+  // so Downside <= Base <= Upside whatever the sign of the recent trend.
+  const scGrowth = (g, scenario) => g + (multipliers[scenario] - 1) * Math.abs(g);
+  // o.scale multiplies the starting balance (what-if questions); o.cap overrides the ceiling.
+  function projection(w, horizon, scenario, o = {}) {
+    const k0 = o.scale != null ? o.scale : 1, start = D.bal[w - 1] * k0, cap = o.cap != null ? o.cap : Math.max(fcCeil(), start);
+    const values = [start], growth = scGrowth(growthAt(w), scenario);
+    for (let k = 0; k < horizon; k++) values.push(Math.min(cap, Math.max(0, values[k] * (1 + growth * Math.pow(0.93, k)))));
     return values;
+  }
+  // The one forecast every view shows (Step 2, live insights, assistant, action plan): path, modeled band and limit
+  // verdict for the scenario actually tested. o: {w, h, sc, lim, scale, ceilScale}. Pure: no DOM, no state written.
+  function fcModel(o = {}) {
+    const w = o.w || week, h = Math.max(1, Math.min(52, Math.round(o.h || curHorizon))), sc = o.sc || curScenario;
+    const lim = o.lim != null ? o.lim : limitBRL, k0 = o.scale != null ? o.scale : 1;
+    const cap = Math.max(fcCeil() * (o.ceilScale || 1), D.bal[w - 1] * k0);
+    const values = projection(w, h, sc, {scale:k0, cap});
+    const band = values.map((v, k) => v * D.err[w - 1] / 100 * Math.sqrt(k) / 2.2);
+    const lo = values.map((v, k) => Math.max(0, v - band[k])), hi = values.map((v, k) => Math.min(cap, v + band[k]));
+    const peakHigh = Math.max(...hi);
+    return { w, h, sc, lim, cap, values, band, lo, hi, now:values[0], end:values[h], low:lo[h], high:hi[h], peakHigh,
+      capped:values.some((v, k) => k > 0 && v + band[k] >= cap), n:growthInfo(w).n,
+      kBase:values.findIndex(v => v > lim), kHigh:hi.findIndex(v => v > lim), need:Math.max(0, Math.ceil(peakHigh - lim)) };
   }
   function backtest(w) {
     const rows = [];
     for (let origin = 1; origin < w; origin++) {
       const actual = D.bal[origin], err = est => 100 * Math.abs(est - actual) / actual;
+      if (!(actual > 0)) continue;   // a zero balance has no percentage error to score
       rows.push({week:origin + 1, model:err(projection(origin, 1, "Base")[1]), flat:err(D.bal[origin - 1])});
     }
     return rows;
   }
-  function limitCheck(w, values, band) {
-    const lim = limitBRL, hz = values.length - 1;
-    const high = values.map((v, k) => v + band[k]);
-    const peakHigh = Math.max(...high), end = values[hz];
-    const kBase = values.findIndex(v => v > lim), kHigh = high.findIndex(v => v > lim);
-    Object.assign(FS, {w, lim, end, peakHigh, kBase, kHigh, hz, need:Math.max(0, Math.ceil(peakHigh - lim))});
-    const box = $("limit-status");
+  function limitCheck(m) {
+    const w = m.w, lim = m.lim, values = m.values, peakHigh = m.peakHigh, kBase = m.kBase, kHigh = m.kHigh;
+    Object.assign(FS, {w, sc:m.sc, lim, end:m.end, peakHigh, kBase, kHigh, hz:m.h, need:m.need});
+    const box = $("limit-status"), sc = scName(m.sc);
     if (kHigh < 0) {
       box.className = "limitst";
       box.textContent = T(`Fits: top of range peaks at ${money(peakHigh)}, ${nf(100 * peakHigh / lim, 0)}% of the ${money(lim)} approved limit.`,`Cabe: o topo da faixa chega a ${money(peakHigh)}, ${nf(100 * peakHigh / lim, 0)}% do limite aprovado de ${money(lim)}.`);
     } else if (kBase < 0) {
       box.className = "limitst warn";
-      box.textContent = T(`Watch: base case fits, but top of range crosses ${money(lim)} in W${w + kHigh}. Pre-approve +${money(FS.need)}.`,`Atenção: o cenário cabe, mas o topo da faixa cruza ${money(lim)} na S${w + kHigh}. Pré-aprovar +${money(FS.need)}.`);
+      box.textContent = T(`Watch: ${sc} case fits, but top of range crosses ${money(lim)} in W${w + kHigh}. Pre-approve +${money(FS.need)}.`,`Atenção: o cenário ${sc.toLowerCase()} cabe, mas o topo da faixa cruza ${money(lim)} na S${w + kHigh}. Pré-aprovar +${money(FS.need)}.`);
     } else if (kBase === 0) {
       box.className = "limitst bad";
       box.textContent = T(`Breach: current balance (${money(values[0])}) is already above the ${money(lim)} limit. Request +${money(FS.need)}.`,`Estouro: o saldo atual (${money(values[0])}) já ultrapassa o limite de ${money(lim)}. Pedir +${money(FS.need)}.`);
     } else {
       box.className = "limitst bad";
-      box.textContent = T(`Breach: projected balance crosses ${money(lim)} in W${w + kBase}. Request +${money(FS.need)} beforehand.`,`Estouro: o saldo projetado cruza ${money(lim)} na S${w + kBase}. Pedir +${money(FS.need)} antes disso.`);
+      box.textContent = T(`Breach: ${sc} case crosses ${money(lim)} in W${w + kBase}. Request +${money(FS.need)} beforehand.`,`Estouro: o cenário ${sc.toLowerCase()} cruza ${money(lim)} na S${w + kBase}. Pedir +${money(FS.need)} antes disso.`);
     }
   }
   function forecast(w) {
     const fc = $("fc"), tip = $("fcTip");
     const horizon = curHorizon, scenario = curScenario;
-    const values = projection(w, horizon, scenario), end = values[horizon], last = values[0];
-    const band = values.map((v, k) => v * D.err[w - 1] / 100 * Math.sqrt(k) / 2.2);
-    const low = end - band[horizon], high = end + band[horizon], pctGain = nf((end / last - 1) * 100, 1);
-    limitCheck(w, values, band);
+    const m = fcModel({w, h:horizon, sc:scenario}), values = m.values, end = m.end, last = m.now;
+    const low = m.low, high = m.high, chg = (end / last - 1) * 100, pctGain = nf(Math.abs(chg), 1);
+    limitCheck(m);
+    if ($("limit")) { $("limit").min = limitField.lo(); $("limit").max = limitField.hi(); }
 
-    $("outlook").textContent = T(
-      `${scName(scenario)} case · W${w + horizon} closes at ${money(end)} (+${pctGain}% vs W${w}). Modeled range: ${money(low)} to ${money(high)}.`,
-      `Cenário ${scName(scenario).toLowerCase()} · S${w + horizon} fecha em ${money(end)} (+${pctGain}% acima da S${w}). Faixa modelada: ${money(low)} a ${money(high)}.`
+    $("outlook").textContent = !(last > 0)
+      ? T(`No projection for W${w}: the balance rounds to ${money(0)}, so there is no growth to extrapolate. Check spend, utilization and tenor in Data.`,
+          `Sem projeção para a S${w}: o saldo arredonda para ${money(0)}, então não há crescimento a extrapolar. Confira gasto, utilização e prazo em Dados.`)
+      : T(
+      `${scName(scenario)} case · W${w + horizon} closes at ${money(end)} (${chg < 0 ? "−" : "+"}${pctGain}% vs W${w}). Modeled range: ${money(low)} to ${money(high)}.`,
+      `Cenário ${scName(scenario).toLowerCase()} · S${w + horizon} fecha em ${money(end)} (${chg < 0 ? pctGain + "% abaixo" : "+" + pctGain + "% acima"} da S${w}). Faixa modelada: ${money(low)} a ${money(high)}.`
     );
-    const n = Math.min(w - 1, 4), g = nf(growthAt(w) * 100, 2);
+    const n = m.n, gv = growthAt(w) * 100, g = (gv < 0 ? "−" : "") + nf(Math.abs(gv), 2);
     $("assumption").textContent = (w === 1
       ? T("Week 1 uses a 2.6% starting growth assumption.","A semana 1 usa uma premissa inicial de crescimento de 2,6%.")
+      : !n ? T("No positive balance in the last weeks, so base growth is set to 0%.","Não há saldo positivo nas últimas semanas, então o crescimento base fica em 0%.")
       : T(`Base growth uses the last ${n} observed weekly change${n === 1 ? "" : "s"} (geometric mean ${g}%).`, n === 1 ? `O crescimento base usa a última variação semanal observada (${g}%).` : `O crescimento base usa as últimas ${n} variações semanais observadas (média geométrica de ${g}%).`))
-      + T(` Downside/upside use 0.5× and 1.5× base growth with 93% weekly decay. Balances follow (${bn(SPEND / 1000, 1)} × spend % × utilization %) × ${PILOT.tenor}d ÷ 365, the pilot tenor set in Data. The range is a modeled band scaled by this week's forecast error, not a statistical confidence interval.${ccy === "USD" ? ` Displayed in USD. ${fxLabel()}.` : ""}`,
-          ` Os cenários pessimista/otimista usam 0,5× e 1,5× o crescimento base com decaimento semanal de 93%. O saldo segue (${bn(SPEND / 1000, 1)} × gasto % × utilização %) × ${PILOT.tenor}d ÷ 365, o prazo do piloto definido em Dados. A faixa é uma banda modelada, proporcional ao erro de projeção da semana, e não um intervalo de confiança estatístico.${ccy === "USD" ? ` Valores em USD. ${fxLabel()}.` : ""}`);
+      + (w > 1 && n > 0 && n < 3 ? T(` Only ${n} weekly change${n === 1 ? " is" : "s are"} available, so read the projection with care.`, ` Só ${n === 1 ? "há 1 variação semanal" : `há ${n} variações semanais`}, então leia a projeção com cautela.`) : "")
+      + T(` Downside and upside take off or add half of the base growth (0.5× and 1.5× when it is positive), with 93% weekly decay, so the downside path never sits above the base and the upside never below it. Balances follow (${bn(SPEND / 1000, 1)} × spend % × utilization %) × ${PILOT.tenor}d ÷ 365, the pilot tenor set in Data. Projections are capped at ${money(fcCeil())}, the balance with 100% of in-scope spend under the programme at 100% utilization${m.capped ? "; this cap binds in the projection shown" : ""}. The range is a modeled band scaled by this week's forecast error, not a statistical confidence interval.${ccy === "USD" ? ` Displayed in USD. ${fxLabel()}.` : ""}`,
+          ` Os cenários pessimista e otimista tiram ou somam metade do crescimento base (0,5× e 1,5× quando ele é positivo), com decaimento semanal de 93%, de modo que o pessimista nunca fica acima do base nem o otimista abaixo dele. O saldo segue (${bn(SPEND / 1000, 1)} × gasto % × utilização %) × ${PILOT.tenor}d ÷ 365, o prazo do piloto definido em Dados. As projeções ficam limitadas a ${money(fcCeil())}, o saldo com 100% das compras no escopo sob o programa e 100% de utilização${m.capped ? "; esse teto atua na projeção exibida" : ""}. A faixa é uma banda modelada, proporcional ao erro de projeção da semana, e não um intervalo de confiança estatístico.${ccy === "USD" ? ` Valores em USD. ${fxLabel()}.` : ""}`);
 
     fc.replaceChildren();
     const count = w + horizon, history = D.bal.slice(0, w);
-    const lo = Math.min(...history, ...values.map((v, k) => v - band[k]));
-    const hi = Math.max(...history, ...values.map((v, k) => v + band[k]), limitBRL * 1.03);
+    const lo = Math.min(...history, ...m.lo);
+    const hi = Math.max(...history, ...m.hi, limitBRL * 1.03);
     const step = [25,50,100,200,250,500,1000].find(st => Math.ceil(hi / st) * st - Math.floor(lo / st) * st <= 4 * st) || 2000;
     const bottom = Math.floor(lo / step) * step, top = bottom + 4 * step;
     const X = idx => 86 + (idx - 1) * 782 / (count - 1);
@@ -80,7 +114,7 @@
       line([[X(5), 34], [X(5), 250]], {stroke:"#8ECAE6", "stroke-dasharray":"3 4"});
       el("text", {x:X(5), y:24, "text-anchor":"middle", fill:C.blue, "font-size":10.5, "font-weight":700}, fc).textContent = T("W5 · Doc AI live","S5 · IA Docs");
     }
-    const edge = sign => values.map((v, k) => [X(w + k), Y(v + sign * band[k])]);
+    const edge = sign => values.map((v, k) => [X(w + k), Y(sign > 0 ? m.hi[k] : sign < 0 ? m.lo[k] : v)]);
     el("polygon", {points:[...edge(1), ...edge(-1).reverse()].map(p => p.join(",")).join(" "), fill:"rgba(0,189,242,.20)"}, fc);
     line(history.map((v, i) => [X(i + 1), Y(v)]), {stroke:C.navy, "stroke-width":3, "stroke-linecap":"round", "stroke-linejoin":"round"});
     line(edge(0), {stroke:C.blue, "stroke-dasharray":"6 4", "stroke-width":3, "stroke-linecap":"round"});
@@ -94,7 +128,7 @@
 
     const allPts = [
       ...history.map((v, i) => ({wk:i + 1, v, isFc:false})),
-      ...values.slice(1).map((v, i) => ({wk:w + i + 1, v, isFc:true, lo:v - band[i + 1], hi:v + band[i + 1]}))
+      ...values.slice(1).map((v, i) => ({wk:w + i + 1, v, isFc:true, lo:m.lo[i + 1], hi:m.hi[i + 1]}))
     ];
     allPts.forEach(pt => {
       const cx = X(pt.wk), cy = Y(pt.v);
@@ -114,16 +148,16 @@
     fc.setAttribute("aria-label", $("outlook").textContent);
 
     const ends = Object.keys(multipliers).map(name => [name, projection(w, horizon, name)[horizon]]);
-    const maxEnd = Math.max(...ends.map(([, val]) => val));
+    const maxEnd = Math.max(...ends.map(([, val]) => val)) || 1;
     $("case-bars").innerHTML = ends.map(([name, val]) => `<div class="case-row"><span>${scName(name)}</span><div class="track"><div class="case-fill ${name === scenario ? "selected" : ""}" style="width:${100 * val / maxEnd}%"></div></div><b>${money(val)}</b></div>`).join("");
-    $("forecast-rows").innerHTML = values.slice(1).map((v, i) => `<tr><th>${WL()}${w + i + 1}</th><td>${money(v)}</td><td>${money(v - band[i + 1])}</td><td>${money(v + band[i + 1])}</td></tr>`).join("");
+    $("forecast-rows").innerHTML = values.slice(1).map((v, i) => `<tr><th>${WL()}${w + i + 1}</th><td>${money(v)}</td><td>${money(m.lo[i + 1])}</td><td>${money(m.hi[i + 1])}</td></tr>`).join("");
 
     const scores = backtest(w), chart = $("accuracy");
     chart.replaceChildren();
     const avg = k => nf(scores.reduce((s, r) => s + r[k], 0) / scores.length, 2), sN = scores.length;
     $("accuracy-note").textContent = sN
       ? T(`Average absolute percentage error over ${sN} completed forecast${sN === 1 ? "" : "s"}: ${avg("model")}% for the base model vs. ${avg("flat")}% for carrying prior balance forward.`,`Erro percentual absoluto médio em ${sN} projeç${sN === 1 ? "ão apurada" : "ões apuradas"}: ${avg("model")}% no modelo base contra ${avg("flat")}% ao repetir o saldo anterior.`)
-      : T("The first forecast can be scored when week 2 closes.","A primeira projeção pode ser avaliada quando a semana 2 fechar.");
+      : w > 1 ? T("No forecast can be scored yet: the balances so far round to zero.", "Nenhuma projeção pode ser avaliada ainda: os saldos até aqui arredondam para zero.") : T("The first forecast can be scored when week 2 closes.","A primeira projeção pode ser avaliada quando a semana 2 fechar.");
     chart.style.display = sN ? "block" : "none";
     if (!sN) return;
     const limit = Math.max(1, ...scores.map(r => Math.ceil(Math.max(r.model, r.flat))));
@@ -154,8 +188,37 @@
     $("horizonGroup").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
     setPlaying(false); forecast(week); plan(week);
   });
-  $("limit").oninput = () => {
-    const v = parseFloat($("limit").value);
-    if (v > 0) { limitBRL = v * fx(); setPlaying(false); forecast(week); plan(week); }
-  };
+  // Number fields outside the Data modal (limit here, pipeline inputs in 09): while typing, an unreadable or
+  // out-of-range value is marked and explained and the clamped value is used; on leaving the field it shows the
+  // value actually in use. o: {lo(), hi(), d, get(), set(v), show()}. The hint follows the language on refresh.
+  // Creates (once) the hint line right after the given element.
+  function fieldHint(id, after) {
+    let h = $(id);
+    if (!h && after && after.parentNode) { h = document.createElement("p"); h.id = id; h.className = "field-hint"; h.setAttribute("role", "status"); h.hidden = true; after.parentNode.insertBefore(h, after.nextSibling); }
+    return h;
+  }
+  function fieldEdit(inp, hint, o, commit) {
+    const raw = String(inp.value).trim(), n = parseFloat(raw.replace(",", ".")), lo = o.lo(), hi = o.hi();
+    const say = fn => { if (!hint) return; hint._msg = fn; hint.textContent = fn ? fn() : ""; hint.hidden = !fn; };
+    if (raw === "" || !isFinite(n)) {
+      if (commit) { inp.value = o.show(); inp.removeAttribute("aria-invalid"); say(null); }
+      else { inp.setAttribute("aria-invalid", "true"); say(() => T("Type a number. The last valid value stays in use.","Digite um número. O último valor válido continua em uso.")); }
+      return;
+    }
+    const v = clampNum(n, lo, hi), out = v !== n;
+    if (v !== o.get()) o.set(v);
+    if (commit) inp.value = o.show();
+    if (out && !commit) inp.setAttribute("aria-invalid", "true"); else inp.removeAttribute("aria-invalid");
+    const f = x => nf(x, x % 1 ? o.d : 0);
+    say(out ? () => T(`Allowed range: ${f(lo)} to ${f(hi)}. Using ${f(v)}.`,`Faixa permitida: ${f(lo)} a ${f(hi)}. Usando ${f(v)}.`) : null);
+  }
+  onRefresh(() => document.querySelectorAll(".field-hint").forEach(h => { if (h._msg) h.textContent = h._msg(); }));
+  const limitField = {lo:() => Math.ceil(LIMIT_RANGE[0] / fx()), hi:() => Math.floor(LIMIT_RANGE[1] / fx()), d:0,
+    get:() => limitBRL / fx(), show:() => Math.round(limitBRL / fx()),
+    set:v => { limitBRL = v * fx(); setPlaying(false); forecast(week); plan(week); }};
+  if ($("limit")) {
+    const li = $("limit"), lh = fieldHint("limit-hint", li.closest(".fc-controls") || li.parentNode);
+    li.oninput = () => fieldEdit(li, lh, limitField, false);
+    li.onchange = () => fieldEdit(li, lh, limitField, true);
+  }
 

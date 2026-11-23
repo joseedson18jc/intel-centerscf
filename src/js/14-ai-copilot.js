@@ -75,15 +75,20 @@
 
   const aiEndpointOk = u => { try { const x = new URL(u); return x.protocol === "https:" || (x.protocol === "http:" && /^(localhost|127\.0\.0\.1)$/.test(x.hostname)); } catch (e) { return false; } };
 
+  // Where a request actually goes: named as the Anthropic API only for api.anthropic.com, otherwise by its host.
+  const aiHost = () => { try { return new URL(aiCfg.endpoint || DEFAULT_AI_CFG.endpoint).host; } catch (e) { return ""; } };
+  const aiCustomHost = () => aiHost() !== "api.anthropic.com";
+  const aiDest = () => aiCustomHost() ? T(`${aiHost()} (custom address)`,`${aiHost()} (endereço personalizado)`) : T("the Anthropic API","a API da Anthropic");
+  const aiDestNote = () => aiCustomHost() ? T(` Requests go to ${aiHost()} (custom address).`,` As chamadas vão para ${aiHost()} (endereço personalizado).`) : "";
   function syncAiStatusUi() {
     const hasKey = aiHasKey();
     if ($("aiDot")) $("aiDot").classList.toggle("ready", hasKey);
     if ($("openSettings")) { $("openSettings").classList.toggle("has-key", hasKey); $("openSettings").title = L(I18N["nav.settings"]); }
     if ($("openAI")) $("openAI").title = L(I18N["nav.ai.aria"]);
-    if ($("aiModelTag")) $("aiModelTag").textContent = aiModelLabel();
+    if ($("aiModelTag")) $("aiModelTag").textContent = aiModelLabel() + (aiCustomHost() ? " · " + aiHost() : "");
     const ks = $("aiKeyState");
     if (ks) {
-      ks.textContent = hasKey ? T("API key saved in this browser","Chave de API salva neste navegador") : T("No API key saved: add one in \"Key and model\"","Sem chave de API: adicione em \"Chave e modelo\"");
+      ks.textContent = hasKey ? T("API key saved in this browser.","Chave de API salva neste navegador.") + aiDestNote() : T("No API key saved: add one in \"Key and model\"","Sem chave de API: adicione em \"Chave e modelo\"");
       ks.className = "ai-keystate " + (hasKey ? "ok" : "warn");
     }
     if ($("aiRunBtn") && !aiAbort) $("aiRunBtn").disabled = !hasKey;
@@ -94,7 +99,7 @@
     const cu = $("ai-model") && $("ai-model").querySelector('option[value="custom"]');
     if (cu) cu.textContent = L(I18N["st.set.customOpt"]);
     const sk = $("set-keystate");
-    if (sk) { sk.textContent = hasKey ? T("A key is saved in this browser.","Há uma chave salva neste navegador.") : T("No key saved. The assistant uses the panel engine only.","Nenhuma chave salva. O assistente usa só o motor do painel."); sk.className = "ai-keystate " + (hasKey ? "ok" : "muted"); }
+    if (sk) { sk.textContent = hasKey ? T("A key is saved in this browser.","Há uma chave salva neste navegador.") + aiDestNote() : T("No key saved. The assistant uses the panel engine only.","Nenhuma chave salva. O assistente usa só o motor do painel."); sk.className = "ai-keystate " + (hasKey ? "ok" : "muted"); }
     renderAiBriefingBanner();
     if (lastAiResult && $("m-ai") && !$("m-ai").hidden) renderAiResults();
     if (typeof syncAssistantUi === "function") syncAssistantUi();
@@ -356,7 +361,7 @@
         get:() => PILOT.spread, set:v => { PILOT.spread = v; }, fmt:v => pctFmt(v, 2) },
       { key:"fxRate", step:"1-4", label:T("FX rate (R$ per US$)","Câmbio (R$ por US$)"), kind:"num", range:[FX_MIN, FX_MAX], d:4,
         get:() => FX_RATE, set:v => { setFxRate(v); }, fmt:v => Number(v).toLocaleString(loc(), {minimumFractionDigits:2, maximumFractionDigits:4}) },
-      { key:"limitBRL", step:"2", label:T("Approved limit","Limite aprovado"), kind:"num", range:[50, 50000], d:0, unit:"mi",
+      { key:"limitBRL", step:"2", label:T("Approved limit","Limite aprovado"), kind:"num", range:LIMIT_RANGE, d:0, unit:"mi",
         get:() => Math.round(limitBRL), set:v => { limitBRL = v; }, fmt:v => money(v) },
       { key:"scenario", step:"2", label:T("Forecast scenario","Cenário de projeção"), kind:"enum", values:Object.keys(multipliers),
         get:() => curScenario, set:v => { curScenario = v; if (typeof scen !== "undefined") scen = v; }, fmt:v => I18N["sc." + v] ? scName(v) : String(v) },

@@ -7,7 +7,9 @@
   // Every value is checked on the way in; anything missing or corrupt falls back to the default.
   const PARAMS_KEY = "scf-params-v1", DATA_KEY = "scf-data";
   const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
-  const lsSet = (k, v) => { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } };
+  // lsBlocked: the last write failed (storage blocked or full), so messages must not claim anything was saved.
+  let lsBlocked = false;
+  const lsSet = (k, v) => { try { localStorage.setItem(k, v); lsBlocked = false; return true; } catch (e) { lsBlocked = true; return false; } };
   const lsDel = k => { try { localStorage.removeItem(k); } catch (e) {} };
   const lsJSON = k => { try { return JSON.parse(lsGet(k) || "null"); } catch (e) { return null; } };
   const own = (o, k) => !!o && typeof o === "object" && Object.prototype.hasOwnProperty.call(o, k);
@@ -40,7 +42,7 @@
       if ((x = num(o.pilot.spread, ...PARAM_RANGE.spread)) !== null) PILOT.spread = x;
     }
     if ((x = num(o.fx, FX_MIN, FX_MAX)) !== null) FX_RATE = x;
-    if ((x = num(o.limitBRL, 1, 1e6)) !== null) limitBRL = x;
+    if ((x = num(o.limitBRL, ...LIMIT_RANGE)) !== null) limitBRL = x;
     if (typeof o.scenario === "string" && own(multipliers, o.scenario)) curScenario = o.scenario;
     const hz = $("horizonGroup") ? [...$("horizonGroup").querySelectorAll("[data-hz]")].map(b => +b.dataset.hz) : [4, 8, 13];
     if (hz.includes(o.horizon)) curHorizon = o.horizon;
@@ -102,18 +104,20 @@
     week = W;
     syncParamControls();
   }
+  // Returns true when the parameters are stored (or already were), false when the browser refused to store them.
   function saveParams() {
-    if (!appReady) return;
+    if (!appReady) return false;
     const s = JSON.stringify(snapshotParams());
-    if (s === lastSavedParams) return;
-    if (lsSet(PARAMS_KEY, s)) lastSavedParams = s;
+    if (s === lastSavedParams) return !lsBlocked;
+    if (lsSet(PARAMS_KEY, s)) { lastSavedParams = s; return true; }
+    return false;
   }
   function queueSaveParams() { clearTimeout(saveTimer); saveTimer = setTimeout(saveParams, 200); }
   // Saves the weekly dataset when it is the user's own; the example data is never stored.
   function saveDataset() {
-    if (!SRCINFO) { lsDel(DATA_KEY); return; }
+    if (!SRCINFO) { lsDel(DATA_KEY); return true; }
     const obj = {}; DATA_COLS.forEach(([, k]) => { obj[k] = D[k]; });
-    lsSet(DATA_KEY, JSON.stringify({obj, info:SRCINFO}));
+    return lsSet(DATA_KEY, JSON.stringify({obj, info:SRCINFO}));
   }
   // Called once by 99-boot after the first render.
   function initPersistence() {
@@ -132,6 +136,7 @@
   function restoreDefaults() {
     lsDel(PARAMS_KEY); lsDel(DATA_KEY);
     applyParamValues(PARAM_DEFAULTS);
+    ANCHORS.forEach((a, i) => { P[i].addr = a.addr; });   // addressable shares belong to the active dataset, not to q3
     DATA_COLS.forEach(([, k]) => { D[k] = DEMO[k].slice(); });
     W = D.spend.length; SRCINFO = null;
     recomputeBook();

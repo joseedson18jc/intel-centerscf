@@ -4,8 +4,8 @@
     const kp = KPIS.map(m => {
       const div = m.k === "rev" ? fx() : 1;
       const cur = m.series[i] / div, prev = i ? m.series[i - 1] / div : cur, diff = cur - prev;
-      const u = unitOf(m), tight = u === "%" || (m.k === "rev" && lang !== "pt"), flat = +Math.abs(diff).toFixed(m.d) === 0;   // "60%", "R$6.2m / yr", "R$ 6,2 mi / ano"
-      return `<tr><td>${L(m.lbl)}</td><td><b>${(m.k === "rev" ? sym() : "") + nf(cur, m.d)}${tight ? "" : " "}${u}</b></td><td>${!i ? "–" : flat ? T("flat","estável") : ((diff > 0 ? "+" : "−") + nf(Math.abs(diff), m.d))}</td></tr>`;
+      const u = unitOf(m), tight = u === "%" || (m.k === "rev" && lang !== "pt"), flat = +Math.abs(diff).toFixed(kpiDec(m)) === 0;   // "60%", "R$6.2m / yr", "R$ 6,2 mi / ano"
+      return `<tr><td>${L(m.lbl)}</td><td><b>${(m.k === "rev" ? sym() : "") + nf(cur, kpiDec(m))}${tight ? "" : " "}${u}</b></td><td>${!i ? "–" : flat ? T("flat","estável") : ((diff > 0 ? "+" : "−") + nf(Math.abs(diff), kpiDec(m)))}</td></tr>`;
     }).join("");
     const al = ALERTS.filter(a => a[0] <= w).sort((a, b) => b[0] - a[0]).slice(0, 3).map(a => `<li>${WL()}${a[0]} · ${L(a[2])}</li>`).join("");
     return `<div><b>${L(I18N.h1)}</b> · ${T("Week","Semana")} ${w} · ${ccy} · ${esc(dataLabel())}</div>

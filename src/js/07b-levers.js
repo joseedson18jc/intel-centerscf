@@ -1,14 +1,14 @@
   // ========== LEVERS BY STAGE (ported from V13: working hypotheses for each funnel transition) ==========
   // Reads the funnel state of 07-adoption.js (F, STEPS, mode) and the current week; re-renders through onRefresh.
   // Each entry describes the transition STEPS[k] -> STEPS[k+1]. A lever with a third element "ai" is document AI,
-  // the only lever with a measured effect in the pilot example data.
+  // the only lever whose effect the pilot example data illustrates (nothing here is a measured effect).
   Object.assign(I18N, {
     "lv.lbl":["Levers by stage","Alavancas por etapa"],
     "lv.tag":["Working hypotheses on the funnel example data","Hipóteses de trabalho sobre os dados de exemplo do funil"],
     "lv.k":["Adoption funnel · conversion stage by stage","Funil de adoção · conversão etapa a etapa"],
     "lv.h":["Where suppliers drop out, and what reduces the friction","Onde o fornecedor desiste, e o que reduz a fricção"],
     "lv.pill":["Hypotheses to validate","Hipóteses a validar"],
-    "lv.note":["Causes and levers are working hypotheses to validate with the anchor. Only document AI has a measured effect in this pilot; the funnel numbers are example data.","Causas e alavancas são hipóteses de trabalho a validar com a âncora. Só a IA de documentos tem efeito medido neste piloto; os números do funil são dados de exemplo."]
+    "lv.note":["Causes and levers are working hypotheses to validate with the anchor. Document AI is the only lever whose effect the example data illustrates; nothing here is a measured result, and the funnel numbers are example data.","Causas e alavancas são hipóteses de trabalho a validar com a âncora. A IA de documentos é a única alavanca com efeito ilustrado nos dados de exemplo; nada aqui é um resultado medido, e os números do funil são dados de exemplo."]
   });
   const LEV = [
     {cause:["Generic invitation, sent by the bank to the wrong contact.","Convite genérico, enviado pelo banco ao contato errado."],
@@ -50,7 +50,7 @@
         <div class="lev-k">${T("Likely cause","Causa provável")}</div><p>${esc(L(g.cause))}</p>
         <div class="lev-k">${T("Levers","Alavancas")}</div>
         <ul>${g.lv.map(x => `<li>${esc(L(x))} ${x[2]
-          ? (aiLive ? `<span class="lev-chip live">${T("measured effect","efeito medido")}</span> <span class="lev-chip live">${T("live since W5","em produção desde a S5")}</span>` : `<span class="lev-chip">${T("goes live in W5","entra na S5")}</span>`)
+          ? (aiLive ? `<span class="lev-chip live">${T("effect shown in the example data","efeito ilustrado nos dados de exemplo")}</span> <span class="lev-chip live">${T("live since W5 in the example","em produção desde a S5 no exemplo")}</span>` : `<span class="lev-chip">${T("goes live in W5","entra na S5")}</span>`)
           : `<span class="lev-chip">${T("to test","a testar")}</span>`}</li>`).join("")}</ul>
         <div class="lev-own"><b>${T("Owner","Responsável")}</b>: ${esc(L(g.own))}</div></div>`;
     }).join("");

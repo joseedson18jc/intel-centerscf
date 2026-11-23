@@ -79,6 +79,9 @@
     $("g-tenor").value = G.tenor; $("g-spread").value = G.spread;
     updatePipeline(false);
   }
+  // Step 4 proposal spread follows the pipeline spread only when the pipeline spread itself changes; editing any
+  // other pipeline input keeps the price the user is testing on the Step 4 slider.
+  let lastPipeSpread = G.spread;
   function updatePipeline(cascade = true) {
     const t = totals(), max = Math.max(...t.flows, 0.0001);
     const order = t.flows.map((f, i) => [f, i]).sort((a, b) => b[0] - a[0]).map(x => x[1]);
@@ -95,23 +98,28 @@
       recomputeBook();
       updateKpis(week);
       forecast(week);
-      mktSpread = Math.min(2.6, Math.max(0.6, G.spread));
+      if (G.spread !== lastPipeSpread) mktSpread = Math.min(2.6, Math.max(0.6, G.spread));
       renderMarket();
       plan(week);
     }
+    lastPipeSpread = G.spread;
   }
   function syncPipelineInputs() {
     document.querySelectorAll("#pipe-rows input").forEach(inp => { inp.value = P[+inp.dataset.i][inp.dataset.k]; });
     $("g-tenor").value = G.tenor; $("g-spread").value = G.spread;
     updatePipeline(true);
   }
-  $("pipe-rows").addEventListener("input", e => {
-    const t = e.target; if (!t.dataset.k) return;
-    const v = Math.min(100, Math.max(0, parseFloat(t.value)));
-    if (!isNaN(v)) { P[+t.dataset.i][t.dataset.k] = v; document.querySelectorAll("[data-preset]").forEach(b => b.classList.remove("active")); updatePipeline(true); }
+  // Same field rule as the Step 2 limit (fieldEdit in 08): clamp while typing, show the value in use on leaving.
+  const pipeHint = fieldHint("pipe-hint", document.querySelector(".pipe-globals"));
+  const pipeCell = t => ({lo:() => 0, hi:() => 100, d:1, get:() => P[+t.dataset.i][t.dataset.k], show:() => P[+t.dataset.i][t.dataset.k],
+    set:v => { P[+t.dataset.i][t.dataset.k] = v; document.querySelectorAll("[data-preset]").forEach(b => b.classList.remove("active")); updatePipeline(true); }});
+  ["input", "change"].forEach(ev => $("pipe-rows").addEventListener(ev, e => { const t = e.target; if (t.dataset.k) fieldEdit(t, pipeHint, pipeCell(t), ev === "change"); }));
+  const pipeGlobal = (k, range, d) => ({lo:() => range[0], hi:() => range[1], d, get:() => G[k], show:() => G[k], set:v => { G[k] = v; document.querySelectorAll("[data-preset]").forEach(b => b.classList.remove("active")); updatePipeline(true); }});
+  [["g-tenor", "tenor", PARAM_RANGE.tenor, 0], ["g-spread", "spread", PARAM_RANGE.spread, 2]].forEach(([id, k, range, d]) => {
+    const inp = $(id); if (!inp) return;
+    inp.oninput = () => fieldEdit(inp, pipeHint, pipeGlobal(k, range, d), false);
+    inp.onchange = () => fieldEdit(inp, pipeHint, pipeGlobal(k, range, d), true);
   });
-  $("g-tenor").oninput = e => { const v = parseFloat(e.target.value); if (v > 0 && v <= 360) { G.tenor = v; updatePipeline(true); } };
-  $("g-spread").oninput = e => { const v = parseFloat(e.target.value); if (v >= 0 && v <= 10) { G.spread = v; updatePipeline(true); } };
   const PRESETS = { cons:{cov:35,adh:30,util:50,tenor:60,spread:1.0}, base:{cov:50,adh:40,util:60,tenor:75,spread:1.2}, stretch:{cov:65,adh:55,util:70,tenor:90,spread:1.4} };
   document.querySelectorAll("[data-preset]").forEach(btn => {
     btn.onclick = () => {
@@ -119,6 +127,7 @@
       ANCHORS.forEach((a, i) => Object.assign(P[i], {addr:a.addr, cov:pr.cov, adh:pr.adh, util:pr.util}));
       G.tenor = pr.tenor; G.spread = pr.spread;
       document.querySelectorAll("[data-preset]").forEach(b => b.classList.toggle("active", b === btn));
+      lastPipeSpread = NaN;   // a preset sets the pipeline price, so the Step 4 slider follows it
       syncPipelineInputs();
     };
   });

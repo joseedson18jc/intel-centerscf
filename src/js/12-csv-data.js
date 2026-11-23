@@ -13,8 +13,9 @@
     ["share_recebiveis_pct","supShare","Supplier share of receivables, %","Share de recebíveis do fornecedor, %"]
   ];
   const DATA_COLS = COLS.slice(1);
-  // Rules per series: pct = 0 to 100, int = whole number (a count), pos = must be greater than zero.
-  const COL_RULES = { spend:{pct:1, pos:1}, active:{int:1}, util:{pct:1, pos:1}, days:{}, err:{pct:1}, sow:{pct:1}, flags:{int:1}, supShare:{pct:1} };
+  // Rules per series: pct = 0 to 100, int = whole number (a count), pos = must be greater than zero,
+  // max = sanity ceiling for columns that are not percentages (a year of days, a four-digit count of flags).
+  const COL_RULES = { spend:{pct:1, pos:1}, active:{int:1}, util:{pct:1, pos:1}, days:{max:365}, err:{pct:1}, sow:{pct:1}, flags:{int:1, max:9999}, supShare:{pct:1} };
   const MIN_WEEKS = 2, MAX_WEEKS = 52;
   let SRCINFO = null;
 
@@ -44,6 +45,7 @@
     if (!isFinite(v)) return {e:[`"${shown}" is not a number`,`"${shown}" não é um número`]};
     if (v < 0) return {e:[`${shown} is negative; use zero or more`,`${shown} é negativo; use zero ou mais`]};
     if (rule.pct && v > 100) return {e:[`${shown} is above 100; a percentage must be between 0 and 100`,`${shown} passa de 100; o percentual deve ficar entre 0 e 100`]};
+    if (rule.max != null && v > rule.max) return {e:[`${shown} is above ${nf(rule.max)}, the most this column accepts`,`${shown} passa de ${nf(rule.max)}, o máximo desta coluna`]};
     if (rule.int && !Number.isInteger(v)) return {e:[`${shown} is not a whole number; this column is a count`,`${shown} não é um número inteiro; esta coluna é uma contagem`]};
     if (rule.pos && v <= 0) return {e:["must be greater than zero","precisa ser maior que zero"]};
     return {v};
@@ -89,14 +91,18 @@
     const lines = String(text).replace(/^﻿/, "").split(/\r\n|\n|\r/).map((t, i) => ({t, n:i + 1})).filter(l => l.t.trim());
     const rowAt = n => T(`Row ${n}`,`Linha ${n}`);
     if (lines.length < MIN_WEEKS + 1) throw T(`The file needs a header row and at least ${MIN_WEEKS} weeks.`,`O arquivo precisa de uma linha de cabeçalho e de pelo menos ${MIN_WEEKS} semanas.`);
-    const sep = lines[0].t.replace(/"[^"]*"/g, "").includes(";") ? ";" : ",";
+    // ";" (Brazilian export), tab (spreadsheet "Unicode text") or ",". A tab-separated file reads numbers like a "," file.
+    const headTxt = lines[0].t.replace(/"[^"]*"/g, ""), sep = headTxt.includes(";") ? ";" : headTxt.includes("\t") ? "\t" : ",";
+    const sepName = sep === "\t" ? T("tab", "tabulação") : sep;
+    // Decimal mark of a tab-separated file: comma when any data cell has one (Portuguese export), point otherwise.
+    const numSep = sep !== "\t" ? sep : lines.slice(1).some(l => l.t.includes(",")) ? ";" : ",";
     const headCells = splitCSVLine(lines[0].t, sep);
     if (!headCells) throw T(`${rowAt(lines[0].n)} (header): a quoted field is not closed.`,`${rowAt(lines[0].n)} (cabeçalho): há um campo entre aspas que não foi fechado.`);
     const head = headCells.map(s => s.toLowerCase());
     const find = ([pt, en]) => head.findIndex(x => x === pt || x === en.toLowerCase());
     const idx = DATA_COLS.map(c => {
       const j = find(c);
-      if (j < 0) throw T(`Missing column "${c[0]}" (or "${c[1]}") in the header. Separator detected: "${sep}".`,`Coluna "${c[0]}" (ou "${c[1]}") ausente no cabeçalho. Separador detectado: "${sep}".`);
+      if (j < 0) throw T(`Missing column "${c[0]}" (or "${c[1]}") in the header. Separator detected: "${sepName}".`,`Coluna "${c[0]}" (ou "${c[1]}") ausente no cabeçalho. Separador detectado: "${sepName}".`);
       return j;
     });
     const wi = find(COLS[0]);
@@ -106,16 +112,16 @@
       if (!cells) throw T(`${rowAt(ln.n)}: a quoted field is not closed.`,`${rowAt(ln.n)}: há um campo entre aspas que não foi fechado.`);
       const extra = cells.slice(head.length).some(c => c !== "");
       if (cells.length < head.length || extra) throw T(
-        `${rowAt(ln.n)}: ${cells.length} fields found, the header has ${head.length}. If a value contains "${sep}", put it in double quotes.`,
-        `${rowAt(ln.n)}: ${cells.length} campos encontrados, o cabeçalho tem ${head.length}. Se um valor contém "${sep}", coloque-o entre aspas duplas.`);
+        `${rowAt(ln.n)}: ${cells.length} fields found, the header has ${head.length}. If a value contains "${sepName}", put it in double quotes.`,
+        `${rowAt(ln.n)}: ${cells.length} campos encontrados, o cabeçalho tem ${head.length}. Se um valor contém "${sepName}", coloque-o entre aspas duplas.`);
       if (wi >= 0) {
-        const wk = parseLocaleNumber(cells[wi], sep);
+        const wk = parseLocaleNumber(cells[wi], numSep);
         if (wk !== r + 1) throw T(
           `${rowAt(ln.n)}, column ${COLS[0][0]}: found "${cells[wi].slice(0, 24)}", expected week ${r + 1}. Week numbers must be whole, consecutive and start at 1.`,
           `${rowAt(ln.n)}, coluna ${COLS[0][0]}: encontrado "${cells[wi].slice(0, 24)}", esperada a semana ${r + 1}. As semanas devem ser números inteiros, consecutivos e começar em 1.`);
       }
       DATA_COLS.forEach(([, k], c) => {
-        const res = checkCell(k, cells[idx[c]], sep);
+        const res = checkCell(k, cells[idx[c]], numSep);
         if (res.e) throw dataErrText({k, e:res.e}, rowAt(ln.n)) + ".";
         out[k].push(res.v);
       });
@@ -204,7 +210,7 @@
   function ruleText(k) {
     if (k === "week") return T("Optional. Whole numbers, consecutive, starting at 1","Opcional. Números inteiros, consecutivos, começando em 1");
     const r = COL_RULES[k] || {}, parts = [];
-    parts.push(r.pct ? (r.pos ? T("above 0, up to 100","acima de 0, até 100") : T("0 to 100","0 a 100")) : T("0 or more","0 ou mais"));
+    parts.push(r.pct ? (r.pos ? T("above 0, up to 100","acima de 0, até 100") : T("0 to 100","0 a 100")) : r.max != null ? T(`0 to ${nf(r.max)}`,`0 a ${nf(r.max)}`) : T("0 or more","0 ou mais"));
     if (r.int) parts.push(T("whole number","número inteiro"));
     if (k === "active") parts.push(T(`at most the supplier base (${nf(BASE_SUP)})`,`no máximo a base de fornecedores (${nf(BASE_SUP)})`));
     return parts.join(", ");

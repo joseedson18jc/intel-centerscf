@@ -1,65 +1,27 @@
-
 <header class="topbar">
   <div class="header-notice" role="note">
     <span data-i18n="hdr.notice">Uso funcional comprovado porém esta versão é somente por ora, ilustrativa e pertence a J.E.M.Costa.</span>
   </div>
   <div class="topbar-inner">
-    <a class="brand-lockup" href="#top" id="brandHome" aria-label="Risco Sacado · SCF Cockpit">
-      <span id="brandMark" class="brand-logo" aria-hidden="true"></span>
-      <span class="brand-divider" aria-hidden="true"></span>
-      <span class="brand-title">
-        <strong data-i18n="nav.brand">Risco sacado</strong>
-        <span data-i18n="nav.sub">Corporate Banking · Brasil</span>
-      </span>
-    </a>
-
-    <nav class="nav-steps" aria-label="Etapas do cockpit" data-i18n-aria="nav.steps.aria" id="topStepNav">
-      <button class="nav-step-btn" data-step="1" aria-current="step"><span class="sn">1</span><span data-i18n="st.1.short">Diagnóstico</span></button>
-      <button class="nav-step-btn" data-step="2"><span class="sn">2</span><span data-i18n="st.2.short">Projeção</span></button>
-      <button class="nav-step-btn" data-step="3"><span class="sn">3</span><span data-i18n="st.3.short">Pipeline</span></button>
-      <button class="nav-step-btn" data-step="4"><span class="sn">4</span><span data-i18n="st.4.short">Mercado</span></button>
-    </nav>
-
-    <div class="topbar-right">
-      <!-- Secondary controls: inline on wide screens, collapsed into the "more" menu on narrower ones (see 10-topbar.css) -->
-      <div class="tb-menu" id="topbarMenu">
-        <div class="tb-tools">
-          <!--slot:topbar-actions-->
-          <button class="nav-ghost" id="openData" data-i18n="nav.data">Dados CSV</button>
-          <button class="nav-ghost" id="openBrief" data-i18n="nav.brief">Briefing</button>
-        </div>
-        <div class="tb-prefs">
-          <div class="pill-switch ccy-switch" role="group" aria-label="Moeda / Currency">
-            <button data-ccy="BRL" aria-pressed="true">BRL</button>
-            <button data-ccy="USD" aria-pressed="false">USD</button>
-          </div>
-          <div class="pill-switch lang" role="group" aria-label="Idioma / Language">
-            <button data-lang="pt" aria-pressed="true">PT</button>
-            <button data-lang="en" aria-pressed="false">EN</button>
-          </div>
-          <div class="pill-switch theme-switch" role="group" aria-label="Tema / Theme">
-            <button data-theme="light" aria-pressed="true" title="Modo claro / Light mode" aria-label="Light">
-              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.7M8 12.8v1.7M1.5 8h1.7M12.8 8h1.7M3.4 3.4l1.2 1.2M11.4 11.4l1.2 1.2M12.6 3.4l-1.2 1.2M4.6 11.4l-1.2 1.2"/></svg>
-            </button>
-            <button data-theme="dark" aria-pressed="false" title="Modo escuro / Dark mode" aria-label="Dark">
-              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3Z"/></svg>
-            </button>
-          </div>
-          <button class="nav-ico" id="openSettings" data-i18n-aria="nav.settings" title="Configurações / Settings">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
-            <span class="set-dot" aria-hidden="true"></span>
-            <span class="nav-ico-lbl" data-i18n="nav.settings.short">Configurações</span>
-          </button>
-        </div>
+    <button class="tb-menu-btn" id="navMenuBtn" type="button" aria-controls="sideNav" aria-expanded="false" data-i18n-aria="sn.open" aria-label="Abrir menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <!-- Current step: kept in sync with the side menu by js/31-sidenav.js -->
+    <div class="tb-step" id="tbStep">
+      <span class="tb-step-n" id="tbStepN" aria-hidden="true">1</span>
+      <span class="tb-step-txt"><small id="tbStepOf">Etapa 1 de 4</small><strong id="tbStepName">Diagnóstico</strong></span>
+    </div>
+    <div class="week-bar" role="group" data-i18n-aria="aria.weekctl">
+      <div class="week-bar-left">
+        <button class="btn-ico" id="prev" data-i18n-aria="aria.prev"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M10 3.5 5.5 8 10 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="btn-ico play" id="play" data-i18n-aria="aria.play"><svg id="playIcon" width="15" height="15" viewBox="0 0 16 16"><path d="M5 3l8 5-8 5z" fill="currentColor"/></svg></button>
+        <button class="btn-ico" id="next" data-i18n-aria="aria.next"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="wk-pill"><small data-i18n="wk.short">Sem</small><span id="wk">12</span></div>
       </div>
-      <button class="btn-present" id="openDeck">
-        <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5l8 4.5-8 4.5z" fill="currentColor"/></svg>
-        <span data-i18n="nav.present">Apresentar</span>
-      </button>
-      <button class="nav-more" id="topbarMoreBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="topbarMenu" data-i18n-aria="nav.more">
-        <span class="nav-more-lbl" id="topbarMoreLbl" aria-hidden="true">PT · BRL</span>
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11"/></svg>
-      </button>
+      <div class="slider-wrap">
+        <input type="range" id="slider" min="1" max="12" value="12" data-i18n-aria="wk">
+        <div class="slider-ticks"><span id="tk-start">S1</span><span class="milestone" id="docAiTick" data-i18n="wk.docai">S5 · IA Docs</span><span id="tk-end">S12</span></div>
+      </div>
     </div>
     <div id="scrollProg" aria-hidden="true"></div>
   </div>

@@ -101,7 +101,9 @@
     });
     if (ASST.busy) html += `<div class="asst-msg bot pending"><div class="asst-body"><span class="asst-dots" aria-hidden="true"><i></i><i></i><i></i></span> ${T("Waiting for Claude...","Aguardando o Claude...")} <button type="button" class="asst-link" id="asst-cancel">${T("Cancel","Cancelar")}</button></div></div>`;
     log.innerHTML = html;
-    log.scrollTop = log.scrollHeight;
+    // Show the last question at the top with its answer below it (the pending row stays in view while waiting).
+    const lastQ = [...log.querySelectorAll(".asst-msg.user")].pop();
+    log.scrollTop = ASST.busy || !lastQ ? log.scrollHeight : log.scrollTop + lastQ.getBoundingClientRect().top - log.getBoundingClientRect().top - 8;
   }
 
   function syncAssistantUi() {
@@ -117,7 +119,7 @@
     const model = typeof activeAiModel === "function" ? activeAiModel() : "";
     $("asst-src").textContent = ASST.mode === "model" ? `Claude (${model})` : asstEngineLabel();
     $("asst-mode-note").textContent = ASST.mode === "model"
-      ? T(`Each question is sent with a snapshot of the panel to the Anthropic API (${model}) using your key. The answer is model output and may be wrong. If the call fails, the panel engine answers.`,`Cada pergunta é enviada com um retrato do painel para a API da Anthropic (${model}) usando a sua chave. A resposta é de modelo e pode estar errada. Se a chamada falhar, o motor do painel responde.`)
+      ? T(`Each question is sent with a snapshot of the panel to ${typeof aiDest === "function" ? aiDest() : "the Anthropic API"} (${model}) using your key. The answer is model output and may be wrong. If the call fails, the panel engine answers.`,`Cada pergunta é enviada com um retrato do painel para ${typeof aiDest === "function" ? aiDest() : "a API da Anthropic"} (${model}) usando a sua chave. A resposta é de modelo e pode estar errada. Se a chamada falhar, o motor do painel responde.`)
       : keyOn
         ? T("Rules computed in this page from the panel's numbers. Not AI; nothing is sent anywhere.","Regras calculadas nesta página com os números do painel. Não é IA; nada é enviado para fora.")
         : T("Rules computed in this page from the panel's numbers. Not AI; nothing is sent anywhere. \"Ask Claude\" is optional and needs an API key.","Regras calculadas nesta página com os números do painel. Não é IA; nada é enviado para fora. \"Perguntar ao Claude\" é opcional e precisa de uma chave de API.");

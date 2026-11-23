@@ -30,4 +30,34 @@
     .ai-modes,.ai-insight-grid,.set-row-2{grid-template-columns:1fr}
   }
   @media(max-width:440px){.qgrid{grid-template-columns:1fr}}
+  /* Wide screens with the side menu (61-sidenav.css): the content column is narrower than the window, so the
+     layout steps above follow the content width (window minus 232px expanded or 64px collapsed), not the window. */
+  @media(min-width:1100px) and (max-width:1552px){html:not(.sn-collapsed) .hero-art{display:none}html:not(.sn-collapsed) .hero{grid-template-columns:minmax(0,1fr) auto}}
+  @media(min-width:1100px) and (max-width:1384px){html.sn-collapsed .hero-art{display:none}html.sn-collapsed .hero{grid-template-columns:minmax(0,1fr) auto}}
+  @media(min-width:1100px) and (max-width:1412px){
+    html:not(.sn-collapsed) .journey-bar,html:not(.sn-collapsed) .kpis,html:not(.sn-collapsed) .grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}
+    html:not(.sn-collapsed) .grid-3>.card:last-child{grid-column:1/-1}
+    html:not(.sn-collapsed) .sig-health-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    html:not(.sn-collapsed) .ias-drawer{grid-template-columns:1fr}
+    html:not(.sn-collapsed) .levers,html:not(.sn-collapsed) .prods{grid-template-columns:repeat(2,minmax(0,1fr))}
+    html:not(.sn-collapsed) .li-strip{grid-template-columns:minmax(0,1fr)}
+    html:not(.sn-collapsed) .li-head{flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;border-right:0;padding:0 2px 0 4px;flex-wrap:wrap}
+    html:not(.sn-collapsed) .li-pulse{position:static;margin:0;flex:none}
+    html:not(.sn-collapsed) .li-lbl,html:not(.sn-collapsed) .li-wk{padding-left:0}
+  }
+  @media(min-width:1100px) and (max-width:1244px){
+    html.sn-collapsed .journey-bar,html.sn-collapsed .kpis,html.sn-collapsed .grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}
+    html.sn-collapsed .grid-3>.card:last-child{grid-column:1/-1}
+    html.sn-collapsed .sig-health-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    html.sn-collapsed .ias-drawer{grid-template-columns:1fr}
+    html.sn-collapsed .levers,html.sn-collapsed .prods{grid-template-columns:repeat(2,minmax(0,1fr))}
+    html.sn-collapsed .li-strip{grid-template-columns:minmax(0,1fr)}
+    html.sn-collapsed .li-head{flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;border-right:0;padding:0 2px 0 4px;flex-wrap:wrap}
+    html.sn-collapsed .li-pulse{position:static;margin:0;flex:none}
+    html.sn-collapsed .li-lbl,html.sn-collapsed .li-wk{padding-left:0}
+  }
+  @media(min-width:1100px) and (max-width:1212px){
+    html:not(.sn-collapsed) .hero{grid-template-columns:1fr}html:not(.sn-collapsed) .hero-right{align-items:stretch}html:not(.sn-collapsed) .quarter-pill{justify-content:space-between}
+    html:not(.sn-collapsed) .grid-2,html:not(.sn-collapsed) .friction-card,html:not(.sn-collapsed) .price-grid,html:not(.sn-collapsed) .share-grid,html:not(.sn-collapsed) .sig-feed{grid-template-columns:1fr}
+  }
   @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}

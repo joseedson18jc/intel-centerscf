@@ -6,6 +6,8 @@
   const PILOT = { tenor: 75, spread: 1.2 };
   // Accepted range of each editable programme parameter (spend in BRL bn, tenor in days, spread in % p.a.).
   const PARAM_RANGE = { spend:[0.1, 500], base:[10, 50000], tenor:[1, 360], spread:[0, 10], fx:[FX_MIN, FX_MAX] };
+  // Approved limit of the pilot, in BRL million: one range for the Step 2 field, saved state and the suggestions review.
+  const LIMIT_RANGE = [50, 50000];
   const clampNum = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
   let appReady = false; // set by 99-boot after the first render
   const D = {
@@ -58,6 +60,10 @@
     {k:"flags",  lbl:["Risk flags","Alertas de risco"],              q:["Is growth safe?","O crescimento é seguro?"], d:0, u:["open","em aberto"], good:-1},
   ];
   const unitOf = m => typeof m.u === "function" ? m.u() : L(m.u);
+  // One precision rule for spread revenue: in USD the yearly amount is about a sixth of the BRL one, so it shows
+  // two decimals (level and weekly change alike) wherever it appears: KPI tile, briefing and assistant.
+  const revDec = () => ccy === "USD" ? 2 : 1;
+  const kpiDec = m => m.k === "rev" ? revDec() : m.d;
 
   // Cancellable animation tweener (eliminates race conditions!)
   const ease = t => 1 - Math.pow(1 - t, 3);

@@ -51,4 +51,6 @@
     .de-params label:first-child{grid-column:1/-1}
     .de-block .mbtn{padding:8px 12px;font-size:12.5px}
     #m-data .modal-body{padding:14px 14px 18px}
+    /* 16px stops iOS from zooming on focus; 36px gives a usable tap target */
+    .de-grid input{font-size:16px;min-height:36px}
   }
