@@ -60,7 +60,7 @@ for (const vp of [{ width: 1440, height: 900 }, { width: 390, height: 800 }]) {
   const hasDs = await has("[data-ds-bar] [data-ds]");
   const setDs = async id => { if (!hasDs) return false; await click(`[data-ds-bar] [data-ds="${id}"]`); await wait(200); return true; };
   const escape = async () => { await p.keyboard.press("Escape"); await wait(60); };
-  const openDialogs = () => p.evaluate(() => [...document.querySelectorAll('[role="dialog"]')].filter(d => !d.hidden).map(d => d.id));
+  const openDialogs = () => p.evaluate(() => [...document.querySelectorAll('[role="dialog"]')].filter(d => !d.hidden && d.getClientRects().length).map(d => d.id));
 
   // ---- 1. Original checks: switches, steps, week, full view ----
   for (const l of ["en", "pt"]) await step("lang " + l, () => setLang(l));
@@ -105,7 +105,7 @@ for (const vp of [{ width: 1440, height: 900 }, { width: 390, height: 800 }]) {
   // assistant), except the deck (walked separately) and anything that looks like a guided tour.
   const openers = await p.evaluate(() => [...document.querySelectorAll('button[id^="open"], [data-open-assistant], #asstFab, #assistant-fab')]
     .filter(e => !/deck|guide|tour|help/i.test(e.id + " " + e.className)).map(e => e.id ? "#" + e.id : "[data-open-assistant]"));
-  for (const need of ["#openData", "#openBrief", "#openSettings", "#openAI"]) if (!openers.includes(need)) fail("modal opener missing: " + need);
+  for (const need of ["#openData", "#openBrief", "#openSettings", "#openAssistant"]) if (!openers.includes(need)) fail("modal opener missing: " + need);
   if (!openers.some(o => /assist|chat|ask/i.test(o))) notes.push(tag + "no assistant opener found: assistant check skipped");
   const slidesSeen = new Set();
   const walkDeck = async label => {
