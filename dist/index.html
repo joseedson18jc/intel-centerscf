@@ -1912,6 +1912,7 @@
   <div class="stage" id="deckStage"><article class="slide" id="slide"></article></div>
 </div>
 
+
 <script>
 (() => {
   // ========== UNIFIED DESIGN TOKENS (LIGHT + DARK) ==========
@@ -1997,6 +1998,14 @@
   $("infra-2").innerHTML = INFRA_SVGS.bcb + INFRA_SVGS.cvm;
   $("infra-3").innerHTML = INFRA_SVGS.b3 + INFRA_SVGS.cerc + INFRA_SVGS.nuclea;
   $("infra-4").innerHTML = INFRA_SVGS.b3 + INFRA_SVGS.cerc + INFRA_SVGS.nuclea + INFRA_SVGS.bcb;
+
+  // ========== REFRESH BUS (lets feature modules react to any state change) ==========
+  // Core render paths call touch(); every module registered with onRefresh() is re-rendered once per frame.
+  const REFRESHERS = [];
+  let refreshPending = false;
+  function onRefresh(fn) { REFRESHERS.push(fn); }
+  function runRefreshers() { refreshPending = false; REFRESHERS.forEach(f => { try { f(); } catch (e) { console.error("[refresh]", e); } }); }
+  function touch() { if (refreshPending) return; refreshPending = true; (window.requestAnimationFrame || setTimeout)(runRefreshers); }
 
   // ========== LANGUAGE, CURRENCY & LOCALE HELPERS ==========
   const FX_RATE = 5.8889; // BCB PTAX closing rate 19/Nov/2026
@@ -4155,6 +4164,7 @@ Write ALL prose fields strictly in ${lang === "pt" ? "Brazilian Portuguese (PT-B
     updateKpis(w); forecast(w); commentary(w); alerts(w);
     ring("r1", D.sow[w - 1], C.blue); ring("r2", D.supShare[w - 1], C.sky);
     sectors(w); uplift(w); plan(w);
+    touch();
   }
   const playIcon = $("playIcon");
   function setPlaying(on) {
@@ -4251,6 +4261,7 @@ Write ALL prose fields strictly in ${lang === "pt" ? "Brazilian Portuguese (PT-B
     if (!deck.hidden) renderSlide();
     if (!proofModal.hidden && activeProofKey) renderProof(activeProofKey);
     if (!$("m-brief").hidden) $("brief-body").innerHTML = briefHTML();
+    touch();
   }
 
   document.querySelectorAll(".lang button").forEach(b => b.onclick = () => setLang(b.dataset.lang));

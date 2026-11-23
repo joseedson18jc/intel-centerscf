@@ -6,6 +6,7 @@
     updateKpis(w); forecast(w); commentary(w); alerts(w);
     ring("r1", D.sow[w - 1], C.blue); ring("r2", D.supShare[w - 1], C.sky);
     sectors(w); uplift(w); plan(w);
+    touch();
   }
   const playIcon = $("playIcon");
   function setPlaying(on) {

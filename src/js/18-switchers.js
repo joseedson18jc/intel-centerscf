@@ -42,4 +42,5 @@
     if (!deck.hidden) renderSlide();
     if (!proofModal.hidden && activeProofKey) renderProof(activeProofKey);
     if (!$("m-brief").hidden) $("brief-body").innerHTML = briefHTML();
+    touch();
   }

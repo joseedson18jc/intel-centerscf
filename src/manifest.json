@@ -42,6 +42,7 @@
   "js": [
     "js/00-theme-tokens.js",
     "js/01-brand-dom.js",
+    "js/01b-bus.js",
     "js/02-i18n-currency.js",
     "js/03-step-nav.js",
     "js/04-data-state.js",
@@ -60,5 +61,6 @@
     "js/17-playback-clock.js",
     "js/18-switchers.js",
     "js/99-boot.js"
-  ]
+  ],
+  "slots": {}
 }
