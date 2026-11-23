@@ -157,3 +157,8 @@
   .sn-clock-txt span{font-size:11px;font-weight:600}
   .sn-clock-txt strong{font-family:var(--head);font-size:14px;font-weight:700;color:var(--blue);white-space:nowrap;font-variant-numeric:tabular-nums}
   @media (min-width:1100px){.sn-collapsed .sn-clock{padding:10px 0;margin:10px 0 0;border:0;background:none;justify-content:center}}
+
+  /* Data source line, under the Data tool (moved from the hero) */
+  .sidenav .sn-src{display:flex;align-items:flex-start;gap:7px;width:auto;margin:0 6px 4px 39px;padding:5px 9px;border-radius:8px;font-size:10.5px;line-height:1.35;text-align:left;white-space:normal;box-shadow:none}
+  .sidenav .sn-src i{flex:0 0 auto;margin-top:4px}
+  @media (min-width:1100px){.sn-collapsed .sn-src{display:none}}

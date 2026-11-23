@@ -26,7 +26,7 @@ Merges two single-file versions (kept untouched under `legacy/`).
   validated against allowed ranges, shown before and after, accepted one by one, and undoable
 - Left sidebar menu by section (steps, tools, preferences), collapsible to icons, drawer on phones
 - Quick tutorial on every load (add `?notour` to the URL to skip it), dismissible tip per step, field hints
-- Quarter countdown moved from the hero to the left menu
+- Quarter countdown and data-source line moved from the hero to the left menu
 - Open Finance wordmark; brand "Early Money"; title "Intel Center - SCF Team"
 - System font stack (no external font request); the file makes no network call unless a Claude key is used
 - API test explains the cause when the page cannot reach the API (offline, embedded preview, blocked)

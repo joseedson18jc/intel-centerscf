@@ -1609,6 +1609,11 @@
   .sn-clock-txt span{font-size:11px;font-weight:600}
   .sn-clock-txt strong{font-family:var(--head);font-size:14px;font-weight:700;color:var(--blue);white-space:nowrap;font-variant-numeric:tabular-nums}
   @media (min-width:1100px){.sn-collapsed .sn-clock{padding:10px 0;margin:10px 0 0;border:0;background:none;justify-content:center}}
+
+  /* Data source line, under the Data tool (moved from the hero) */
+  .sidenav .sn-src{display:flex;align-items:flex-start;gap:7px;width:auto;margin:0 6px 4px 39px;padding:5px 9px;border-radius:8px;font-size:10.5px;line-height:1.35;text-align:left;white-space:normal;box-shadow:none}
+  .sidenav .sn-src i{flex:0 0 auto;margin-top:4px}
+  @media (min-width:1100px){.sn-collapsed .sn-src{display:none}}
   /* ========== DARK MODE (COMPLETE, ZERO BROKEN INLINE HACKS) ========== */
   html[data-theme="dark"]{
     color-scheme:dark;
@@ -1837,6 +1842,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10"/></svg>
         <span class="sn-lbl" data-i18n="nav.data">Dados</span>
       </button>
+      <button class="srcchip sn-src" id="src-chip" type="button"><i></i><span id="src-txt"></span></button>
       <button class="sn-item" id="openBrief" type="button">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3.5H7.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8Z"/><path d="M14 3.5V8h4.5M9 12.5h6M9 16h4"/></svg>
         <span class="sn-lbl" data-i18n="nav.brief">Briefing</span>
@@ -1937,7 +1943,6 @@
       </div>
       <h1 data-i18n="h1">Intel Center - SCF Team</h1>
       <p class="sub" id="heroSub"></p>
-      <button class="srcchip" id="src-chip" type="button"><i></i><span id="src-txt"></span></button>
     </div>
 
     <svg class="hero-art" viewBox="0 0 400 150" role="img" aria-label="Fluxo entre fornecedor, âncora e banco" data-i18n-aria="hero.art">
