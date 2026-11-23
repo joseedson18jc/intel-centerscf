@@ -45,7 +45,7 @@
   }
 
   const I18N = {
-    "nav.brand":["Supplier finance","Risco sacado"],"nav.sub":["Corporate Banking · Brazil","Corporate Banking · Brasil"],
+    "nav.brand":["Early Money","Early Money"],"nav.sub":["Corporate Banking · Brazil","Corporate Banking · Brasil"],
     "nav.ai":["AI Analysis ON","AI Analysis ON"],"nav.ai.aria":["Open AI Analysis ON","Abrir AI Analysis ON"],
     "nav.settings":["Dashboard settings & Anthropic API key","Configurações do painel e chave Anthropic"],
     "nav.data":["Data","Dados"],"nav.brief":["Briefing","Briefing"],
@@ -75,8 +75,8 @@
     "sp.1":["Step 1 of 4","Etapa 1 de 4"],"sp.2":["Step 2 of 4","Etapa 2 de 4"],"sp.3":["Step 3 of 4","Etapa 3 de 4"],"sp.4":["Step 4 of 4","Etapa 4 de 4"],
     "vm.step":["Step-by-step","Passo a passo"],"vm.all":["Full cockpit","Visão completa"],
     "ms.d1c":["Weekly · operational","Semanal · operacional"],"ms.d2c":["Weekly · predictability","Semanal · previsibilidade"],"ms.d3c":["Monthly / quarterly","Mensal / trimestral"],
-    "kick":["Brazil portfolio · Weekly review every Monday","Carteira Brasil · Revisão semanal, toda segunda"],
-    "h1":["SCF specialist weekly cockpit","Cockpit semanal do especialista de SCF"],"badge":["Illustrative data","Dados ilustrativos"],
+    "kick":["Brazil portfolio · Weekly review, daily inputs","Carteira Brasil · Revisão semanal, inputs diários"],
+    "h1":["SCF specialist weekly Intel Center","Intel Center semanal especialista de SCF"],"badge":["Illustrative data","Dados ilustrativos"],
     "aria.weekctl":["Week controls","Controles de semana"],"aria.prev":["Previous week","Semana anterior"],"aria.next":["Next week","Próxima semana"],
     "aria.play":["Play weekly history","Reproduzir histórico semanal"],"aria.quarter":["Quarter countdown","Contagem para o fim do trimestre"],"aria.clock":["Time remaining in quarter","Tempo restante no trimestre"],
     "wk":["Week","Semana"],"wk.short":["Wk","Sem"],"wk.docai":["W5 · Doc AI","S5 · IA Docs"],
