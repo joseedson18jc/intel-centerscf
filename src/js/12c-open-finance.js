@@ -43,7 +43,7 @@
       m.addEventListener("click", e => { if (e.target === m || e.target.hasAttribute("data-close")) closeSimpleModal(m); });
     }
     const logo = $("of-logo"), img = $("openOF") && $("openOF").querySelector("img");
-    if (logo && img && !logo.firstChild) { const c = img.cloneNode(); c.width = 96; c.height = 17; logo.appendChild(c); }
+    if (logo && img && !logo.firstChild) { const c = img.cloneNode(); c.removeAttribute("width"); c.removeAttribute("height"); logo.appendChild(c); }
   }
   if ($("openOF") && $("m-of")) {
     $("openOF").addEventListener("click", () => { ofWire(); renderOF(); openSimpleModal("m-of"); });
