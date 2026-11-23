@@ -1,5 +1,13 @@
 # Changelog
 
+## 14.1.0 (2026-11-23): Early Money design system applied
+
+- Brand fonts embedded (Inter and Plus Jakarta Sans, Latin subset, SIL OFL 1.1): same typography on every device, still no network request.
+- Top bar and side-menu header use the one brand gradient (fixed navy, white text, sky accent) in both themes; week control restyled for it.
+- Tokens completed (`--tint`, `--cyan`, `--red-bg`, `--green-bg`, spacing, `--radius-pill`, safe areas, `--brand-grad`); range sliders, touch sizes and component paddings follow the design system.
+- Product mark as favicon.
+- Kept on purpose: left side menu instead of the design system's top navigation and bottom tab bar; `green`, `amber` and `subtle` one shade darker than the design system so small text keeps 4.5:1.
+
 ## 14.0.0 (2026-11-23): unified, modular version
 
 Merges two single-file versions (kept untouched under `legacy/`).

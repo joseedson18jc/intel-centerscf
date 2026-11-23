@@ -94,7 +94,7 @@
     border-radius:10px;
   }
   .tip-card[hidden]{display:none}
-  .tip-ico{flex-shrink:0;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--surface);color:var(--blue)}
+  .tip-ico{flex-shrink:0;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:#fff}
   .tip-card p{flex:1;min-width:0;font-size:13px;line-height:1.5;color:var(--ink)}
   .tip-card p b{color:var(--navy);font-weight:700;margin-right:4px}
   .tip-x{

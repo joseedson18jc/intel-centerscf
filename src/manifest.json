@@ -2,6 +2,7 @@
   "head": "html/head.html",
   "css": [
     "css/00-tokens-base.css",
+    "css/01-fonts.css",
     "css/10-topbar.css",
     "css/11-layout.css",
     "css/12-hero.css",

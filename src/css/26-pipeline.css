@@ -4,7 +4,7 @@
   .formula span.res{background:#E6F2FB;border-color:#B4D6F0;color:var(--navy);font-weight:700}
   .pipe-presets{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
   .pipe-presets span{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--subtle)}
-  .pill-btn{border:1px solid var(--hair-strong);background:var(--surface);color:var(--navy);font-size:12px;font-weight:600;border-radius:999px;padding:5px 12px;cursor:pointer;transition:all .15s}
+  .pill-btn{border:1px solid var(--hair-strong);background:var(--surface);color:var(--navy);font-size:12px;font-weight:600;border-radius:999px;padding:6px 13px;cursor:pointer;transition:all .15s}
   .pill-btn:hover{border-color:var(--blue);color:var(--blue);background:#F2F8FD}
   .pill-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
   .pipe-wrap{overflow-x:auto;border:1px solid var(--hair);border-radius:12px;background:var(--surface)}

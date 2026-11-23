@@ -2,9 +2,9 @@
      Tools and preferences live in the side menu (61-sidenav.css). Below 1100px the menu button opens it as a drawer. */
   .topbar{
     position:sticky;top:0;z-index:45;
-    background:var(--surface);color:var(--ink);
-    border-bottom:1px solid var(--hair);
-    box-shadow:0 2px 10px rgba(0,32,91,.05);
+    background:var(--brand-grad);color:#fff;
+    border-bottom:1px solid rgba(255,255,255,.1);
+    box-shadow:0 4px 18px rgba(0,27,78,.16);
   }
   .header-notice{
     background:#00143A;
@@ -26,30 +26,43 @@
     position:relative;min-height:56px;
   }
   #scrollProg{
-    position:absolute;left:0;bottom:-1px;height:2px;width:0;
-    background:var(--blue);
+    position:absolute;left:0;bottom:0;height:2.5px;width:0;
+    background:linear-gradient(90deg,#00BDF2,#38BDF8);
     transition:width .1s linear;pointer-events:none;
   }
   .tb-menu-btn{
     display:none;flex-shrink:0;width:40px;height:40px;border-radius:10px;
-    border:1px solid var(--hair-strong);background:var(--surface);color:var(--navy);
+    border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.08);color:#fff;
     place-items:center;cursor:pointer;transition:border-color .15s,background .15s;
   }
-  .tb-menu-btn:hover{border-color:var(--blue);color:var(--blue)}
+  .tb-menu-btn:hover{border-color:#67CFDA;background:rgba(255,255,255,.16)}
   .tb-step{display:flex;align-items:center;gap:10px;min-width:0;margin-right:auto}
   .tb-step-n{
     flex-shrink:0;width:26px;height:26px;border-radius:50%;
-    background:var(--navy);color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center;
+    background:#fff;color:#00205B;font-size:12px;font-weight:800;display:grid;place-items:center;
   }
   .tb-step-txt{display:flex;flex-direction:column;min-width:0;line-height:1.2}
-  .tb-step-txt small{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--subtle);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .tb-step-txt strong{font-family:var(--head);font-size:15.5px;font-weight:700;color:var(--navy);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tb-step-txt small{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9FC5EB;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tb-step-txt strong{font-family:var(--head);font-size:15.5px;font-weight:700;color:#fff;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   /* The week control (styles in 12-hero.css) sits flat in the bar */
   .topbar .week-bar{background:transparent;border:0;box-shadow:none;padding:0;flex-wrap:nowrap;gap:12px;flex:0 1 auto;min-width:0}
   .topbar .slider-wrap{min-width:180px;width:clamp(180px,22vw,300px);flex:0 1 auto}
-  html[data-theme="dark"] header.topbar{background:var(--surface);border-bottom-color:var(--hair);box-shadow:0 2px 10px rgba(0,0,0,.3)}
-  html[data-theme="dark"] .tb-step-n{background:#38BDF8;color:#041225}
-  html[data-theme="dark"] #scrollProg{background:#38BDF8}
+  /* Week control on the navy bar: translucent controls, sky accent, same in both themes */
+  .topbar .btn-ico{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.24);color:#fff}
+  .topbar .btn-ico:hover{background:rgba(255,255,255,.16);border-color:#67CFDA;color:#fff}
+  .topbar .btn-ico.play,html[data-theme="dark"] .topbar .btn-ico.play{background:#00BDF2;border-color:#00BDF2;color:#041225;box-shadow:0 2px 10px rgba(0,189,242,.3)}
+  .topbar .btn-ico.play:hover{background:#38CBF5;border-color:#38CBF5;color:#041225}
+  .topbar .wk-pill,html[data-theme="dark"] .topbar .wk-pill{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff}
+  .topbar .wk-pill small{color:#9FC5EB}
+  .topbar .wk-pill span{color:#fff}
+  .topbar .slider-ticks{color:#9FC5EB}
+  .topbar .slider-ticks .milestone{color:#7DD9F7}
+  .topbar input[type=range]::-webkit-slider-runnable-track{background:rgba(255,255,255,.26)}
+  .topbar input[type=range]::-moz-range-track{background:rgba(255,255,255,.26)}
+  .topbar input[type=range]::-moz-range-progress{background:#00BDF2}
+  .topbar input[type=range]::-webkit-slider-thumb,html[data-theme="dark"] .topbar input[type=range]::-webkit-slider-thumb{background:#00BDF2;border-color:#fff}
+  .topbar input[type=range]::-moz-range-thumb,html[data-theme="dark"] .topbar input[type=range]::-moz-range-thumb{background:#00BDF2;border-color:#fff}
+  html[data-theme="dark"] header.topbar{border-bottom-color:rgba(56,189,248,.16);box-shadow:0 4px 18px rgba(0,0,0,.35)}
 
   .btn-present{
     display:inline-flex;align-items:center;gap:6px;

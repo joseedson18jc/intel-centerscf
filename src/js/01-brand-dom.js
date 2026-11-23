@@ -58,7 +58,7 @@
   const $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 
-  $("brandMark").innerHTML = scfMark(32);
+  $("brandMark").innerHTML = scfMark(34);
   $("deckBrandMark").innerHTML = scfMark(28);
   $("infra-1").innerHTML = INFRA_SVGS.cvm;
   $("infra-2").innerHTML = INFRA_SVGS.bcb + INFRA_SVGS.cvm;

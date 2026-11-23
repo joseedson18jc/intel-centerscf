@@ -94,6 +94,8 @@
   function syncHeaderMetrics() {
     const n = document.querySelector(".header-notice"), root = document.documentElement;
     root.style.setProperty("--notice-h", (n ? n.offsetHeight : 0) + "px");
+    const tb = document.querySelector("header.topbar");
+    if (tb) root.style.setProperty("--topbar-h", tb.offsetHeight + "px");   // side-menu header matches it (61-sidenav.css)
     root.style.scrollPaddingTop = (stickyHeaderH() + 12) + "px";
   }
   addEventListener("resize", () => { syncHeaderMetrics(); if (viewMode === "all") stepSpy(); }, {passive:true});

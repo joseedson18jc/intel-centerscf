@@ -20,12 +20,17 @@
     background:var(--surface);border-right:1px solid var(--hair);
     transition:width .2s var(--ease);
   }
-  .sn-head{display:flex;align-items:center;gap:6px;padding:12px 10px 8px 14px;min-height:60px}
-  .sidenav .brand-lockup{display:flex;align-items:center;gap:9px;min-width:0;flex:1;text-decoration:none;color:var(--navy);border-radius:10px}
-  .sidenav .brand-logo{width:32px;height:32px;border-radius:9px;background:#002D72;overflow:hidden}
+  /* Brand lockup (design system): product mark + name on the fixed navy gradient, white text in both themes */
+  .sn-head{display:flex;align-items:center;gap:6px;padding:12px 10px 12px 14px;min-height:60px;background:var(--brand-grad);color:#fff;border-bottom:1px solid rgba(255,255,255,.1)}
+  .sidenav .brand-lockup{display:flex;align-items:center;gap:9px;min-width:0;flex:1;text-decoration:none;color:#fff;border-radius:10px}
+  .sidenav .brand-logo{width:34px;height:34px;border-radius:9px;overflow:hidden}
   .sidenav .brand-title{display:flex;flex-direction:column;line-height:1.15;min-width:0}
-  .sidenav .brand-title strong{font-family:var(--head);font-size:15px;font-weight:700;letter-spacing:-.02em;color:var(--navy);white-space:nowrap}
-  .sidenav .brand-title span{font-size:10px;font-weight:500;color:var(--subtle);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sidenav .brand-title strong{font-family:var(--head);font-size:14.5px;font-weight:700;letter-spacing:-.02em;color:#fff;white-space:nowrap}
+  .sidenav .brand-title span{font-size:10px;font-weight:500;color:#9FC5EB;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* Desktop: the header is as tall as the top bar beside it, so the navy reads as one band */
+  @media (min-width:1100px){.sn-head{min-height:var(--topbar-h,89px)}}
+  .sn-head .sn-ico-btn{color:#CBE0F6}
+  .sn-head .sn-ico-btn:hover{background:rgba(255,255,255,.14);color:#fff}
   .sn-ico-btn{
     flex-shrink:0;width:32px;height:32px;border-radius:8px;border:0;background:transparent;color:var(--subtle);
     display:grid;place-items:center;cursor:pointer;transition:background .15s,color .15s;position:relative;
@@ -108,7 +113,7 @@
     body{padding-left:var(--sn-w);transition:padding-left .2s var(--ease),background-color .25s,color .25s}
     .sn-backdrop{display:none!important}
     /* Icons only */
-    .sn-collapsed .sn-head{flex-direction:column;gap:8px;padding:14px 0 8px}
+    .sn-collapsed .sn-head{flex-direction:column;gap:4px;padding:10px 0 6px}
     .sn-collapsed .sidenav .brand-lockup{flex:0 0 auto}
     .sn-collapsed .sidenav .sn-lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
     .sn-collapsed .sn-body{padding:2px 8px 12px}
@@ -151,7 +156,7 @@
   }
 
   /* Quarter countdown, pinned under the brand */
-  .sn-clock{display:flex;align-items:center;gap:10px;margin:2px 12px 8px;padding:8px 12px;border:1px solid var(--hair);border-left:3.5px solid var(--blue);border-radius:10px;background:var(--surface);color:var(--muted)}
+  .sn-clock{display:flex;align-items:center;gap:10px;margin:12px 12px 8px;padding:8px 12px;border:1px solid var(--hair);border-left:3.5px solid var(--blue);border-radius:10px;background:var(--surface);color:var(--muted)}
   .sn-clock svg{flex:0 0 auto;color:var(--blue)}
   .sn-clock-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
   .sn-clock-txt span{font-size:11px;font-weight:600}
