@@ -1,6 +1,7 @@
 // Smoke test: opens dist/index.html in headless Chromium and exercises the main controls.
 // Usage: node tools/smoke.mjs   (requires Playwright; exits 1 on any page/console error or horizontal overflow)
-import { chromium } from "playwright";
+import { createRequire } from "node:module";
+const { chromium } = createRequire(import.meta.url)("playwright");
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 const url = "file://" + join(dirname(fileURLToPath(import.meta.url)), "..", "dist", "index.html");
