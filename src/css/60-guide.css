@@ -35,7 +35,7 @@
   [aria-checked="true"]>.guide-switch{background:var(--green)}
   [aria-checked="true"]>.guide-switch::after{transform:translateX(12px)}
   @media(max-width:680px){
-    .guide-menu{left:8px!important;right:8px!important;top:auto!important;bottom:8px;width:auto}
+    .guide-menu{left:8px!important;right:8px!important;top:auto!important;bottom:72px;width:auto}   /* above a host badge pinned to the corner */
   }
 
   /* ---------- Tour: spotlight + card ---------- */
@@ -76,12 +76,13 @@
   .guide-btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
   .guide-btn.primary:hover{background:var(--blue);border-color:var(--blue);color:#fff}
   .guide-btn[hidden],.guide-skip[hidden]{display:none}
-  .guide-card.docked{right:24px;bottom:24px;left:auto!important;top:auto!important}
+  /* Hosts may pin their own badge to the bottom-right corner (e.g. a hosting badge): keep the tour buttons clear of it. */
+  .guide-card.docked{right:24px;bottom:84px;left:auto!important;top:auto!important}
   @media(max-width:680px){
     .guide-card,.guide-card.docked{
       left:0!important;right:0;top:auto!important;bottom:0;width:auto;
       border-radius:18px 18px 0 0;border-width:1px 0 0;
-      padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));
+      padding:14px 16px calc(76px + env(safe-area-inset-bottom,0px));
     }
   }
 

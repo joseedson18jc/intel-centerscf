@@ -87,6 +87,7 @@
     .asst-backdrop{background:var(--surface)}
     .asst-panel{width:100%;border-left:0;box-shadow:none;animation-name:asstUp}
     .asst-mode{grid-template-columns:1fr}
+    .asst-foot{padding-bottom:calc(68px + env(safe-area-inset-bottom,0px))}   /* clear of a host badge pinned to the corner */
   }
   @keyframes asstUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
   html[data-theme="dark"] .asst-seg button[aria-pressed="true"]{background:#38BDF8;color:#041225}

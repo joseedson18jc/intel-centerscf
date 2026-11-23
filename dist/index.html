@@ -1278,6 +1278,7 @@
     .asst-backdrop{background:var(--surface)}
     .asst-panel{width:100%;border-left:0;box-shadow:none;animation-name:asstUp}
     .asst-mode{grid-template-columns:1fr}
+    .asst-foot{padding-bottom:calc(68px + env(safe-area-inset-bottom,0px))}   /* clear of a host badge pinned to the corner */
   }
   @keyframes asstUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
   html[data-theme="dark"] .asst-seg button[aria-pressed="true"]{background:#38BDF8;color:#041225}
@@ -1358,7 +1359,7 @@
   [aria-checked="true"]>.guide-switch{background:var(--green)}
   [aria-checked="true"]>.guide-switch::after{transform:translateX(12px)}
   @media(max-width:680px){
-    .guide-menu{left:8px!important;right:8px!important;top:auto!important;bottom:8px;width:auto}
+    .guide-menu{left:8px!important;right:8px!important;top:auto!important;bottom:72px;width:auto}   /* above a host badge pinned to the corner */
   }
 
   /* ---------- Tour: spotlight + card ---------- */
@@ -1399,12 +1400,13 @@
   .guide-btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
   .guide-btn.primary:hover{background:var(--blue);border-color:var(--blue);color:#fff}
   .guide-btn[hidden],.guide-skip[hidden]{display:none}
-  .guide-card.docked{right:24px;bottom:24px;left:auto!important;top:auto!important}
+  /* Hosts may pin their own badge to the bottom-right corner (e.g. a hosting badge): keep the tour buttons clear of it. */
+  .guide-card.docked{right:24px;bottom:84px;left:auto!important;top:auto!important}
   @media(max-width:680px){
     .guide-card,.guide-card.docked{
       left:0!important;right:0;top:auto!important;bottom:0;width:auto;
       border-radius:18px 18px 0 0;border-width:1px 0 0;
-      padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));
+      padding:14px 16px calc(76px + env(safe-area-inset-bottom,0px));
     }
   }
 
@@ -7709,6 +7711,9 @@ Format: plain text, at most about 150 words, short paragraphs or "- " bullets, n
     return {left:l, top:t, right:r, bottom:b, width:r - l, height:b - t};
   }
   // Runs every frame while the tour is open, so the frame follows scrolling, re-renders and resizes.
+  // A host can pin its own badge to the bottom-right corner of the page (hosting badges do). The tour card and its
+  // buttons stay this far above the bottom edge so they are never under it. Matches bottom:84px in 60-guide.css.
+  const TOUR_CLEAR = 72;
   function tourFrame() {
     if (!tourOpen()) return;
     const st = TOUR[tourIdx], els = tourTargets(st), pad = 6, vw = innerWidth, vh = innerHeight;
@@ -7721,16 +7726,16 @@ Format: plain text, at most about 150 words, short paragraphs or "- " bullets, n
     } else {
       const r = tourRect(els);
       // Never frame more than the free area: tall targets are clipped above the docked card.
-      const floor = Math.max(0, r.top - pad), ceil = Math.min(docked ? vh - cardH - (guideSmall() ? 8 : 36) : vh, r.bottom + pad);
+      const floor = Math.max(0, r.top - pad), ceil = Math.min(docked ? vh - cardH - (guideSmall() ? 8 : TOUR_CLEAR + 24) : vh, r.bottom + pad);
       guideSpot.classList.remove("none");
       Object.assign(guideSpot.style, {left:Math.max(4, r.left - pad) + "px", top:floor + "px", width:Math.min(vw - 8, r.right + pad) - Math.max(4, r.left - pad) + "px", height:Math.max(0, ceil - floor) + "px"});
       if (!docked && tourPlace === "side") {
         // Targets in the side menu: the card sits beside the menu, level with the target.
         guideCard.style.left = Math.min(vw - cardW - 12, r.right + pad + 14) + "px";
-        guideCard.style.top = Math.min(vh - cardH - 12, Math.max(12, r.top + r.height / 2 - cardH / 2)) + "px";
+        guideCard.style.top = Math.min(vh - cardH - TOUR_CLEAR, Math.max(12, r.top + r.height / 2 - cardH / 2)) + "px";
       } else if (!docked) {
         const left = Math.min(vw - cardW - 12, Math.max(12, r.left + r.width / 2 - cardW / 2));
-        const top = Math.min(vh - cardH - 12, Math.max(12, r.bottom + pad + 12));
+        const top = Math.min(vh - cardH - TOUR_CLEAR, Math.max(12, r.bottom + pad + 12));
         guideCard.style.left = left + "px"; guideCard.style.top = top + "px";
       }
     }
@@ -7762,9 +7767,9 @@ Format: plain text, at most about 150 words, short paragraphs or "- " bullets, n
     if (els.length) {
       const r = tourRect(els), fixed = !!els[0].closest(".topbar,.sidenav");
       const top0 = (typeof stickyHeaderH === "function" ? stickyHeaderH() : 0) + 14;
-      const freeH = innerHeight - top0 - 12;
+      const freeH = innerHeight - top0 - TOUR_CLEAR;
       if (fixed && !small && els[0].closest(".sidenav") && r.right + 14 + guideCard.offsetWidth <= innerWidth - 12) tourPlace = "side";
-      else if (fixed) { if (r.bottom + 18 + cardH > innerHeight - 12) tourPlace = "docked"; }
+      else if (fixed) { if (r.bottom + 18 + cardH > innerHeight - TOUR_CLEAR) tourPlace = "docked"; }
       else {
         const need = r.height + 18 + cardH;
         let want;
@@ -7774,7 +7779,7 @@ Format: plain text, at most about 150 words, short paragraphs or "- " bullets, n
         const maxY = document.documentElement.scrollHeight - innerHeight;
         const y = Math.max(0, Math.min(maxY, scrollY + r.top - want));
         // If the page cannot scroll far enough for the card to sit below the target, dock the card instead.
-        if (!small && tourPlace === "below" && (r.top - (y - scrollY)) + need > innerHeight - 12) tourPlace = "docked";
+        if (!small && tourPlace === "below" && (r.top - (y - scrollY)) + need > innerHeight - TOUR_CLEAR) tourPlace = "docked";
         if (Math.abs(y - scrollY) > 2) window.scrollTo({top:y, behavior:reducedMotion() ? "instant" : "smooth"});
       }
     }

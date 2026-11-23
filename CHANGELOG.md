@@ -34,6 +34,8 @@ Merges two single-file versions (kept untouched under `legacy/`).
   appear; "audited/verified" wording replaced by what the page actually does (reproduces the arithmetic)
 
 **Fixed**
+- Tour card, guide menu and assistant footer kept clear of a host badge pinned to the bottom-right corner
+  (the tour could not be advanced on phones and tablets on the hosted site)
 - Review pass: limit verdicts named by scenario, physical ceiling of the book, NaN guards, per-dataset restore,
   field clamping, CSV maxima, market figures relabelled as illustrative, invented positions removed, deck layout,
   keyboard and contrast fixes
