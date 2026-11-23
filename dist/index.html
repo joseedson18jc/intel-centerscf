@@ -3,9 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <script>try{var qp=new URLSearchParams(location.search).get("theme"),st=localStorage.getItem("scf-theme"),t=(qp==="dark"||qp==="light")?qp:(st==="dark"||st==="light")?st:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme="light";}</script>
 <title>Risco Sacado Brasil · Cockpit semanal do especialista</title>
 <style>
@@ -18,13 +15,13 @@
     --sky-soft:#E0F5FC;
     --red:#E31B23;
     --red-soft:#FDECEC;
-    --green:#0E8A5F;
+    --green:#097650;
     --green-soft:#E6F6F0;
-    --amber:#C27803;
+    --amber:#9E5D00;
     --amber-soft:#FEF5E7;
     --ink:#0B172A;
     --muted:#4A5D73;
-    --subtle:#6B7E94;
+    --subtle:#56697F;
     --hair:#DFE6EF;
     --hair-strong:#CBD6E4;
     --canvas:#F3F6FA;
@@ -34,8 +31,10 @@
     --bar-peers:#056DAE;
     --bar-fidc:#D97706;
     --bar-free:#DCE7F3;
-    --head:"Plus Jakarta Sans","Inter",system-ui,-apple-system,sans-serif;
-    --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    /* System font stacks only: the page makes no font request (it must work offline). Inter / Plus Jakarta Sans are used
+       only when already installed on the machine. */
+    --head:"Plus Jakarta Sans","Inter",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     --radius-sm:8px;
     --radius-md:14px;
     --radius-lg:18px;
@@ -192,6 +191,9 @@
   .srcchip:hover{border-color:var(--blue);color:var(--navy)}
   .srcchip i{width:7px;height:7px;border-radius:50%;background:var(--amber);display:inline-block}
   .srcchip.live i{background:var(--green)}
+  /* A long file name (no spaces) must wrap instead of widening the page. */
+  .hero>*{min-width:0}
+  .kick-row>*,.hero .sub,.srcchip,.srcchip span{max-width:100%;min-width:0;overflow-wrap:anywhere}
 
   .hero-art{width:300px;height:auto;display:block}
   .hero-art .flow{stroke-dasharray:3 6;animation:dash 1.8s linear infinite}
@@ -350,6 +352,7 @@
   }
   .act.p1 .pr{background:var(--red)}
   .act.p2 .pr{background:var(--amber)}
+  html[data-theme="dark"] .act .pr{color:#071120}   /* light badges in dark mode: dark digits (contrast) */
   .act.p3 .pr{background:var(--green)}
   .act b{color:var(--navy);font-size:14px;font-family:var(--head)}
   .act p{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.45}
@@ -400,6 +403,7 @@
   .alert-item b{font-weight:700;color:var(--navy)}
   .sev{flex:0 0 auto;width:9px;height:9px;border-radius:50%;margin-top:5px}
 
+  #briefingWeekTag{max-width:100%;min-width:0;overflow-wrap:anywhere}   /* long CSV file names wrap */
   /* ========== FORECAST & LIMIT CHECK (STEP 2) ========== */
   .seg-group{display:inline-flex;align-items:center;gap:2px;background:var(--canvas);border:1px solid var(--hair);border-radius:999px;padding:3px}
   .seg-group button{border:0;background:transparent;color:var(--muted);font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;cursor:pointer;transition:all .15s;white-space:nowrap}
@@ -584,7 +588,7 @@
   .funder-hd{display:flex;flex-direction:column;align-items:center;gap:4px}
   .funder-dot{width:24px;height:24px;border-radius:7px;color:#fff;font-family:var(--head);font-size:9.5px;font-weight:800;display:grid;place-items:center}
   .mcell{display:inline-block;min-width:62px;padding:4px 7px;border-radius:7px;font-weight:700;font-size:12px;color:var(--navy)}
-  .mcell.empty{color:#B0BFCE;font-weight:500;background:transparent}
+  .mcell.empty{color:var(--subtle);font-weight:500;background:transparent}
   .mcell.lvl-1{background:rgba(5,109,174,.10)}
   .mcell.lvl-2{background:rgba(5,109,174,.20)}
   .mcell.lvl-3{background:rgba(5,109,174,.32)}
@@ -613,7 +617,7 @@
   .rb-code{font-family:var(--head);font-size:13px;font-weight:800;color:var(--navy);background:#EAF2FB;border:1px solid #C9DDF3;border-radius:7px;padding:2px 8px}
   .rb-anchors{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
   .verdict{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
-  .verdict.win{background:var(--green-soft);color:var(--green)}.verdict.mid{background:#E6F2FB;color:var(--blue)}.verdict.high{background:var(--red-soft);color:var(--red)}
+  .verdict.win{background:var(--green-soft);color:var(--green)}.verdict.mid{background:#E6F2FB;color:var(--blue)}.verdict.high{background:var(--red-soft);color:#B3141B}
   .rb-track{position:relative;height:28px;background:#F1F5FA;border-radius:8px;margin:4px 0 6px}
   .rb-range{position:absolute;top:7px;height:14px;border-radius:999px;background:linear-gradient(90deg,#B7CFE6,#7CA9D4)}
   .rb-med{position:absolute;top:4px;width:2.5px;height:20px;background:var(--navy);border-radius:2px}
@@ -657,7 +661,8 @@
   .sig-badge.pos{background:var(--green-soft);color:var(--green)}
   .sig-badge.neu{background:#EAF2FB;color:var(--blue)}
   .sig-badge.warn{background:var(--amber-soft);color:#9A5B00}
-  .sig-badge.risk{background:var(--red-soft);color:var(--red)}
+  .sig-badge.risk{background:var(--red-soft);color:#B3141B}
+  html[data-theme="dark"] .sig-badge.risk{color:#FCA5A5}
   .sig-feed{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:12px}
   .sig-event{border:1px solid var(--hair);border-radius:11px;padding:13px 14px;background:var(--surface);display:flex;flex-direction:column;gap:8px}
   .sig-event-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
@@ -682,6 +687,11 @@
   .sig-note{display:block;font-size:11.5px;color:var(--muted);line-height:1.4;padding-top:6px;border-top:1px dashed var(--hair)}
   .sig-badge.na{background:transparent;color:var(--subtle)}
   html[data-theme="dark"] .verdict.low{background:rgba(251,191,36,.16);color:#FCD34D}
+  html[data-theme="dark"] .verdict.high{color:#FCA5A5}
+  html[data-theme="dark"] .verdict.mid{background:rgba(56,189,248,.16);color:#7DD3FC}
+  .sh-seg.dk{color:#1A1200}   /* text on the amber FIDC segment */
+  .sig-pub{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:1px 7px;border-radius:999px;white-space:nowrap;vertical-align:1px;background:var(--sky-soft);color:var(--blue-dark);border:1px solid var(--hair-strong)}
+  html[data-theme="dark"] .sig-pub{color:#7DD3FC}
   html[data-theme="dark"] .mcell.citi-cell.zero{background:transparent;color:#7DD3FC}
   .sig-feed .sig-asrep,.sig-feed .ds-na-block{grid-column:1/-1;margin-top:0}
   /* ========== STEP 1 CLICKABLE PROOF CARDS & SHARED MODALS ========== */
@@ -749,7 +759,7 @@
   .csv-opts label{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--navy)}
   .csv-opts input{width:76px;text-align:right;border:1px solid var(--hair-strong);border-radius:6px;padding:4px 6px;background:var(--surface);color:var(--navy);font:600 12.5px var(--body)}
   #data-msg{font-size:13px;font-weight:600}#data-msg.ok{color:var(--green)}#data-msg.err{color:var(--red)}
-  .brief-prev{border:1px solid var(--hair);border-radius:12px;padding:16px;font-size:13px;background:var(--surface-alt)}
+  .brief-prev{border:1px solid var(--hair);border-radius:12px;padding:16px;font-size:13px;background:var(--surface-alt);overflow-wrap:anywhere}
   .brief-prev h4{color:var(--navy);margin:14px 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.1em;font-family:var(--head)}
   .brief-prev table{width:100%;border-collapse:collapse}.brief-prev td{padding:5px 6px;border-top:1px solid var(--hair)}
   .brief-prev ol,.brief-prev ul{padding-left:18px}.brief-prev li{margin:4px 0;line-height:1.45}
@@ -837,14 +847,14 @@
   .stage{flex:1;display:grid;place-items:center;padding:16px 20px 20px;min-height:0}
   .slide{
     width:min(100%,calc((100vh - 104px) * 16 / 9));aspect-ratio:16/9;
-    background:#fff;border-radius:16px;padding:clamp(20px,4%,54px);
+    background:#fff;border-radius:16px;padding:clamp(18px,3%,40px) clamp(20px,4%,54px);
     display:flex;flex-direction:column;overflow:auto;color:var(--ink);
     container-type:inline-size;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.45);
   }
   .slide.enter{animation:slidein .38s var(--ease) both}
   @keyframes slidein{from{opacity:0;transform:translateX(20px)}}
   .slide .eyebrow{font-size:max(11px,1.02cqw);letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:700}
-  .slide h2{font-family:var(--head);font-size:max(21px,3cqw);letter-spacing:-.035em;color:var(--navy);line-height:1.12;margin:.28em 0 .45em;font-weight:700;max-width:34ch}
+  .slide h2{font-family:var(--head);font-size:max(21px,3cqw);letter-spacing:-.035em;color:var(--navy);line-height:1.12;margin:.28em 0 .45em;font-weight:700;max-width:38ch}
   .slide p,.slide li,.slide td,.slide th,.slide dd{font-size:max(13px,1.45cqw);line-height:1.5}
   .slide .lead{font-size:max(14.5px,1.85cqw);color:var(--muted);max-width:60ch;margin-bottom:.8em}
   .slide .gs{display:grid;gap:max(8px,1.3cqw)}
@@ -938,6 +948,8 @@
   .risklist b{color:var(--navy);font-size:max(12.5px,1.4cqw);font-family:var(--head)}.risklist p{font-size:max(11.5px,1.2cqw);color:var(--muted)}
   .gains{margin-top:max(9px,1.2cqw)}
 
+  /* Portrait or square stages (tablets held upright): use the full stage height instead of a short 16:9 box. */
+  @media (max-aspect-ratio:1/1){.slide{aspect-ratio:auto;height:100%}}
   /* ========== DATA MODAL: PROGRAMME PARAMETERS + WEEKLY DATA EDITOR ========== */
   .de-intro{font-size:13px;color:var(--muted);line-height:1.5}
   .de-block{border:1px solid var(--hair);border-radius:14px;padding:14px 16px;background:var(--surface);display:flex;flex-direction:column;gap:11px;min-width:0}
@@ -1608,9 +1620,9 @@
     --navy:#E8F1FC;--navy-mid:#C9DFF8;--blue:#38BDF8;--blue-dark:#0EA5E9;--sky:#38BDF8;
     --sky-soft:rgba(56,189,248,.16);--red:#F87171;--red-soft:rgba(248,113,113,.15);
     --green:#34D399;--green-soft:rgba(52,211,153,.14);--amber:#FBBF24;--amber-soft:rgba(251,191,36,.15);
-    --ink:#E6EEF8;--muted:#9FB3C8;--subtle:#7B93AE;--hair:#1E3350;--hair-strong:#2C466B;
+    --ink:#E6EEF8;--muted:#9FB3C8;--subtle:#8CA3BD;--hair:#1E3350;--hair-strong:#2C466B;
     --canvas:#071120;--surface:#0D1B30;--surface-alt:#12243E;
-    --bar-citi:#0284C7;--bar-peers:#2563EB;--bar-fidc:#D97706;--bar-free:#243C5C;
+    --bar-citi:#0369A1;--bar-peers:#2563EB;--bar-fidc:#D97706;--bar-free:#243C5C;
     --shadow-sm:0 1px 2px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.22);
     --shadow-md:0 4px 12px rgba(0,0,0,.34),0 12px 28px rgba(0,0,0,.28);
   }
@@ -1620,6 +1632,7 @@
   html[data-theme="dark"] .pill-switch button[aria-pressed="true"]{background:#38BDF8;color:#041225}
   html[data-theme="dark"] .nav-step-btn[aria-current="step"] .sn{background:#041225;color:#38BDF8}
   html[data-theme="dark"] .badge{color:#FCD34D;border-color:rgba(251,191,36,.35)}
+  html[data-theme="dark"] .ds-switch button[aria-pressed="true"] small{color:#041225}
   html[data-theme="dark"] .btn-ico:hover{background:#152A47}
   html[data-theme="dark"] .btn-ico.play{background:#0EA5E9;border-color:#0EA5E9;color:#041225}
   html[data-theme="dark"] .wk-pill,html[data-theme="dark"] .role-chip,html[data-theme="dark"] .rank,html[data-theme="dark"] .rb-code{background:#132946;border-color:#26456E;color:#E8F1FC}
@@ -1658,7 +1671,7 @@
   html[data-theme="dark"] .infra-chip{background:#12243E;border-color:#274266;color:#DCE9F7}
   html[data-theme="dark"] .proto-pill{color:#6EE7B7;border-color:rgba(52,211,153,.35)}
   html[data-theme="dark"] .proto-pill.amber{color:#FCD34D;border-color:rgba(251,191,36,.35)}
-  html[data-theme="dark"] .mcell.empty{color:#47607E}
+  html[data-theme="dark"] .mcell.empty{color:var(--subtle)}
   html[data-theme="dark"] .mcell.lvl-1{background:rgba(56,189,248,.12);color:#DCE9F7}
   html[data-theme="dark"] .mcell.lvl-2{background:rgba(56,189,248,.22);color:#E8F4FF}
   html[data-theme="dark"] .mcell.lvl-3{background:rgba(56,189,248,.34);color:#FFFFFF}
@@ -1705,7 +1718,7 @@
   @media print{
     html,body{background:#fff!important}
     body>*:not(#brief-print){display:none!important}
-    #brief-print{display:block;font-family:var(--body);color:#0A1628;padding:10mm}
+    #brief-print{display:block;font-family:var(--body);color:#0A1628;padding:10mm;overflow-wrap:anywhere}
     #brief-print h1{font-family:var(--head);color:#00205B;font-size:20px;margin-bottom:8px}
     #brief-print .brief-prev{border:0;padding:0;background:transparent!important}
     #brief-print,#brief-print *{color:#0A1628!important;background:transparent!important}
@@ -1915,7 +1928,7 @@
     <div>
       <div class="kick-row">
         <span class="kick" data-i18n="kick">Carteira Brasil · Revisão semanal, inputs diários</span>
-        <span class="badge" id="dataBadge">Dados de exemplo</span>
+        <span class="badge" id="dataBadge">Dados ilustrativos</span>
         <span class="fx-badge" id="fxBadge" hidden></span>
       </div>
       <h1 data-i18n="h1">Intel Center - SCF Team</h1>
@@ -1948,7 +1961,7 @@
       <circle class="pulse" r="3.5" fill="#0E8A5F"><animateMotion dur="3.4s" begin="1.2s" repeatCount="indefinite" path="M330 52 C300 10 120 0 60 22"/></circle>
       <g font-size="10.5" font-weight="600" fill="#4A5D73" text-anchor="middle" font-family="var(--body)">
         <text x="46" y="146" data-i18n="hero.sup">Fornecedores</text><text x="200" y="116" data-i18n="hero.anc">Âncora</text><text x="340" y="116" data-i18n="hero.bank">Banco</text>
-        <text x="120" y="68" font-size="9" data-i18n="hero.inv">duplicatas</text><text x="270" y="68" font-size="9" data-i18n="hero.conf">confirmadas</text><text x="200" y="10" font-size="9" fill="#056DAE" data-i18n="hero.pay">antecipação de crédito</text>
+        <text x="120" y="68" font-size="9" data-i18n="hero.inv">duplicatas</text><text x="270" y="68" font-size="9" data-i18n="hero.conf">confirmadas</text><text x="200" y="10" font-size="9" fill="#056DAE" data-i18n="hero.pay">antecipação de recebíveis</text>
       </g>
     </svg>
 
@@ -2366,7 +2379,7 @@
         <span class="step-pill-lg" data-i18n="sp.4">Etapa 4 de 4</span>
         <h2 data-i18n="sec.mkt">Mercado e concorrência</h2>
       </div>
-      <span class="sub-meta" data-i18n="sec.mkt.n">Inteligência externa · protótipo funcional ilustrativo pronto para integração</span>
+      <span class="sub-meta" data-i18n="sec.mkt.n">Inteligência externa · protótipo interativo ilustrativo, números fabricados</span>
     </div>
     <aside class="tip-card" id="tip-4" data-tip="4" role="note">
       <span class="tip-ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.6 10.2A4.3 4.3 0 1 1 10.4 10.2c-.5.4-.8.9-.8 1.5H6.4c0-.6-.3-1.1-.8-1.5Z"/><path d="M6.6 14h2.8"/></svg></span>
@@ -2392,18 +2405,18 @@
     <div class="card maturity-card" id="sec-arch">
       <div class="maturity-top">
         <div>
-          <div class="lbl" data-i18n="mk.mat.lbl">Composição atual de dados no cockpit</div>
+          <div class="lbl" data-i18n="mk.mat.lbl">Composição dos dados neste protótipo</div>
           <h3 data-i18n="mk.mat.h">Arquitetura dos 4 módulos externos (Fase 2)</h3>
         </div>
-        <span class="proto-pill amber" data-i18n="mk.proto">Feeds ilustrativos · pronto p/ APIs</span>
+        <span class="proto-pill amber" data-i18n="mk.proto">Feeds ilustrativos · fontes previstas</span>
       </div>
-      <div class="maturity-bar" role="img" data-i18n-aria="ds.aria.mix" aria-label="80% interno, 15% pipeline, 5% mercado">
+      <div class="maturity-bar" role="img" data-i18n-aria="ds.aria.mix" aria-label="Cerca de 80% dados do programa piloto, 15% receitas públicas × hipóteses, 5% mercado fabricado">
         <div class="m-seg-1"></div><div class="m-seg-2"></div><div class="m-seg-3"></div>
       </div>
       <div class="maturity-legend">
-        <span><i style="background:var(--bar-citi)"></i><strong data-i18n="mk.m1">80% dados internos do programa</strong></span>
-        <span><i style="background:var(--bar-peers)"></i><strong data-i18n="mk.m2">15% pipeline interno & 3T26 público</strong></span>
-        <span><i style="background:var(--bar-fidc)"></i><strong data-i18n="mk.m3">5% mercado (modelado abaixo p/ conectar)</strong></span>
+        <span><i style="background:var(--bar-citi)"></i><strong data-i18n="mk.m1">~80% dados do programa piloto (dados de exemplo por padrão)</strong></span>
+        <span><i style="background:var(--bar-peers)"></i><strong data-i18n="mk.m2">~15% receitas públicas do 3T26 × hipóteses de trabalho</strong></span>
+        <span><i style="background:var(--bar-fidc)"></i><strong data-i18n="mk.m3">~5% mercado (fabricado para o protótipo)</strong></span>
       </div>
       <p class="note" style="margin-top:8px" data-i18n="mk.note"></p>
     </div>
@@ -2460,8 +2473,8 @@
         <label><span data-i18n="mk.2.sim">Testar taxa proposta (CDI +):</span><input type="range" id="mktSpreadSlider" min="0.60" max="2.60" step="0.05" value="1.20"></label>
         <span class="spread-val-pill" id="mktSpreadVal">CDI + 1,20%</span>
         <div class="legend" style="margin-left:auto">
-          <span><i style="background:#7CA9D4;height:8px"></i><span data-i18n="mk.2.lg.band">Faixa mercado (BCB + bancos)</span></span>
-          <span id="lgFidc"><i style="background:var(--amber);width:10px;height:10px;border-radius:2px"></i><span data-i18n="mk.2.lg.fidc">FIDC sênior (CVM)</span></span>
+          <span><i style="background:#7CA9D4;height:8px"></i><span data-i18n="mk.2.lg.band">Faixa de mercado (fabricada)</span></span>
+          <span id="lgFidc"><i style="background:var(--amber);width:10px;height:10px;border-radius:2px"></i><span data-i18n="mk.2.lg.fidc">Marca de FIDC sênior (fabricada)</span></span>
           <span><i style="background:var(--blue);width:10px;height:10px;transform:rotate(45deg)"></i><span data-i18n="mk.2.lg.citi">Proposta Citi</span></span>
         </div>
       </div>
@@ -2930,13 +2943,13 @@
   // ========== UNIFIED DESIGN TOKENS (LIGHT + DARK) ==========
   const THEME_LIGHT = {
     navy:"#00205B", navyMid:"#002D72", blue:"#056DAE", sky:"#00BDF2", red:"#E31B23",
-    green:"#0E8A5F", amber:"#D97706", slate:"#9FB4CA", muted:"#4A5D73", subtle:"#6B7E94",
+    green:"#097650", amber:"#D97706", slate:"#9FB4CA", muted:"#4A5D73", subtle:"#56697F",
     grid:"#DCE5F0", ringTrack:"#E6EEF7", barMuted:"#C9D7E7", freeSeg:"#DCE7F3",
     nodeBg:"#EDF4FC", nodeStroke:"#D1E1F3", series:["#00205B","#056DAE","#1E88C7","#00BDF2","#7FD8F7"]
   };
   const THEME_DARK = {
     navy:"#E8F1FC", navyMid:"#C9DFF8", blue:"#38BDF8", sky:"#7DD3FC", red:"#F87171",
-    green:"#34D399", amber:"#FBBF24", slate:"#537094", muted:"#9FB3C8", subtle:"#7B93AE",
+    green:"#34D399", amber:"#FBBF24", slate:"#537094", muted:"#9FB3C8", subtle:"#8CA3BD",
     grid:"#1E3350", ringTrack:"#1B314E", barMuted:"#263F5E", freeSeg:"#243C5C",
     nodeBg:"#132946", nodeStroke:"#2A4B75", series:["#0284C7","#0EA5E9","#38BDF8","#7DD3FC","#BAE6FD"]
   };
@@ -3022,6 +3035,8 @@
   // ========== LANGUAGE, CURRENCY & LOCALE HELPERS ==========
   // FX rate (BRL per USD). It is a number typed into the panel: the default is only a starting value,
   // the app cannot verify it against any source, so labels call it "rate entered in the panel".
+  // Default 5.8889 is the owner's choice. Company figures published in USD are shown "as reported", so they do not
+  // depend on this rate.
   const FX_DEFAULT = 5.8889, FX_MIN = 1, FX_MAX = 20;
   let FX_RATE = FX_DEFAULT;
   let lang = "pt", ccy = "BRL";
@@ -3078,7 +3093,7 @@
     "nav.next4":["Next · Step 4: Market","Próximo · Etapa 4: Mercado"],
     "nav.prev3":["Step 3: Anchor pipeline","Etapa 3: Pipeline de âncoras"],
     "hero.sup":["Suppliers","Fornecedores"],"hero.anc":["Anchor","Âncora"],"hero.bank":["Bank","Banco"],
-    "hero.inv":["invoices","duplicatas"],"hero.conf":["confirmed","confirmadas"],"hero.pay":["credit advance","antecipação de crédito"],
+    "hero.inv":["invoices","duplicatas"],"hero.conf":["confirmed","confirmadas"],"hero.pay":["early payment","antecipação de recebíveis"],
     "st.who":["Used by:","Quem usa:"],
     "st.1.short":["Diagnose","Diagnóstico"],"st.1.tag":["Decision 1","Decisão 1"],"st.1.title":["Diagnose program & onboarding","Diagnosticar programa e adesão"],
     "st.1.desc":["Action plan, auditable KPIs, briefing, risk alerts, document-AI funnel and propensity.","Plano de ação, KPIs auditáveis, briefing, alertas, funil com IA de documentos e propensão."],
@@ -3131,25 +3146,25 @@
     "pp.total":["Pipeline total","Total do pipeline"],"pp.tenor":["Average days discounted","Prazo médio antecipado (dias)"],"pp.spread":["Annual spread %","Spread anual %"],"pp.reset":["Reset hypotheses","Restaurar hipóteses"],
     "pp.caveat":["Flow is not balance: implied balance = annual flow × average days discounted ÷ 365, and moves with seasonality. Adoption is weighted by supplier volume. Ranking reflects the hypotheses above, not Citi data or company disclosures.","Fluxo não é saldo: saldo implícito = fluxo anual × prazo médio antecipado ÷ 365, e varia com a sazonalidade. A adesão é ponderada pelo volume dos fornecedores. O ranking reflete as hipóteses acima, não dados do Citi nem informações divulgadas pelas empresas."],
     "pp.cards.h":["Anchor qualification snapshots (3Q26)","Fichas rápidas por âncora (3T26)"],"pp.cards.n":["Where to investigate and what decisive check unlocks each account","Onde investigar e qual validação destrava cada conta"],
-    "sec.mkt":["Market and competition","Mercado e concorrência"],"sec.mkt.n":["External intelligence · interactive illustrative prototype ready for live feeds","Inteligência externa · protótipo funcional ilustrativo pronto para integração"],
-    "mk.mat.lbl":["Current cockpit data mix","Composição atual de dados no cockpit"],"mk.mat.h":["Architecture of the 4 external intelligence modules (Phase 2)","Arquitetura dos 4 módulos externos (Fase 2)"],"mk.proto":["Illustrative feeds · API-ready","Feeds ilustrativos · pronto p/ APIs"],
-    "mk.m1":["80% internal program data","80% dados internos do programa"],"mk.m2":["15% internal & public 3Q26 pipeline","15% pipeline interno & 3T26 público"],"mk.m3":["5% market (modeled below to connect)","5% mercado (modelado abaixo p/ conectar)"],
+    "sec.mkt":["Market and competition","Mercado e concorrência"],"sec.mkt.n":["External intelligence · interactive illustrative prototype, fabricated figures","Inteligência externa · protótipo interativo ilustrativo, números fabricados"],
+    "mk.mat.lbl":["Data mix of this prototype","Composição dos dados neste protótipo"],"mk.mat.h":["Architecture of the 4 external intelligence modules (Phase 2)","Arquitetura dos 4 módulos externos (Fase 2)"],"mk.proto":["Illustrative feeds · planned sources","Feeds ilustrativos · fontes previstas"],
+    "mk.m1":["~80% pilot program data (example data by default)","~80% dados do programa piloto (dados de exemplo por padrão)"],"mk.m2":["~15% public 3Q26 revenues × working hypotheses","~15% receitas públicas do 3T26 × hipóteses de trabalho"],"mk.m3":["~5% market (fabricated for the prototype)","~5% mercado (fabricado para o protótipo)"],
     "mk.tab.all":["All 4 modules","Todos os 4 módulos"],"mk.src":["Data source","Fonte de dado"],"mk.out":["Output","Entrega"],
     "mk.1tag":["4.1 · Competitive matrix","4.1 · Matriz competitiva"],"mk.1h":["Competitors by anchor","Concorrentes por âncora"],"mk.1q":["Which banks and FIDCs already run reverse factoring for each anchor?","Quais bancos e FIDCs já operam o risco sacado de cada âncora?"],
     "mk.1s":["Anchors' financial-statement notes on supplier finance (IAS 7 / IFRS 7, since 2024) and CVM FIDC filings.","Notas explicativas das âncoras sobre risco sacado (IAS 7 / IFRS 7 desde 2024) e informes de FIDC na CVM."],"mk.1o":["Anchor × funder matrix with estimated program size.","Matriz âncora × financiador com tamanho estimado."],
     "mk.cf.all":["All","Todos"],"mk.cf.banks":["Banks","Bancos"],"mk.cf.fidc":["FIDCs (CVM)","FIDCs (CVM)"],
     "mk.2tag":["4.2 · Pricing benchmark (CDI + x)","4.2 · Benchmark de taxa (CDI + x)"],"mk.2h":["Price benchmark","Preço comparado"],"mk.2q":["Is Citi's rate competitive against the market (CDI + x)?","A taxa do Citi é competitiva contra o mercado (CDI + x)?"],
     "mk.2s":["Central Bank rate statistics for receivables discounting, FIDC senior-quota spreads and RM lost-deal feedback.","Estatísticas do Banco Central para desconto de duplicatas, spreads de FIDC sênior e motivo de perda dos RMs."],"mk.2o":["Citi spread vs. market band by anchor rating.","Spread do Citi contra faixa de mercado por rating."],
-    "mk.rt.all":["All ratings","Todos os ratings"],"mk.2.sim":["Test proposed spread (CDI +):","Testar taxa proposta (CDI +):"],"mk.2.lg.band":["Market band (BCB + banks)","Faixa mercado (BCB + bancos)"],"mk.2.lg.fidc":["FIDC senior (CVM)","FIDC sênior (CVM)"],"mk.2.lg.citi":["Citi proposal","Proposta Citi"],
+    "mk.rt.all":["All ratings","Todos os ratings"],"mk.2.sim":["Test proposed spread (CDI +):","Testar taxa proposta (CDI +):"],"mk.2.lg.band":["Market band (fabricated)","Faixa de mercado (fabricada)"],"mk.2.lg.fidc":["FIDC senior mark (fabricated)","Marca de FIDC sênior (fabricada)"],"mk.2.lg.citi":["Citi proposal","Proposta Citi"],
     "mk.2.rm.lbl":["RM feedback · lost deals","Feedback dos RMs · negócios perdidos"],"mk.2.rm.h":["Why recent bids were lost","Por que perdemos disputas recentes"],"mk.2.rm.sub":["Illustrative sample of loss reasons reported by relationship managers.","Amostra ilustrativa de motivos reportados pelos gerentes de relacionamento."],
     "mk.3tag":["4.3 · Registrar reconciliation","4.3 · Reconciliação por registradora"],"mk.3h":["Real share","Share real"],"mk.3q":["What part of each anchor's eligible payables does Citi already cover, vs. peers?","Que parte do contas a pagar elegível de cada âncora o Citi já cobre frente aos pares?"],
-    "mk.3s":["Electronic duplicata registrars (B3, CERC, Núclea), anchor payables and internal program volume.","Registradoras de duplicata escritural (B3, CERC, Núclea), contas a pagar e volume interno."],"mk.3o":["Replaces illustrative share-of-wallet rings with measured share.","Substitui os anéis ilustrativos por share medido."],
+    "mk.3s":["Electronic duplicata registrars (B3, CERC, Núclea), anchor payables and internal program volume.","Registradoras de duplicata escritural (B3, CERC, Núclea), contas a pagar e volume interno."],"mk.3o":["Once connected: share measured at the registrars, replacing the illustrative rings (fabricated here).","Quando conectado: share medido nas registradoras, no lugar dos anéis ilustrativos (fabricado aqui)."],
     "mk.3.sync":["Synced with Step 3 eligible purchases","Sincronizado com compras elegíveis da Etapa 3"],"mk.3.ring.lbl":["Consolidated share (5 anchors)","Share consolidado (5 âncoras)"],"mk.3.ring.note":["Replaces Step 1 illustrative rings once connected to B3, CERC & Núclea registries and internal volume.","Substitui os anéis ilustrativos da Etapa 1 quando conectado a B3, CERC, Núclea e volume interno."],
     "mk.3.lg.citi":["Citi (covered)","Citi (coberto)"],"mk.3.lg.peers":["Peer banks","Bancos pares"],"mk.3.lg.fidc":["FIDCs","FIDCs"],"mk.3.lg.free":["Unfinanced (open headroom)","Não financiado (espaço livre)"],
     "mk.4tag":["4.4 · Credit & infrastructure monitor","4.4 · Monitor de crédito e infraestrutura"],"mk.4h":["External signals","Sinais externos"],"mk.4q":["Are anchor credit and market infrastructure moving for or against us?","O crédito da âncora e a infraestrutura de mercado estão a favor ou contra?"],
     "mk.4s":["Electronic duplicata adoption by anchor, 3Q26 rating/leverage signals and supply-chain stress indicators.","Adesão à duplicata escritural por âncora, rating/alavancagem do 3T26 e sinais de estresse na cadeia."],"mk.4o":["Alerts feeding Step 1 (risk & actions) and Step 3 (credit requests).","Alertas que alimentam a Etapa 1 (risco e ações) e a Etapa 3 (pedido de crédito)."],
     "mk.sf.all":["All signals","Todos os sinais"],"mk.sf.s1":["Feeds Step 1 · Risk","Alimenta Etapa 1 · Risco"],"mk.sf.s3":["Feeds Step 3 · Credit","Alimenta Etapa 3 · Crédito"],"mk.4.feed.lbl":["Actionable alerts routed to cockpit steps","Alertas acionáveis roteados para o cockpit"],
-    "mk.note":["Today about 80% of this cockpit is internal program data, 15% internal/3Q26 pipeline and 5% market. The 4 modules below demonstrate the Phase 2 intelligence layer with illustrative feeds ready for live IAS 7/IFRS 7, CVM, BCB and registrar APIs.","Hoje cerca de 80% deste cockpit é dado interno do programa, 15% pipeline interno/3T26 e 5% mercado. Os 4 módulos abaixo entregam a camada de inteligência da Fase 2 com dados ilustrativos prontos para integrações reais de IAS 7/IFRS 7, CVM, BCB e registradoras."],
+    "mk.note":["In this prototype, about 80% of the figures are pilot program data (example data unless you load your own file under Data), about 15% are public 3Q26 revenues multiplied by working hypotheses and about 5% is a fabricated market. The split is a rough indication, not a measurement. In a real deployment, the 4 modules below would draw on the anchors' financial statement notes on supplier finance (IAS 7 / IFRS 7), FIDC reports filed with the CVM, BCB statistics and the receivables registrars.","Neste protótipo, cerca de 80% dos números são dados do programa piloto (dados de exemplo, a menos que você carregue seu próprio arquivo em Dados), cerca de 15% são receitas públicas do 3T26 multiplicadas por hipóteses de trabalho e cerca de 5% é mercado fabricado. A divisão é uma indicação aproximada, não uma medição. Em uma implantação real, os 4 módulos abaixo seriam alimentados pelas notas explicativas das âncoras sobre risco sacado (IAS 7 / IFRS 7), pelos informes de FIDC na CVM, pelas estatísticas do BCB e pelas registradoras de recebíveis."],
     "md.lbl":["Local data layer · 100% in-browser","Camada de dados local · 100% no navegador"],"md.h":["Program data and parameters","Dados e parâmetros do programa"],
     "md.p":["Everything on screen is recalculated from the parameters and the weekly table below. Edits are saved only in this browser and are never uploaded anywhere.","Tudo na tela é recalculado a partir dos parâmetros e da tabela semanal abaixo. As alterações ficam salvas só neste navegador e não são enviadas para lugar nenhum."],
     "md.par.h":["Program parameters","Parâmetros do programa"],
@@ -3463,7 +3478,7 @@
     $("comment").textContent = t;
   }
   const ALERTS = [
-    [3, () => C.red,   ["<b>Duplicate invoice</b> submitted twice by a supplier: blocked for review","<b>Duplicata repetida</b> enviada duas vezes por um fornecedor: bloqueada para análise"]],
+    [3, () => C.red,   ["<b>Duplicate invoice:</b> the same invoice submitted twice by a supplier, blocked for review","<b>Duplicata em duplicidade:</b> o mesmo título apresentado duas vezes por um fornecedor, bloqueado para análise"]],
     [1, () => C.red,   ["<b>Concentration:</b> top 10 suppliers hold 46% of the balance","<b>Concentração:</b> os 10 maiores fornecedores detêm 46% do saldo"]],
     [5, () => C.amber, ["<b>KYC gap:</b> 4 suppliers with expired documents","<b>Pendência de KYC:</b> 4 fornecedores com documentos vencidos"]],
     [8, () => C.amber, ["<b>Utilization drop</b> at one supplier (−30% vs 4-week average)","<b>Queda de utilização</b> em um fornecedor (−30% vs média de 4 semanas)"]],
@@ -3532,7 +3547,7 @@
     const lost = Math.round((1 - v[3] / v[2]) * 100);
     $("fcall").innerHTML = mode === "before"
       ? T(`Biggest leak: <b>−${lost}%</b> of suppliers lost at the documents step.`,`Maior perda: <b>−${lost}%</b> dos fornecedores na etapa de documentos.`)
-      : T(`Document AI cuts the leak to <b style="color:var(--blue)">−${lost}%</b> and lifts first discounts from ${F.before[5]} to <b style="color:var(--blue)">${F.after[5]}</b>.`,`A IA de documentos reduz a perda para <b style="color:var(--blue)">−${lost}%</b> e eleva os primeiros descontos de ${F.before[5]} para <b style="color:var(--blue)">${F.after[5]}</b>.`);
+      : T(`Document AI cuts the loss at the documents step from ${Math.round((1 - F.before[3] / F.before[2]) * 100)}% to <b style="color:var(--blue)">${lost}%</b> and lifts first discounts from ${F.before[5]} to <b style="color:var(--blue)">${F.after[5]}</b>.`,`A IA de documentos reduz a perda na etapa de documentos de ${Math.round((1 - F.before[3] / F.before[2]) * 100)}% para <b style="color:var(--blue)">${lost}%</b> e eleva os primeiros descontos de ${F.before[5]} para <b style="color:var(--blue)">${F.after[5]}</b>.`);
     funnelNote();
   }
   // Labels the funnel as the example invitation wave and, when the supplier base differs from the wave,
@@ -3888,10 +3903,10 @@
   const DATASETS = {
     q3: {
       id:"q3",
-      name:["3Q26 annualised","3T26 anualizado"],
+      name:["3Q26 annualized","3T26 anualizado"],
       tag:["Default","Padrão"],
-      desc:["Revenue base: 3Q26 releases (Nov 2026), quarter × 4, with Embraer on its 2026 guidance. Market tables: balance by funder including an invented Citi position, share by registrar, price bands with median and FIDC marks.",
-            "Base de receita: balanços do 3T26 (nov/2026), trimestre × 4, com a Embraer pelo guidance de 2026. Tabelas de mercado: saldo por financiador com uma posição do Citi inventada, share por registradora, faixas de preço com mediana e marca de FIDC."],
+      desc:["Revenue base: 3Q26 releases (Nov 2026), quarter × 4, with Embraer on its 2026 guidance. Market tables: balance by funder (Citi assumed zero, as there is no public information on a Citi program at these anchors), share by registrar, price bands with median and FIDC marks.",
+            "Base de receita: balanços do 3T26 (nov/2026), trimestre × 4, com a Embraer pelo guidance de 2026. Tabelas de mercado: saldo por financiador (Citi assumido como zero, pois não há informação pública sobre programa do Citi nessas âncoras), share por registradora, faixas de preço com mediana e marca de FIDC."],
       revTag:["3Q26","3T26"],
       revCardLbl:["3Q26 net revenue & 2026 base (public)","Receita líquida 3T26 & base 2026 (pública)"],
       matrixUnit:"balance",
@@ -3899,7 +3914,7 @@
       dupLbl:["Duplicata 2027","Duplicata 2027"],
       i18n:{},
       anchors:[
-        {id:"jbs", name:"JBS", color:"#C8102E", src:"jbs", q3:116.8, rev:467.2,
+        {id:"jbs", name:"JBS", color:"#C8102E", src:"jbs", q3:116.8, rev:467.2, usd:{q3:22.7, rev:90.8},   // reports in US$: rev = quarter × 4
           q3Note:["3Q26: R$116.8bn (US$22.7bn, +0.6% YoY USD · −5.1% BRL); leverage 3.54× (USD)","3T26: R$ 116,8 bi (US$ 22,7 bi, +0,6% a/a USD · −5,1% BRL); alavancagem 3,54× (USD)"],
           revNote:["3Q26 R$116.8bn (US$22.7bn) → R$467.2bn annualized","3T26 R$ 116,8 bi (US$ 22,7 bi) → R$ 467,2 bi anualizado"],
           addr:2.0, sector:["Protein & food","Proteína e alimentos"],
@@ -3912,12 +3927,12 @@
           look:["Recurring suppliers of industrial inputs, packaging and services across combined MBRF entities.","Fornecedores recorrentes de insumos industriais, embalagens e serviços na base combinada MBRF."],
           check:["Post-merger Marfrig + BRF perimeter (net debt R$45.7bn, 3.45× in 3Q26): unify payables and avoid double counting.","Perímetro pós-fusão Marfrig + BRF (dívida líq. R$ 45,7 bi, 3,45× no 3T26): unificar contas a pagar e evitar contagem dupla."]},
         {id:"vot", name:"Votorantim", color:"#0033A0", src:"vot", q3:16.3, rev:65.2,
-          q3Note:["3Q26: R$16.3bn holding economic (+3% YoY; net cash R$8.4bn) · V. Cimentos R$8.5bn (Brazil R$4.2bn, 1.71×)","3T26: R$ 16,3 bi econômica holding (+3% a/a; caixa líq. R$ 8,4 bi) · V. Cimentos R$ 8,5 bi (Brasil R$ 4,2 bi, 1,71×)"],
-          revNote:["3Q26 R$16.3bn holding economic (V. Cimentos R$8.5bn) → R$65.2bn annualized","3T26 R$ 16,3 bi econômica holding (V. Cimentos R$ 8,5 bi) → R$ 65,2 bi anualizado"],
+          q3Note:["3Q26: net revenue R$16.3bn in the holding's economic view (proportional stakes, per the release; +3% YoY; net cash R$8.4bn), a wider perimeter than consolidated revenue · V. Cimentos R$8.5bn (Brazil R$4.2bn, 1.71×)","3T26: receita líquida de R$ 16,3 bi na visão econômica da holding (participações proporcionais, conforme o release; +3% a/a; caixa líq. R$ 8,4 bi), perímetro mais amplo que a receita consolidada · V. Cimentos R$ 8,5 bi (Brasil R$ 4,2 bi, 1,71×)"],
+          revNote:["3Q26 net revenue R$16.3bn, holding's economic view (V. Cimentos R$8.5bn) → R$65.2bn annualized","3T26 receita líquida de R$ 16,3 bi, visão econômica da holding (V. Cimentos R$ 8,5 bi) → R$ 65,2 bi anualizado"],
           addr:9.0, sector:["Industrial holding","Holding industrial"],
           look:["Map opportunity by operating company (V. Cimentos, metals, energy), not as one group-level anchor.","Mapear oportunidade por empresa operacional (V. Cimentos, metais, energia), não como âncora única."],
           check:["Which CNPJ buys, which entity holds the Citi relationship and limit, and which units can join.","Qual CNPJ compra, qual entidade tem relacionamento e limite com o Citi e quais unidades podem aderir."]},
-        {id:"emb", name:"Embraer", color:"#056DAE", src:"emb", q3:12.067, rev:43.7,
+        {id:"emb", name:"Embraer", color:"#056DAE", src:"emb", q3:12.067, rev:43.7, usd:{q3:2.347, rev:8.5},   // reports in US$: rev = midpoint of 2026 guidance
           q3Note:["3Q26 record: R$12.067bn (US$2.347bn, +17% YoY USD, 10 Nov 2026); 2026 guidance raised to US$8.4–8.6bn","Recorde 3T26: R$ 12,067 bi (US$ 2,347 bi, +17% a/a USD, 10/nov/2026); guidance 2026 elevado p/ US$ 8,4–8,6 bi"],
           revNote:["3Q26 record R$12.067bn (US$2.347bn) · 2026 guidance US$8.4–8.6bn (≈ R$43.7bn)","Recorde 3T26 R$ 12,067 bi (US$ 2,347 bi) · guidance 2026 US$ 8,4–8,6 bi (≈ R$ 43,7 bi)"],
           addr:8.0, sector:["Aerospace","Aeroespacial"],
@@ -3936,27 +3951,28 @@
         {k:"sant", name:"Santander",       abbr:"ST",  col:"#DC0000", type:"bank"},
         {k:"btg",  name:"BTG Pactual",     abbr:"BTG", col:"#001E62", type:"bank"},
         {k:"bb",   name:"Banco do Brasil", abbr:"BB",  col:"#003882", type:"bank"},
-        {k:"fidc", name:"FIDCs (CVM)",     abbr:"FD",  col:"#0E8A5F", type:"fidc"},
+        {k:"fidc", name:"FIDCs (CVM)",     abbr:"FD",  col:"#097650", type:"fidc"},
         {k:"citi", name:"Citi",            abbr:"CT",  col:"#056DAE", type:"citi"}
       ],
+      // Citi = 0: assumed, there is no public information on a Citi program at these anchors (Step 3 shows a relationship only).
       comp:[
-        {id:"jbs", itau:420, brad:310, sant:260, btg:180, bb:290, fidc:240, citi:110, gap:360,
+        {id:"jbs", itau:420, brad:310, sant:260, btg:180, bb:290, fidc:240, citi:0, gap:360,
           iasTerms:["90–120d financed vs. 45–60d standard payables (IAS 7 Note · illustrative).","90–120d no risco sacado vs. 45–60d padrão (Nota IAS 7 · ilustrativo)."],
           cvmNote:["3 multi-originator FIDCs active in CVM filings; senior quotas priced around CDI + 1.45%.","3 FIDCs multicedentes ativos na CVM; cotas sênior perto de CDI + 1,45%."],
           play:["Target Brazil packaging & MRO entities where FIDC pricing is wider than bank balance sheet.","Atacar compradoras Brasil de embalagens e MRO onde o FIDC está mais caro que balanço bancário."]},
-        {id:"mbrf", itau:280, brad:220, sant:190, btg:140, bb:210, fidc:195, citi:65, gap:250,
+        {id:"mbrf", itau:280, brad:220, sant:190, btg:140, bb:210, fidc:195, citi:0, gap:250,
           iasTerms:["85–110d financed vs. 45–55d standard; post-merger Marfrig + BRF perimeter under unification.","85–110d no programa vs. 45–55d padrão; perímetro Marfrig + BRF em unificação."],
           cvmNote:["Legacy BRF & Marfrig FIDC pools overlap on packaging suppliers — consolidation window.","FIDCs legados de BRF e Marfrig se sobrepõem em embalagens — janela de consolidação."],
           play:["Propose unified post-merger onboarding with Document AI to win consolidated CNPJs.","Propor onboarding unificado pós-fusão com IA de documentos para capturar CNPJs consolidados."]},
-        {id:"vot", itau:240, brad:195, sant:150, btg:110, bb:130, fidc:120, citi:85, gap:280,
+        {id:"vot", itau:240, brad:195, sant:150, btg:110, bb:130, fidc:120, citi:0, gap:280,
           iasTerms:["75–105d across cement, metals & energy operating companies (decentralized notes).","75–105d nas operacionais de cimento, metais e energia (notas descentralizadas)."],
           cvmNote:["Selective FIDC usage in mid-tier subsidiaries; flagship V. Cimentos relies on core banks.","Uso seletivo de FIDCs em subsidiárias médias; V. Cimentos opera com bancos principais."],
           play:["Map buying CNPJs unit by unit and pitch expansion to 2 under-served operating companies.","Mapear CNPJs compradores por unidade e propor expansão em 2 operacionais subatendidas."]},
-        {id:"emb", itau:145, brad:95, sant:110, btg:60, bb:120, fidc:55, citi:70, gap:165,
+        {id:"emb", itau:145, brad:95, sant:110, btg:60, bb:120, fidc:55, citi:0, gap:165,
           iasTerms:["60–90d domestic industrial payables; export flows separated. Record 3Q26 R$12.067bn.","60–90d em compras industriais domésticas; exportação separada. Recorde 3T26 R$ 12,067 bi."],
           cvmNote:["Low FIDC reliance — preference for Tier-1 relationship banks with global trade capabilities.","Baixa dependência de FIDC — preferência por bancos Tier-1 com atuação global em trade."],
           play:["Differentiate with fast invoice-approval integration ahead of Q4 seasonal delivery peak.","Diferenciar com integração rápida de aceite antes do pico sazonal de entregas no 4T."]},
-        {id:"nat", itau:125, brad:110, sant:90, btg:85, bb:50, fidc:140, citi:40, gap:145,
+        {id:"nat", itau:125, brad:110, sant:90, btg:85, bb:50, fidc:140, citi:0, gap:145,
           iasTerms:["75–105d on B2B packaging, fragrances & contract manufacturing suppliers.","75–105d para fornecedores B2B de embalagens, fragrâncias e manufatura terceirizada."],
           cvmNote:["Active FIDC usage helped cut 3Q26 leverage to 1.83×; fast onboarding attracts mid-sized suppliers.","Uso ativo de FIDC ajudou a reduzir alavancagem 3T26 p/ 1,83×; cadastro ágil atrai médios."],
           play:["Win back FIDC-funded B2B suppliers via competitive CDI spread + frictionless Document AI.","Reconquistar fornecedores B2B financiados em FIDC combinando spread competitivo + IA de docs."]}
@@ -3974,11 +3990,11 @@
         {lbl:["ERP / registry integration lead time","Prazo de integração ERP / registradora"], pct:13, col:() => C.amber}
       ],
       share:[
-        {id:"jbs",  citi:12, peers:44, fidc:14, free:30, reg:"b3",     regPct:78},
-        {id:"mbrf", citi:8,  peers:42, fidc:17, free:33, reg:"cerc",   regPct:71},
-        {id:"vot",  citi:14, peers:39, fidc:11, free:36, reg:"b3",     regPct:66},
-        {id:"emb",  citi:16, peers:40, fidc:8,  free:36, reg:"nuclea", regPct:82},
-        {id:"nat",  citi:10, peers:35, fidc:22, free:33, reg:"cerc",   regPct:69}
+        {id:"jbs",  citi:0,  peers:44, fidc:14, free:42, reg:"b3",     regPct:78},
+        {id:"mbrf", citi:0,  peers:42, fidc:17, free:41, reg:"cerc",   regPct:71},
+        {id:"vot",  citi:0,  peers:39, fidc:11, free:50, reg:"b3",     regPct:66},
+        {id:"emb",  citi:0,  peers:40, fidc:8,  free:52, reg:"nuclea", regPct:82},
+        {id:"nat",  citi:0,  peers:35, fidc:22, free:43, reg:"cerc",   regPct:69}
       ],
       pilotOthers:null,
       health:[
@@ -3988,25 +4004,27 @@
         {id:"emb",  rating:"brAAA", outlook:["Positive","Positiva"],outCls:"pos", reg:"nuclea", dupPct:82, stress:["Low","Baixo"],        stCls:"pos", net:["Strong","Forte"],       netCls:"pos"},
         {id:"nat",  rating:"brAA−", outlook:["Watch","Observação"], outCls:"warn",reg:"cerc",   dupPct:69, stress:["Elevated","Atenção"], stCls:"warn",net:["Selective","Cautela"],  netCls:"warn"}
       ],
+      // Each q3 signal keeps public facts and invented content apart: pub:true marks a title quoted from the 3Q26 releases
+      // (as entered by the author); bodyFab:true marks a body that is an invented scenario; other bodies are the prototype's reading.
       signals:[
-        {id:"emb", route:"step3", sev:"green", sources:["nuclea","bcb"],
-          title:["Record 3Q26 revenue (R$12.067bn) + 2026 guidance raised to US$8.4–8.6bn","Receita recorde no 3T26 (R$ 12,067 bi) + guidance 2026 elevado p/ US$ 8,4–8,6 bi"],
-          body:["Free cash flow guidance lifted to ≥US$700m alongside 82% Núclea electronic-duplicata readiness — strong credit case for limit expansion.","Projeção de FCL elevada para ≥ US$ 700 mi com 82% de prontidão na Núclea — cenário forte de crédito para ampliar limite."]},
-        {id:"nat", route:"step1", sev:"amber", sources:["cerc","cvm"],
-          title:["3Q26 Brazil sales −9% (R$2.920bn) despite leverage falling to 1.83× w/ FIDC","Vendas Brasil −9% no 3T26 (R$ 2,920 bi), embora alavancagem tenha caído p/ 1,83× com FIDC"],
-          body:["Returned to net profit (R$49m), but product-availability bottlenecks in Brazil warrant monitoring supplier cadence before scaling wave 2.","Reverteu prejuízo (lucro R$ 49 mi), mas gargalos de abastecimento no Brasil pedem atenção à cadência dos fornecedores antes da onda 2."]},
-        {id:"mbrf", route:"step3", sev:"blue", sources:["cerc","cvm"],
-          title:["3Q26 net income +123.5% (R$210m) on R$41.424bn revenue; leverage at 3.45×","Lucro +123,5% no 3T26 (R$ 210 mi) com receita de R$ 41,424 bi; alavancagem em 3,45×"],
-          body:["Post-merger Marfrig + BRF payables unification opens bankable headroom vs. legacy FIDCs; calibrate credit request against R$45.7bn net debt.","Unificação pós-fusão Marfrig + BRF abre espaço frente a FIDCs legados; calibrar pedido de crédito considerando dívida líquida de R$ 45,7 bi."]},
-        {id:"jbs", route:"step3", sev:"amber", sources:["b3","cvm"],
-          title:["3Q26 revenue R$116.8bn (US$22.7bn) with 3.51× leverage; Beef NA back to positive EBITDA","Receita 3T26 R$ 116,8 bi (US$ 22,7 bi) com alavancagem 3,51×; Beef NA voltou ao EBITDA positivo"],
-          body:["Cattle-cost pressure compressed EBITDA margin to 5.2%; B3 registrar trail (78%) strengthens collateral verification for credit requests.","Pressão do gado comprimiu margem EBITDA para 5,2%; trilha na B3 (78%) reforça lastro verificável no pedido de crédito."]},
-        {id:"vot", route:"step1", sev:"green", sources:["b3","bcb"],
-          title:["3Q26 holding net cash R$8.4bn; V. Cimentos R$8.5bn revenue & 1.71× leverage","Caixa líquido holding R$ 8,4 bi no 3T26; V. Cimentos R$ 8,5 bi de receita e 1,71×"],
-          body:["Strong balance sheet across operating companies; stage supplier campaigns by CNPJ/unit where ERP integration with B3 is complete.","Balanço sólido nas operacionais; fatiar campanhas por CNPJ/unidade onde a integração ERP com a B3 já está concluída."]},
+        {id:"emb", route:"step3", sev:"green", sources:["nuclea","bcb"], pub:true, bodyFab:true,
+          title:["Record 3Q26 revenue (R$12.067bn); 2026 guidance raised to US$8.4–8.6bn of revenue and at least US$700m of adjusted free cash flow","Receita recorde no 3T26 (R$ 12,067 bi); guidance 2026 elevado para US$ 8,4–8,6 bi de receita e fluxo de caixa livre ajustado de pelo menos US$ 700 mi"],
+          body:["If 82% of the anchor's payables were ready for electronic duplicata at Núclea, as in this invented scenario, the credit case for a larger limit would be strong.","Se 82% do contas a pagar da âncora estivesse pronto para a duplicata escritural na Núclea, como neste cenário inventado, o caso de crédito para ampliar o limite seria forte."]},
+        {id:"nat", route:"step1", sev:"amber", sources:["cerc","cvm"], pub:true,
+          title:["3Q26 Brazil sales −9% (R$2.920bn); net income R$49m; leverage down to 1.83× with FIDC inflow","Vendas Brasil −9% no 3T26 (R$ 2,920 bi); lucro de R$ 49 mi; alavancagem em 1,83× com entrada de FIDC"],
+          body:["Prototype reading: with Brazil supply under watch, check supplier cadence before scaling a second supplier wave.","Leitura do protótipo: com o abastecimento no Brasil em observação, conferir a cadência dos fornecedores antes de ampliar para uma segunda onda."]},
+        {id:"mbrf", route:"step3", sev:"blue", sources:["cerc","cvm"], pub:true,
+          title:["3Q26 net income +123.5% (R$210m) on R$41.424bn revenue; leverage 3.45×; net debt R$45.7bn","Lucro +123,5% no 3T26 (R$ 210 mi) com receita de R$ 41,424 bi; alavancagem de 3,45×; dívida líquida de R$ 45,7 bi"],
+          body:["Prototype reading: unifying Marfrig + BRF payables after the merger may open room against legacy FIDCs; size the credit request against the net debt.","Leitura do protótipo: unificar o contas a pagar de Marfrig + BRF após a fusão pode abrir espaço frente a FIDCs legados; calibrar o pedido de crédito pela dívida líquida."]},
+        {id:"jbs", route:"step3", sev:"amber", sources:["b3","cvm"], pub:true, bodyFab:true,
+          title:["3Q26 revenue R$116.8bn (US$22.7bn); leverage 3.54× (USD); adjusted EBITDA margin 5.2% under cattle-cost pressure; Beef North America back to positive EBITDA","Receita 3T26 de R$ 116,8 bi (US$ 22,7 bi); alavancagem de 3,54× (USD); margem EBITDA ajustada de 5,2%, pressionada pelo custo do gado; Beef América do Norte voltou ao EBITDA positivo"],
+          body:["If 78% of its invoices were registered at B3, as in this invented scenario, collateral checks for a credit request would be simpler.","Se 78% das duplicatas estivessem registradas na B3, como neste cenário inventado, a verificação de lastro para o pedido de crédito ficaria mais simples."]},
+        {id:"vot", route:"step1", sev:"green", sources:["b3","bcb"], pub:true,
+          title:["3Q26: holding net cash R$8.4bn; V. Cimentos revenue R$8.5bn and leverage 1.71×","3T26: caixa líquido da holding de R$ 8,4 bi; V. Cimentos com receita de R$ 8,5 bi e alavancagem de 1,71×"],
+          body:["Prototype reading: stage supplier campaigns by CNPJ/unit, starting where ERP integration with a registrar is done (integration status unknown, to be checked).","Leitura do protótipo: fatiar campanhas com fornecedores por CNPJ/unidade, começando onde a integração do ERP com a registradora estiver pronta (status desconhecido, a conferir)."]},
         {id:"jbs", route:"step1", sev:"red", sources:["b3","cerc"],
-          title:["Cross-registrar double-pledge check active across B3 & CERC","Checagem anti-duplicidade ativa entre B3 e CERC"],
-          body:["Real-time interoperability flags invoices already discounted in FIDC pools — feeds directly into Step 1 duplicate-invoice alerts.","Interoperabilidade em tempo real sinaliza duplicatas já cedidas a FIDCs — alimenta diretamente os alertas da Etapa 1."]}
+          title:["Invented scenario: cross-registrar double-pledge check across B3 and CERC","Cenário inventado: checagem de duplicidade entre B3 e CERC"],
+          body:["If interoperability between registrars flagged invoices already assigned to FIDCs, the alert would feed the Step 1 duplicate-invoice alerts. Nothing here describes JBS's actual invoices.","Se a interoperabilidade entre registradoras sinalizasse duplicatas já cedidas a FIDCs, o alerta alimentaria os alertas de duplicidade da Etapa 1. Nada aqui descreve duplicatas reais da JBS."]}
       ],
       // Per-anchor credit signal read by the action plan (derived from the health table above: no red signal in this set).
       sig:{jbs:{sev:"green"}, mbrf:{sev:"green"}, vot:{sev:"green"}, emb:{sev:"green"}, nat:{sev:"amber"}}
@@ -4016,8 +4034,8 @@
       id:"v13",
       name:["2025 full year","Ano de 2025"],
       tag:["Earlier set","Conjunto anterior"],
-      desc:["Revenue base: reported 2025 net revenue. Market tables: annual flow by funder; Citi has a relationship but no active program at the five anchors, so its cells are zero and the gap shows as white space.",
-            "Base de receita: receita líquida divulgada de 2025. Tabelas de mercado: fluxo anual por financiador; o Citi tem relacionamento, mas nenhum programa ativo nas cinco âncoras, por isso suas células são zero e a diferença aparece como espaço livre."],
+      desc:["Revenue base: reported 2025 net revenue. Market tables: annual flow by funder; Citi has a public relationship with the five anchors but there is no public information on a program, so its cells are assumed zero and the gap shows as white space.",
+            "Base de receita: receita líquida divulgada de 2025. Tabelas de mercado: fluxo anual por financiador; o Citi tem relacionamento público com as cinco âncoras, mas não há informação pública sobre programa, por isso suas células são assumidas como zero e a diferença aparece como espaço livre."],
       revTag:["2025","2025"],
       revCardLbl:["2025 net revenue (public)","Receita líquida 2025 (pública)"],
       matrixUnit:"flow",
@@ -4031,15 +4049,15 @@
         "pp.cards.h":["Anchor qualification snapshots (2025)","Fichas rápidas por âncora (2025)"],
         "st.3.desc":["Prioritize 5 anchors (2025 public revenues), edit hypotheses and size credit & revenue.","Priorizar 5 âncoras (receitas públicas de 2025), editar hipóteses e estimar crédito e receita."],
         "st.4.desc":["Funder matrix, CDI+x benchmark, share of eligible payables and external signals (fabricated figures).","Matriz de financiadores, benchmark CDI+x, share do contas a pagar elegível e sinais externos (números fabricados)."],
-        "mk.m2":["15% internal pipeline & public 2025 revenues","15% pipeline interno e receitas públicas de 2025"],
+        "mk.m2":["~15% public 2025 revenues × working hypotheses","~15% receitas públicas de 2025 × hipóteses de trabalho"],
         "mk.1o":["Anchor × funder matrix with estimated annual flow.","Matriz âncora × financiador com fluxo anual estimado."],
         "mk.2.lg.band":["Market band (middle half of quotes)","Faixa de mercado (metade central das cotações)"],
         "mk.4s":["Electronic duplicata adoption by anchor, agency ratings and outlook changes for each obligor, supply-chain stress news.","Adesão à duplicata escritural por âncora, rating e perspectiva de cada sacado, notícias de estresse na cadeia."],
-        "mk.note":["Today about 80% of this cockpit is internal program data, 15% internal pipeline on public 2025 revenues and 5% market. The 4 modules below demonstrate the Phase 2 intelligence layer with illustrative feeds ready for live IAS 7/IFRS 7, CVM, BCB and registrar APIs.",
-                   "Hoje cerca de 80% deste cockpit é dado interno do programa, 15% pipeline interno sobre receitas públicas de 2025 e 5% mercado. Os 4 módulos abaixo entregam a camada de inteligência da Fase 2 com dados ilustrativos prontos para integrações reais de IAS 7/IFRS 7, CVM, BCB e registradoras."]
+        "mk.note":["In this prototype, about 80% of the figures are pilot program data (example data unless you load your own file under Data), about 15% are public 2025 revenues multiplied by working hypotheses and about 5% is a fabricated market. The split is a rough indication, not a measurement. In a real deployment, the 4 modules below would draw on the anchors' financial statement notes on supplier finance (IAS 7 / IFRS 7), FIDC reports filed with the CVM, BCB statistics and the receivables registrars.",
+                   "Neste protótipo, cerca de 80% dos números são dados do programa piloto (dados de exemplo, a menos que você carregue seu próprio arquivo em Dados), cerca de 15% são receitas públicas de 2025 multiplicadas por hipóteses de trabalho e cerca de 5% é mercado fabricado. A divisão é uma indicação aproximada, não uma medição. Em uma implantação real, os 4 módulos abaixo seriam alimentados pelas notas explicativas das âncoras sobre risco sacado (IAS 7 / IFRS 7), pelos informes de FIDC na CVM, pelas estatísticas do BCB e pelas registradoras de recebíveis."]
       },
       anchors:[
-        {id:"jbs", name:"JBS", color:"#C8102E", src:"jbs25", q3:null, rev:450,
+        {id:"jbs", name:"JBS", color:"#C8102E", src:"jbs25", q3:null, rev:450, usd:{rev:86.2},   // reports in US$
           revNote:["US$86.2bn ≈ R$450bn","US$ 86,2 bi ≈ R$ 450 bi"],
           addr:2.0, sector:["Protein & food","Proteína e alimentos"],
           look:["Packaging, ingredients, maintenance and industrial services.","Embalagens, ingredientes, manutenção e serviços industriais."],
@@ -4050,7 +4068,7 @@
           look:["Recurring suppliers of industrial inputs, packaging and services.","Fornecedores recorrentes de insumos industriais, embalagens e serviços."],
           check:["Marfrig and BRF completed their merger into MBRF in Sep 2025: confirm the account perimeter and avoid counting the same volume twice.","Marfrig e BRF concluíram a fusão na MBRF em set/2025: confirmar o perímetro da conta e evitar contar o mesmo volume duas vezes."]},
         {id:"vot", name:"Votorantim", color:"#0033A0", src:"vot25", q3:null, rev:47.6,
-          revNote:["R$47.6bn consolidated","R$ 47,6 bi consolidada"],
+          revNote:["R$47.6bn consolidated net revenue (a narrower perimeter than the holding's economic view used in the 3Q26 set)","R$ 47,6 bi de receita líquida consolidada (perímetro menor que a visão econômica da holding usada no conjunto 3T26)"],
           addr:12, sector:["Industrial holding","Holding industrial"],
           look:["Map the opportunity by operating company, not as one group-level anchor.","Mapear a oportunidade por empresa operacional, não como uma única âncora do grupo."],
           check:["Which CNPJ buys, which entity holds the Citi relationship and limit, and which units can join.","Qual CNPJ compra, qual entidade tem relacionamento e limite com o Citi e quais unidades podem aderir."]},
@@ -4070,10 +4088,10 @@
         {k:"bb",   name:"Banco do Brasil", abbr:"BB", col:"#003882", type:"bank"},
         {k:"brad", name:"Bradesco",        abbr:"BR", col:"#CC092F", type:"bank"},
         {k:"sant", name:"Santander",       abbr:"ST", col:"#DC0000", type:"bank"},
-        {k:"fidc", name:["FIDCs & fintechs","FIDCs e fintechs"], abbr:"FD", col:"#0E8A5F", type:"fidc"},
+        {k:"fidc", name:["FIDCs & fintechs","FIDCs e fintechs"], abbr:"FD", col:"#097650", type:"fidc"},
         {k:"citi", name:"Citi",            abbr:"CT", col:"#056DAE", type:"citi"}
       ],
-      // Annual flow funded, BRL million (V13 matrix MX × 1000). Citi = 0: relationship, no active program.
+      // Annual flow funded, BRL million (V13 matrix MX × 1000). Citi = 0: assumed, no public information on a program.
       // btg is not part of this set; it stays 0 only so sums written for the default set do not break. gap = white space, recomputed on render.
       comp:[
         {id:"jbs",  citi:0, itau:2100, bb:1400, brad:700, sant:600, fidc:1100, btg:0, gap:0},
@@ -4101,18 +4119,30 @@
     }
   };
 
-  let datasetId = (() => { try { const v = localStorage.getItem("scf-dataset"); return DATASETS[v] ? v : "q3"; } catch (e) { return "q3"; } })();
+  const dsHas = id => typeof id === "string" && Object.prototype.hasOwnProperty.call(DATASETS, id);   // not fooled by "constructor", "__proto__"
+  let datasetId = (() => { try { const v = localStorage.getItem("scf-dataset"); return dsHas(v) ? v : "q3"; } catch (e) { return "q3"; } })();
   const DS = () => DATASETS[datasetId];
   const dsRefill = (arr, from) => { arr.length = 0; (from || []).forEach(x => arr.push(x)); return arr; };
   // Per-anchor credit signal of the active dataset: {sev:"green"|"amber"|"red", note?, out?}
   const sigOf = id => DS().sig[id] || {sev:"green"};
+  // Company revenue in the USD view: a company that reports in US dollars (a.usd) shows the dollar figure it published,
+  // as entered by the author, instead of reais converted at the panel rate. k = "rev" (annual base) or "q3" (quarter).
+  const revRep = (a, k = "rev") => ccy === "USD" && a.usd && a.usd[k] != null ? a.usd[k] : null;
+  function revFmt(a, k = "rev", d = 1) { const r = revRep(a, k); return r != null ? sym() + nf(r, d) + (lang === "pt" ? " bi" : "bn") : bn(a[k], d); }
+  // Sum of the revenue bases as shown, in BRL-equivalent units so it can go through bn().
+  const revTotal = () => ANCHORS.reduce((s, a) => { const r = revRep(a); return s + (r != null ? r * fx() : a.rev); }, 0);
+  // English labels for the source links (09-pipeline.js SRC keeps the Portuguese ones).
+  const SRC_EN = {linea:"Bloomberg Línea, 8 Jul 2025", jbs:"JBS IR · 3Q26 (9 Nov 2026)", mbrf:"MBRF IR · 3Q26 (12 Nov 2026)", vot:"Votorantim / V. Cimentos · 3Q26 (Nov 2026)",
+    emb:"Embraer · 3Q26 (10 Nov 2026)", nat:"Natura IR · 3Q26 (Nov 2026)", merger:"InfoMoney · MBRF merger", copom:"BCB · Copom minutes 282 (Nov 2026)",
+    selic:"Copom holds the Selic at 13.75%", b3:"B3 · Duplicatas e-book", dup:"Electronic duplicata timeline", fidc:"NeoFeed · risco sacado in FIDCs", ref:"BCB · Financial Stability Report, May 2023"};
+  const srcLbl = (k, pt) => lang === "en" && SRC_EN[k] ? SRC_EN[k] : pt;
 
   Object.assign(I18N, {
     "ds.lbl":["Dataset for Steps 3 and 4","Conjunto de dados das Etapas 3 e 4"],
     "ds.fab.badge":["Fabricated figures","Números fabricados"],
     "ds.fab.banner":["Real institution names, fabricated figures: amounts, ratings and signals do not describe actual funding relationships.","Nomes reais, números fabricados: valores, ratings e sinais não representam relações reais de financiamento."],
     "ds.fab.tag":["Fabricated","Fabricado"],
-    "ds.aria.mix":["80% internal, 15% pipeline, 5% market","80% interno, 15% pipeline, 5% mercado"],
+    "ds.aria.mix":["About 80% pilot program data, 15% public revenues × hypotheses, 5% fabricated market","Cerca de 80% dados do programa piloto, 15% receitas públicas × hipóteses, 5% mercado fabricado"],
     "ds.aria.mods":["Market modules","Módulos de mercado"],
     "ds.aria.ring":["Consolidated share of eligible payables","Share consolidado do contas a pagar elegível"]
   });
@@ -4145,7 +4175,7 @@
 
   // Swap the data used by the pipeline and the four market modules, then re-render everything that reads it.
   function setDataset(id, persist = true) {
-    if (!DATASETS[id] || id === datasetId) { renderDatasetBars(); return; }
+    if (!dsHas(id) || id === datasetId) { renderDatasetBars(); return; }
     const prevAddr = DS().anchors.map(a => a.addr);
     datasetId = id;
     if (persist) { try { localStorage.setItem("scf-dataset", id); } catch (e) {} }
@@ -4186,7 +4216,7 @@
     fidc:["https://neofeed.com.br/negocios/depois-da-crise-da-americanas-o-risco-sacado-tem-um-novo-dono-os-fidcs/","NeoFeed · risco sacado em FIDCs"],
     ref:["https://www.bcb.gov.br/content/publicacoes/ref/202304/RELESTAB202304-refPub.pdf","BCB · REF mai/2023"],
   };
-  const src = k => `<a href="${SRC[k][0]}" target="_blank" rel="noopener">${SRC[k][1]}</a>`;
+  const src = k => `<a href="${SRC[k][0]}" target="_blank" rel="noopener">${srcLbl(k, SRC[k][1])}</a>`;
   const SELIC = 13.75;
 
   // Anchor rows live in 09a-datasets.js; this container is refilled in place by setDataset().
@@ -4215,11 +4245,11 @@
     const colLbl = {addr:I18N["pp.th.addr"], cov:I18N["pp.th.cov"], adh:I18N["pp.th.adh"], util:I18N["pp.th.util"]};
     const inp = (i, k, step, max) => `<input type="number" data-i="${i}" data-k="${k}" value="${P[i][k]}" min="0" max="${max}" step="${step}" aria-label="${esc(ANCHORS[i].name)} · ${esc(colLbl[k] ? L(colLbl[k]) : k)}">`;
     // Quarter line only where the dataset has a quarterly figure; otherwise name the reporting period.
-    const revSub = a => a.q3 != null ? `${L(d.revTag)}: ${bn(a.q3, a.q3 < 15 ? 3 : 1)}` : T(`full year ${L(d.revTag)}`,`ano de ${L(d.revTag)}`);
-    const asRep = T("Revenue notes on the cards quote the figures as reported by each company (BRL unless stated); the table converts them at the display rate.","As notas de receita das fichas citam os valores como divulgados por cada empresa (em reais, salvo indicação); a tabela os converte pela taxa de exibição.");
+    const revSub = a => (a.q3 != null ? `${L(d.revTag)}: ${revFmt(a, "q3", a.q3 < 15 ? 3 : 1)}` : T(`full year ${L(d.revTag)}`,`ano de ${L(d.revTag)}`)) + (revRep(a) != null ? T(" · as reported"," · divulgado") : "");
+    const asRep = T("Revenue notes on the cards quote the figures as reported by each company (BRL unless stated). In the USD view, companies that report in US dollars (JBS, Embraer) show the dollars they published (Embraer: midpoint of its 2026 guidance); everything else, including eligible purchases and the model values, is converted from reais at the rate entered in the panel.","As notas de receita das fichas citam os valores como divulgados por cada empresa (em reais, salvo indicação). Na visão em dólar, as empresas que divulgam em dólar (JBS, Embraer) aparecem com os dólares publicados (Embraer: ponto médio do guidance de 2026); todo o resto, inclusive compras elegíveis e valores do modelo, é convertido de reais pela taxa informada no painel.");
     $("pipe-rows").innerHTML = ANCHORS.map((a, i) => `<tr>
       <td><div class="anchor-cell">${brandBadge(a.id)}<span><b>${a.name}</b><small>${L(a.sector)}</small></span></div></td>
-      <td title="${esc(L(a.revNote))}"><b>${bn(a.rev, 1)}</b><small class="rev-sub">${revSub(a)}</small></td>
+      <td title="${esc(L(a.revNote))}"><b>${revFmt(a)}</b><small class="rev-sub">${revSub(a)}</small></td>
       <td>${inp(i, "addr", 0.5, 100)}</td><td id="el-${i}"></td>
       <td>${inp(i, "cov", 5, 100)}</td><td>${inp(i, "adh", 5, 100)}</td><td>${inp(i, "util", 5, 100)}</td>
       <td><div class="flowcell"><span class="rank" id="rk-${i}"></span><div class="track"><div class="fill" id="fb-${i}" style="background:${a.color}"></div></div><b id="fl-${i}"></b></div></td>
@@ -4254,7 +4284,7 @@
       $("bl-" + i).textContent = money(b); $("rv-" + i).textContent = moneyD(r);
       if ($("ac-fl-" + i)) { $("ac-fl-" + i).textContent = bn(f); $("ac-bl-" + i).textContent = money(b); $("ac-rv-" + i).textContent = moneyD(r); }
     });
-    $("pt-elig").textContent = bn(t.elig, 1); $("pt-revenue").textContent = bn(ANCHORS.reduce((s, a) => s + a.rev, 0), 0);
+    $("pt-elig").textContent = bn(t.elig, 1); $("pt-revenue").textContent = bn(revTotal(), 0);
     $("pt-flow").textContent = bn(t.flow); $("pt-bal").textContent = money(t.bal); $("pt-rev").textContent = moneyD(t.rev);
     if (cascade) {
       recomputeBook();
@@ -4333,8 +4363,9 @@
     const visibleFunders = FUNDERS.filter(f => compFilter === "banks" ? (f.type === "bank" || f.type === "citi") : compFilter === "fidc" ? (f.type === "fidc" || f.type === "citi") : true);
     const mxMax = Math.max(1, ...COMP_DATA.map(r => Math.max(...FUNDERS.map(f => r[f.k] || 0))));
     const lvlCls = v => v / mxMax >= 0.6 ? "lvl-3" : v / mxMax >= 0.33 ? "lvl-2" : "lvl-1";
-    const citiZero = T("Relationship, no active program: zero in this dataset","Relacionamento, sem programa ativo: zero neste conjunto");
-    const headCols = visibleFunders.map(f => `<th><div class="funder-hd"><span class="funder-dot" style="background:${f.col}">${f.abbr}</span><span>${esc(fName(f))}</span></div></th>`).join("");
+    const citiZero = T("Assumed zero: there is no public information on a Citi program at this anchor","Assumido como zero: não há informação pública sobre programa do Citi nesta âncora");
+    const dotTxt = h => { const n = parseInt(h.slice(1), 16), c = v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }; return .2126 * c(n >> 16 & 255) + .7152 * c(n >> 8 & 255) + .0722 * c(n & 255) > .18 ? "#1A1200" : "#fff"; };   // readable text on brand colours
+    const headCols = visibleFunders.map(f => `<th><div class="funder-hd"><span class="funder-dot" style="background:${f.col};color:${dotTxt(f.col)}">${f.abbr}</span><span>${esc(fName(f))}</span></div></th>`).join("");
     const bodyRows = COMP_DATA.map((row, idx) => {
       const a = ANCHORS[idx], total = rowFunded(row);
       const cells = visibleFunders.map(f => {
@@ -4351,14 +4382,14 @@
     const colTotals = visibleFunders.map(f => `<td>${mxFmt(colTot(f.k))}</td>`).join("");
     const grandTotal = COMP_DATA.reduce((s, r) => s + rowFunded(r), 0);
     const totalGap = COMP_DATA.reduce((s, r) => s + r.gap, 0);
-    const thAnchor = flow ? T("Anchor (click row for detail)","Âncora (clique p/ detalhe)") : T("Anchor (click row for IAS 7 note)","Âncora (clique p/ nota IAS 7)");
-    const thTotal = flow ? T("Total funded","Total financiado") : T("Disclosed (IAS 7)","Divulgado (IAS 7)");
+    const thAnchor = T("Anchor (click row for detail)","Âncora (clique p/ detalhe)");
+    const thTotal = flow ? T("Total funded","Total financiado") : T("Estimated total (fabricated)","Total estimado (fabricado)");
     const thGap = flow ? `<span title="${T("Step 3 eligible purchases minus funded flow","Compras elegíveis da Etapa 3 menos o fluxo financiado")}">${T("White space","Espaço livre")}</span>` : T("Citi headroom","Espaço Citi");
     $("compMatrix").innerHTML = `<thead><tr><th>${thAnchor}</th>${headCols}<th>${thTotal}</th><th>${thGap}</th></tr></thead><tbody>${bodyRows}</tbody><tfoot><tr><td>${T("5-anchor total","Total 5 âncoras")}</td>${colTotals}<td>${mxFmt(grandTotal)}</td><td style="color:var(--green)">+${mxFmt(totalGap)}</td></tr></tfoot>`;
 
     if ($("compUnit")) $("compUnit").innerHTML = `<span class="fab-tag">${L(I18N["ds.fab.tag"])}</span> ` + (flow
       ? T("Estimated annual reverse-factoring flow by funder. Darker = bigger program. White space = Step 3 eligible purchases not funded by anyone.","Fluxo anual estimado de risco sacado por financiador. Mais escuro = programa maior. Espaço livre = compras elegíveis da Etapa 3 sem nenhum financiador.")
-      : T("Estimated supplier-finance balance by funder. Darker = bigger program. The Citi column is an invented position, not Citi data.","Saldo estimado de risco sacado por financiador. Mais escuro = programa maior. A coluna do Citi é uma posição inventada, não dado do Citi."));
+      : T("Estimated supplier-finance balance by funder. Darker = bigger program. The Citi column is assumed zero: there is no public information on a Citi program at these anchors.","Saldo estimado de risco sacado por financiador. Mais escuro = programa maior. A coluna do Citi é assumida como zero: não há informação pública sobre programa do Citi nessas âncoras."));
 
     // Result line: who leads, how much sits in FIDCs, where Citi stands in this dataset.
     if ($("compRes")) {
@@ -4368,7 +4399,7 @@
       const pTop = nf(100 * colTot(topF.k) / grandTotal, 0), pFidc = nf(100 * colTot("fidc") / grandTotal, 0), n = COMP_DATA.length;
       $("compRes").innerHTML = T(`<b>${esc(fName(topF))}</b> leads in ${cnt[topF.k]} of ${n} anchors and funds ${pTop}% of the ${mxFmt(grandTotal)} mapped. FIDCs already hold ${pFidc}%. `,`<b>${esc(fName(topF))}</b> lidera em ${cnt[topF.k]} de ${n} âncoras e financia ${pTop}% dos ${mxFmt(grandTotal)} mapeados. Os FIDCs já têm ${pFidc}%. `)
         + (colTot("citi") ? T(`Citi position in this dataset: ${mxFmt(colTot("citi"))} across the ${n} anchors (invented for the prototype).`,`Posição do Citi neste conjunto: ${mxFmt(colTot("citi"))} nas ${n} âncoras (inventada para o protótipo).`)
-                          : T(`Citi: relationship in all ${n}, program in none.`,`Citi: relacionamento nas ${n}, programa em nenhuma.`));
+                          : T(`Citi: public relationship with all ${n}; its program position is assumed zero, as there is no public information.`,`Citi: relacionamento público com as ${n}; a posição em programa é assumida como zero, pois não há informação pública.`));
     }
 
     const sel = COMP_DATA[selCompIdx], anc = ANCHORS[selCompIdx], selTot = rowFunded(sel), fidcPct = selTot ? Math.round((sel.fidc || 0) / selTot * 100) : 0;
@@ -4376,12 +4407,12 @@
       const lead = FUNDERS.filter(f => f.type !== "citi").slice().sort((x, y) => (sel[y.k] || 0) - (sel[x.k] || 0))[0];
       $("iasDrawer").innerHTML = `
         <div><h4>${brandBadge(anc.id, "xs")}<span>${esc(anc.name)} · ${T("funding snapshot","retrato do financiamento")}</span></h4><p><strong>${mxFmt(selTot)}</strong> ${T("of estimated annual flow funded today","de fluxo anual estimado financiado hoje")} (${fidcPct}% ${T("by FIDCs and fintechs","por FIDCs e fintechs")}). ${T("Lead funder","Principal financiador")}: <strong>${esc(fName(lead))}</strong> (${mxFmt(sel[lead.k] || 0)}).</p></div>
-        <div><span class="lbl">${T("Citi position","Posição do Citi")}</span><p>${T("Relationship, no active supplier-finance program: zero in this dataset.","Relacionamento, sem programa de risco sacado ativo: zero neste conjunto.")}</p></div>
+        <div><span class="lbl">${T("Citi position","Posição do Citi")}</span><p>${T("Public relationship; no public information on a supplier-finance program, so assumed zero in this dataset.","Relacionamento público; sem informação pública sobre programa de risco sacado, por isso assumido como zero neste conjunto.")}</p></div>
         <div><span class="lbl">${T("White space","Espaço livre")}</span><p><strong>+${mxFmt(sel.gap)}</strong> ${T(`of the ${bn(eligOf(selCompIdx), 1)} eligible purchases in Step 3 not funded by anyone.`,`dos ${bn(eligOf(selCompIdx), 1)} de compras elegíveis da Etapa 3 sem nenhum financiador.`)} ${T("IAS 7 terms and CVM notes:","Prazos IAS 7 e notas da CVM:")} ${naTxt()}.</p></div>`;
     } else {
       $("iasDrawer").innerHTML = `
-        <div><h4>${brandBadge(anc.id, "xs")}<span>${esc(anc.name)} · ${T("IAS 7 / IFRS 7 disclosure snapshot","Nota explicativa IAS 7 / IFRS 7")}</span></h4><p><strong>${mxFmt(selTot)}</strong> ${T("estimated total supplier finance balance","de saldo estimado de risco sacado")} (${fidcPct}% ${T("in CVM FIDCs","em FIDCs CVM")}). ${sel.iasTerms ? L(sel.iasTerms) : naTxt()}</p></div>
-        <div><span class="lbl">${T("CVM FIDC filings","Informes FIDC · CVM")}</span><p>${sel.cvmNote ? L(sel.cvmNote) : naTxt()}</p></div>
+        <div><h4>${brandBadge(anc.id, "xs")}<span>${esc(anc.name)} · ${T("illustrative snapshot (real data would come from the IAS 7 / IFRS 7 note)","retrato ilustrativo (o dado real viria da nota IAS 7 / IFRS 7)")}</span></h4><p><strong>${mxFmt(selTot)}</strong> ${T("of estimated supplier finance balance (fabricated)","de saldo estimado de risco sacado (fabricado)")} (${fidcPct}% ${T("in CVM FIDCs","em FIDCs CVM")}). ${sel.iasTerms ? L(sel.iasTerms) : naTxt()}</p></div>
+        <div><span class="lbl">${T("CVM FIDC filings (illustrative)","Informes FIDC · CVM (ilustrativo)")}</span><p>${sel.cvmNote ? L(sel.cvmNote) : naTxt()}</p></div>
         <div><span class="lbl">${T("Commercial play","Ação comercial recomendada")}</span><p><strong>+${mxFmt(sel.gap)}</strong> ${T("addressable headroom:","de espaço endereçável:")} ${sel.play ? L(sel.play) : naTxt()}</p></div>`;
     }
   }
@@ -4442,50 +4473,56 @@
   function shareRows() {
     const d = DS();
     if (d.share) return d.share.map((s, i) => { const elg = eligOf(i);
-      return {id:s.id, name:ANCHORS[i].name, elig:elg, pc:s.citi, pp:s.peers, pf:s.fidc, pw:s.free, citi:elg * s.citi / 100, peers:elg * s.peers / 100, fidc:elg * s.fidc / 100, free:elg * s.free / 100, reg:s.reg, regPct:s.regPct}; });
+      return {id:s.id, name:ANCHORS[i].name, elig:elg, base:elg, pc:s.citi, pp:s.peers, pf:s.fidc, pw:s.free, citi:elg * s.citi / 100, peers:elg * s.peers / 100, fidc:elg * s.fidc / 100, free:elg * s.free / 100, reg:s.reg, regPct:s.regPct}; });
     return COMP_DATA.map((row, i) => {
       const elg = eligOf(i), citi = (row.citi || 0) / 1000;
       const peers = FUNDERS.filter(f => f.type === "bank").reduce((s, f) => s + (row[f.k] || 0), 0) / 1000;
       const fidc = FUNDERS.filter(f => f.type === "fidc").reduce((s, f) => s + (row[f.k] || 0), 0) / 1000;
       const base = Math.max(elg, citi + peers + fidc, 0.0001), free = Math.max(0, elg - citi - peers - fidc), h = EXT_HEALTH[i] || {};
-      return {id:row.id, name:ANCHORS[i].name, elig:elg, pc:100 * citi / base, pp:100 * peers / base, pf:100 * fidc / base, pw:100 * free / base, citi, peers, fidc, free, reg:h.reg || null, regPct:h.dupPct, over:citi + peers + fidc > elg + 1e-9};
+      return {id:row.id, name:ANCHORS[i].name, elig:elg, base, pc:100 * citi / base, pp:100 * peers / base, pf:100 * fidc / base, pw:100 * free / base, citi, peers, fidc, free, reg:h.reg || null, regPct:h.dupPct, over:citi + peers + fidc > elg + 1e-9};
     });
   }
   function renderShareReal() {
     const d = DS(), rows = shareRows();
     // Keep the container other modules read in step with what is on screen.
     dsRefill(SHARE_DATA, rows.map(r => ({id:r.id, citi:Math.round(r.pc), peers:Math.round(r.pp), fidc:Math.round(r.pf), free:Math.round(r.pw), reg:r.reg, regPct:r.regPct})));
-    let totElig = 0, wCiti = 0, wPeers = 0, wFidc = 0, wFree = 0, bestWS = null;
-    rows.forEach(r => { totElig += r.elig; wCiti += r.citi; wPeers += r.peers; wFidc += r.fidc; wFree += r.free; if (!bestWS || r.free > bestWS.ws) bestWS = {name:r.name, ws:r.free}; });
+    // totBase: per anchor the larger of eligible and funded, so the consolidated shares never add up to more than 100%.
+    let totElig = 0, totBase = 0, wCiti = 0, wPeers = 0, wFidc = 0, wFree = 0, bestWS = null;
+    rows.forEach(r => { totElig += r.elig; totBase += r.base; wCiti += r.citi; wPeers += r.peers; wFidc += r.fidc; wFree += r.free; if (!bestWS || r.free > bestWS.ws) bestWS = {name:r.name, ws:r.free}; });
     MKT_STATE.bestWS = bestWS;
 
     const seg = (p, bg, cls = "") => `<div class="sh-seg${cls}" style="width:${p}%${bg ? ";background:" + bg : ""}">${p >= 8 ? nf(p, 0) + "%" : ""}</div>`;
     const item = (r, badge) => `<div class="sh-item"><div class="sh-top"><div class="sh-left">${badge}<div><b>${esc(r.name)}</b><small>${T("Eligible payables","Contas a pagar elegíveis")}: ${bn(r.elig, 1)} / ${T("yr","ano")}</small></div></div><div class="sh-right">${r.reg ? INFRA_SVGS[r.reg] : ""}${r.regPct != null ? `<span>${r.regPct}% ${T("electronic","escritural")}</span>` : ""}</div></div>
-        <div class="sh-stack">${seg(r.pc, "var(--bar-citi)")}${seg(r.pp, "var(--bar-peers)")}${seg(r.pf, "var(--bar-fidc)")}${seg(r.pw, "", " free")}</div>
+        <div class="sh-stack">${seg(r.pc, "var(--bar-citi)")}${seg(r.pp, "var(--bar-peers)")}${seg(r.pf, "var(--bar-fidc)", " dk")}${seg(r.pw, "", " free")}</div>
         <div class="sh-sub"><span>Citi: <b>${bn(r.citi, 2)}</b> (${nf(r.pc, 0)}%)</span><span>${T("Unfinanced headroom","Espaço não financiado")}: <b style="color:var(--green)">${bn(r.free, 2)}</b> (${nf(r.pw, 0)}%)</span></div>${r.note ? `<small class="sh-over">${r.note}</small>` : ""}${r.over ? `<small class="sh-over">${T("Funded flow in this dataset exceeds the Step 3 eligible estimate: bars are scaled to the funded total.","O fluxo financiado neste conjunto supera a estimativa elegível da Etapa 3: barras na escala do total financiado.")}</small>` : ""}</div>`;
     let html = rows.map(r => item(r, brandBadge(r.id, "sm"))).join(""), pilot = null;
     if (d.pilotOthers) {
-      // Pilot anchor row (V13): Citi share comes from the weekly share-of-wallet series; other funders are fabricated.
-      const wi = Math.max(0, Math.min(W, week) - 1), elg = SPEND / 1000, citi = elg * D.sow[wi] / 100, peers = (d.pilotOthers.itau || 0) / 1000, fidc = (d.pilotOthers.fidc || 0) / 1000;
+      // Pilot anchor row (V13). Citi = the pilot's discounted flow, as in the Step 1 utilization proof (spend × % under program
+      // × utilization). Share of wallet is a share of the financed wallet, so the peers + FIDCs block is citi × (100 − sow) / sow,
+      // split as in the Step 1 share-of-wallet proof (illustrative weights). d.pilotOthers only marks that the set has this row.
+      const wi = Math.max(0, Math.min(W, week) - 1), elg = SPEND / 1000, citi = elg * D.spend[wi] / 100 * D.util[wi] / 100, sw = Math.max(1, D.sow[wi]);
+      const othersPct = 100 - sw, peersPct = Math.round(othersPct * .68), peers = citi * peersPct / sw, fidc = citi * (othersPct - peersPct) / sw;
       const base = Math.max(elg, citi + peers + fidc, 0.0001), free = Math.max(0, elg - citi - peers - fidc);
       pilot = {id:"pilot", name:SRCINFO ? SRCINFO.name : T("Pilot anchor","Âncora piloto"), elig:elg, pc:100 * citi / base, pp:100 * peers / base, pf:100 * fidc / base, pw:100 * free / base, citi, peers, fidc, free, reg:null, regPct:null, over:citi + peers + fidc > elg + 1e-9,
-        note:T(`Citi share follows the share-of-wallet series of week ${wi + 1} (example data); the other funders are fabricated.`,`O share do Citi segue a série de share of wallet da semana ${wi + 1} (dados de exemplo); os outros financiadores são fabricados.`)};
+        note:T(`Citi = the pilot's discounted flow in week ${wi + 1} (${bn(elg, 1)} × ${D.spend[wi]}% × ${D.util[wi]}%, example data). Peers and FIDCs complete the financed wallet so that Citi holds the ${D.sow[wi]}% share of wallet of the Step 1 proof (illustrative split).`,`Citi = fluxo antecipado do piloto na semana ${wi + 1} (${bn(elg, 1)} × ${D.spend[wi]}% × ${D.util[wi]}%, dados de exemplo). Bancos pares e FIDCs completam o volume financiado para que o Citi tenha o share of wallet de ${D.sow[wi]}% da prova da Etapa 1 (divisão ilustrativa).`)};
       html = item(pilot, `<span class="brand-badge sm ds-pilot" aria-hidden="true">PIL</span>`) + html;
     }
     $("realShareRows").innerHTML = html;
 
-    const pCiti = totElig ? wCiti / totElig * 100 : 0, pPeers = totElig ? wPeers / totElig * 100 : 0, pFidc = totElig ? wFidc / totElig * 100 : 0, pFree = totElig ? wFree / totElig * 100 : 0;
+    const pCiti = totBase ? wCiti / totBase * 100 : 0, pPeers = totBase ? wPeers / totBase * 100 : 0, pFidc = totBase ? wFidc / totBase * 100 : 0, pFree = totBase ? wFree / totBase * 100 : 0;
     const r = 68, circ = 2 * Math.PI * r, sum = Math.max(100, pCiti + pPeers + pFidc + pFree);
-    const segs = [{pct:pCiti, col:isDark() ? "#0284C7" : "#00205B"}, {pct:pPeers, col:isDark() ? "#2563EB" : "#056DAE"}, {pct:pFidc, col:"#D97706"}, {pct:pFree, col:C.freeSeg}];
+    const segs = [{pct:pCiti, col:isDark() ? "#0369A1" : "#00205B"}, {pct:pPeers, col:isDark() ? "#2563EB" : "#056DAE"}, {pct:pFidc, col:"#D97706"}, {pct:pFree, col:C.freeSeg}];
     let offset = 0;
     const arcs = segs.map(sg => { const len = circ * sg.pct / sum, c = `<circle cx="90" cy="90" r="${r}" fill="none" stroke="${sg.col}" stroke-width="20" stroke-dasharray="${len.toFixed(2)} ${(circ - len).toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 90 90)"/>`; offset += len; return c; }).join("");
     $("realShareRing").innerHTML = arcs + `<text x="90" y="86" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-size="28" font-weight="800" fill="${C.navy}">${nf(pCiti, 1)}%</text><text x="90" y="106" text-anchor="middle" font-size="11.5" font-weight="600" fill="${C.muted}">${T("Citi share","Share do Citi")}</text><text x="90" y="122" text-anchor="middle" font-size="10.5" fill="${C.subtle}">${bn(totElig, 1)} ${T("eligible","elegíveis")}</text>`;
     $("realShareKpis").innerHTML = `<div><span><i style="background:var(--bar-citi)"></i>Citi</span><b>${bn(wCiti, 2)} (${nf(pCiti, 1)}%)</b></div><div><span><i style="background:var(--bar-peers)"></i>${T("Peer banks","Bancos pares")}</span><b>${bn(wPeers, 2)} (${nf(pPeers, 1)}%)</b></div><div><span><i style="background:var(--bar-fidc)"></i>FIDCs</span><b>${bn(wFidc, 2)} (${nf(pFidc, 1)}%)</b></div><div><span><i style="background:var(--bar-free)"></i>${T("Open headroom","Espaço livre")}</span><b style="color:var(--green)">${bn(wFree, 2)} (${nf(pFree, 1)}%)</b></div>`;
 
     if ($("shareRes")) $("shareRes").innerHTML = `<span class="fab-tag">${L(I18N["ds.fab.tag"])}</span> ` + (pilot
-      ? T(`Citi holds ${nf(100 * pilot.citi / pilot.elig, 0)}% of the pilot anchor and ${nf(pCiti, 0)}% of the ${rows.length} pipeline anchors. `,`O Citi tem ${nf(100 * pilot.citi / pilot.elig, 0)}% da âncora piloto e ${nf(pCiti, 0)}% das ${rows.length} âncoras do pipeline. `)
-      : T(`In this dataset Citi holds ${nf(pCiti, 1)}% of the eligible payables of the ${rows.length} pipeline anchors. `,`Neste conjunto o Citi tem ${nf(pCiti, 1)}% do contas a pagar elegível das ${rows.length} âncoras do pipeline. `))
-      + (bestWS ? T(`Biggest white space: <b>${esc(bestWS.name)}</b>, ${bn(bestWS.ws, 1)} a year not funded by anyone.`,`Maior espaço livre: <b>${esc(bestWS.name)}</b>, ${bn(bestWS.ws, 1)} por ano sem nenhum financiador.`) : "");
+      ? T(`Citi covers ${nf(100 * pilot.citi / pilot.elig, 0)}% of the pilot anchor's eligible payables (example data) and is assumed at zero at the ${rows.length} pipeline anchors. `,`O Citi cobre ${nf(100 * pilot.citi / pilot.elig, 0)}% do contas a pagar elegível da âncora piloto (dados de exemplo) e é assumido como zero nas ${rows.length} âncoras do pipeline. `)
+      : wCiti ? T(`In this dataset Citi holds ${nf(pCiti, 1)}% of the eligible payables of the ${rows.length} pipeline anchors. `,`Neste conjunto o Citi tem ${nf(pCiti, 1)}% do contas a pagar elegível das ${rows.length} âncoras do pipeline. `)
+      : T(`Citi is assumed at zero at the ${rows.length} pipeline anchors (no public information on a program). `,`O Citi é assumido como zero nas ${rows.length} âncoras do pipeline (sem informação pública sobre programa). `))
+      + (bestWS ? T(`Biggest white space: <b>${esc(bestWS.name)}</b>, ${bn(bestWS.ws, 1)} a year not funded by anyone.`,`Maior espaço livre: <b>${esc(bestWS.name)}</b>, ${bn(bestWS.ws, 1)} por ano sem nenhum financiador.`) : "")
+      + (totBase > totElig + 1e-9 ? " " + T(`Funded flow exceeds the Step 3 eligible estimate at ${esc(rows.filter(r => r.over).map(r => r.name).join(", "))}: the consolidated shares are taken on ${bn(totBase, 1)} (eligible or funded, whichever is larger, per anchor).`,`O fluxo financiado supera a estimativa elegível da Etapa 3 em ${esc(rows.filter(r => r.over).map(r => r.name).join(", "))}: os shares consolidados são calculados sobre ${bn(totBase, 1)} (o maior entre elegível e financiado, por âncora).`) : "");
   }
 
   // ---------- 4.4 External signals ----------
@@ -4504,9 +4541,9 @@
     $("sigFeed").innerHTML = filtered.length ? filtered.map(s => {
       const a = ANCHORS.find(x => x.id === s.id), stepNum = s.route === "step1" ? 1 : 3;
       return `<div class="sig-event"><div class="sig-event-top"><div class="sig-event-brand">${brandBadge(a.id, "xs")}<span class="sev" style="background:${C[s.sev] || C.blue};margin-top:0"></span><b>${esc(a.name)}</b></div><span class="sig-badge ${s.route === "step1" ? "warn" : "neu"}">${s.route === "step1" ? T("Feeds Step 1 · Risk","Alimenta Etapa 1 · Risco") : T("Feeds Step 3 · Credit","Alimenta Etapa 3 · Crédito")}</span></div>
-        <strong class="sig-title">${L(s.title)}</strong><p>${L(s.body)}</p>
+        <strong class="sig-title">${s.pub ? `<span class="sig-pub">${T("Public · 3Q26 release","Público · release do 3T26")}</span> ` : `<span class="fab-tag">${L(I18N["ds.fab.tag"])}</span> `}${L(s.title)}</strong><p>${s.pub && s.bodyFab ? `<span class="fab-tag">${T("Invented for the prototype","Inventado para o protótipo")}</span> ` : ""}${L(s.body)}</p>
         <div class="sig-event-foot"><div class="infra-logos" style="margin-top:0">${s.sources.length ? s.sources.map(k => INFRA_SVGS[k]).join("") : `<span class="fab-tag">${L(I18N["ds.fab.tag"])}</span>`}</div><button class="sig-route-btn" data-route-step="${stepNum}">${s.route === "step1" ? T("→ Open Step 1 (Risk)","→ Abrir Etapa 1 (Risco)") : T("→ Open Step 3 (Credit)","→ Abrir Etapa 3 (Crédito)")}</button></div></div>`;
-    }).join("") + (ccy === "USD" && filtered.some(x => /R\$/.test(L(x.title) + L(x.body))) ? `<p class="fnote sig-asrep">${T("Amounts inside the signal texts are quoted as reported by the companies, in BRL.","Os valores dentro dos textos dos sinais são citados como divulgados pelas empresas, em reais.")}</p>` : "")
+    }).join("") + (ccy === "USD" && filtered.some(x => /R\$/.test(L(x.title) + L(x.body))) ? `<p class="fnote sig-asrep">${T("Amounts inside the signal texts are quoted as reported by the companies (BRL unless stated).","Os valores dentro dos textos dos sinais são citados como divulgados pelas empresas (em reais, salvo indicação).")}</p>` : "")
       : `<p class="ds-na-block">${T("No signal in this dataset feeds this step.","Nenhum sinal deste conjunto alimenta esta etapa.")}</p>`;
   }
   $("sigFilter").addEventListener("click", e => { const b = e.target.closest("[data-sf]"); if (!b) return; sigFilter = b.dataset.sf; $("sigFilter").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); renderSignals(); });
@@ -4549,9 +4586,9 @@
   ];
   const PRAC = [
     [["Citi reviews the buyer's accounts payable file and segments suppliers by spend, geography, terms and payment instrument.","O Citi analisa o arquivo de contas a pagar do comprador e segmenta os fornecedores por gasto, geografia, prazo e meio de pagamento."],["In the cockpit: the campaign invites suppliers by score, wave by wave.","No painel: a campanha convida fornecedores por score, onda a onda."]],
-    [["Suppliers already in SCF programmes of other Citi clients are flagged as likely candidates.","Fornecedores que já participam de programas de SCF de outros clientes do Citi são sinalizados como candidatos prováveis."],["In the cockpit: a candidate lever for the invitation and registration stages, not yet modelled.","No painel: alavanca candidata para as etapas de convite e cadastro, ainda não modelada."]],
+    [["Suppliers already in SCF programs of other Citi clients are flagged as likely candidates.","Fornecedores que já participam de programas de SCF de outros clientes do Citi são sinalizados como candidatos prováveis."],["In the cockpit: a candidate lever for the invitation and registration stages, not yet modeled.","No painel: alavanca candidata para as etapas de convite e cadastro, ainda não modelada."]],
     [["The supplier sells receivables at a cost comparable to the buyer's, and chooses when to sell.","O fornecedor vende os recebíveis a um custo comparável ao do comprador, e escolhe quando vender."],["In the cockpit: this is why utilization is tracked separately from the number of active suppliers.","No painel: é por isso que a utilização é acompanhada separada do número de fornecedores ativos."]],
-    [["The buyer can extend payment terms (better DPO) while the supplier is paid earlier (better DSO); setting up the programme costs the buyer nothing.","O comprador pode alongar prazos (melhora o DPO) enquanto o fornecedor recebe antes (melhora o DSO); implantar o programa não tem custo para o comprador."],["In the cockpit: the argument behind the anchor pipeline.","No painel: o argumento por trás do pipeline de âncoras."]]
+    [["The buyer can extend payment terms (better DPO) while the supplier is paid earlier (better DSO); setting up the program costs the buyer nothing.","O comprador pode alongar prazos (melhora o DPO) enquanto o fornecedor recebe antes (melhora o DSO); implantar o programa não tem custo para o comprador."],["In the cockpit: the argument behind the anchor pipeline.","No painel: o argumento por trás do pipeline de âncoras."]]
   ];
   let prodLang = null;
   function renderProducts() {
@@ -4562,7 +4599,7 @@
       <h4 class="ref-h">${T("Risco sacado and the neighbouring products","O risco sacado e os produtos vizinhos")}</h4>
       <div class="prods">${PROD.map(p => `<div class="prod${p.hot ? " hot" : ""}"><em>${esc(L(p.tag))}</em><b>${esc(L(p.n))}</b><span>${esc(L(p.d))}</span><i>${esc(L(p.who))}</i><a href="${p.url}" target="_blank" rel="noopener noreferrer">${T("Citi page","Página do Citi")} ↗</a></div>`).join("")}</div>
       <div class="fnote">${T("Summaries of Citi Brasil's public product pages, read on 22 Nov 2026. The English text is a free translation. Conditions, pricing and eligibility are defined by Citi case by case.","Resumos das páginas públicas de produto do Citi Brasil, lidas em 22/11/2026. Condições, preço e elegibilidade são definidos pelo Citi caso a caso.")}</div>
-      <div class="lbl ref-sep">${T("How Citi describes running an SCF programme","Como o Citi descreve a operação de um programa de SCF")}</div>
+      <div class="lbl ref-sep">${T("How Citi describes running an SCF program","Como o Citi descreve a operação de um programa de SCF")}</div>
       <h4 class="ref-h">${T("Four published practices, and where each shows up here","Quatro práticas publicadas, e onde cada uma aparece aqui")}</h4>
       <div class="pracs">${PRAC.map((x, i) => `<div class="prac"><span class="n">${i + 1}</span><div><b>${esc(L(x[0]))}</b><span>${esc(L(x[1]))}</span></div></div>`).join("")}</div>
       <div class="fnote">${T("Source: “Taking a Holistic View of Supplier Payments”, Citi Commercial Bank, March 2021. It is a global article, not specific to Brazil. The links to the cockpit are this prototype's reading.","Fonte: “Taking a Holistic View of Supplier Payments”, Citi Commercial Bank, março de 2021. É um artigo global, não específico do Brasil. As ligações com o painel são leitura deste protótipo.")}</div>`;
@@ -4613,7 +4650,7 @@
     const fv = mode === "after" ? F.after : F.before; let worst = 1, wr = 1;
     for (let s = 1; s < fv.length; s++) { const r = fv[s] / fv[s - 1]; if (r < wr) { wr = r; worst = s; } }
     add("funnel", (!SRCINFO && w < 5 && worst === 3) ? 1 : 2, 1, ["ops","rm"], T(`Attack the "${L(STEPS[worst - 1])} → ${L(STEPS[worst])}" step`,`Atacar etapa "${L(STEPS[worst - 1])} → ${L(STEPS[worst])}"`), T(`Weakest conversion in funnel: ${nf(wr * 100, 0)}% (${fv[worst - 1] - fv[worst]} suppliers lost).`,`Pior conversão do funil: ${nf(wr * 100, 0)}% (${fv[worst - 1] - fv[worst]} fornecedores perdidos).`) + leverNote(worst));
-    if (D.days[i] > 10) add("days", 2, 1, ["ops"], T(`Cut days to 1st discount from ${D.days[i]} to ≤10 days`,`Reduzir prazo até 1º desconto de ${D.days[i]} para ≤ 10 dias`), T("Suppliers waiting >10 days show materially higher abandonment before first discount.","Fornecedores que aguardam > 10 dias têm abandono bem maior antes da 1ª antecipação."));
+    if (D.days[i] > 10) add("days", 2, 1, ["ops"], T(`Cut days to 1st discount from ${D.days[i]} to ≤10 days`,`Reduzir prazo até 1º desconto de ${D.days[i]} para ≤ 10 dias`), T("10-day mark set by this cockpit's action plan (working hypothesis, to be validated: a long wait raises drop-out before the first discount).","Marca de 10 dias definida pelo plano de ação deste cockpit (hipótese de trabalho a validar: uma espera longa aumenta a desistência antes da 1ª antecipação)."));
     // Decision 3: pipeline #1, with the white-space note from the market module (fabricated market figures)
     const t = totals(), top = t.flows.indexOf(Math.max(...t.flows)), b = balOf(t.flows[top]), ws = MKT_STATE.bestWS;
     add("grow", 2, 3, ["lead","spec"], T(`Take ${esc(ANCHORS[top].name)} to credit committee`,`Levar ${esc(ANCHORS[top].name)} ao comitê de crédito`), T(`#1 in pipeline: ${bn(t.flows[top])} annual flow, ${money(b)} balance, ${moneyD(revOf(b))}/yr spread.`, `Nº 1 do pipeline: fluxo anual de ${bn(t.flows[top])}, saldo de ${money(b)}, spread de ${moneyD(revOf(b))}/ano.`)
@@ -5111,7 +5148,8 @@
       const div = m.k === "rev" ? fx() : 1;
       const cur = m.series[i] / div, prev = i ? m.series[i - 1] / div : cur, diff = cur - prev;
       const u = unitOf(m), tight = u === "%" || (m.k === "rev" && lang !== "pt"), flat = +Math.abs(diff).toFixed(kpiDec(m)) === 0;   // "60%", "R$6.2m / yr", "R$ 6,2 mi / ano"
-      return `<tr><td>${L(m.lbl)}</td><td><b>${(m.k === "rev" ? sym() : "") + nf(cur, kpiDec(m))}${tight ? "" : " "}${u}</b></td><td>${!i ? "–" : flat ? T("flat","estável") : ((diff > 0 ? "+" : "−") + nf(Math.abs(diff), kpiDec(m)))}</td></tr>`;
+      const du = Array.isArray(m.u) && m.u[0] === "%" ? " pp" : m.k === "days" ? " d" : m.k === "rev" ? T("m"," mi") : "";   // same delta units as the KPI cards
+      return `<tr><td>${L(m.lbl)}</td><td><b>${(m.k === "rev" ? sym() : "") + nf(cur, kpiDec(m))}${tight ? "" : " "}${u}</b></td><td>${!i ? "–" : flat ? T("flat","estável") : ((diff > 0 ? "+" : "−") + nf(Math.abs(diff), kpiDec(m)) + du)}</td></tr>`;
     }).join("");
     const al = ALERTS.filter(a => a[0] <= w).sort((a, b) => b[0] - a[0]).slice(0, 3).map(a => `<li>${WL()}${a[0]} · ${L(a[2])}</li>`).join("");
     return `<div><b>${L(I18N.h1)}</b> · ${T("Week","Semana")} ${w} · ${ccy} · ${esc(dataLabel())}</div>
@@ -5848,6 +5886,13 @@ Write all prose in ${langName}.`;
   const pfSeries = () => T(`Source: weekly series on this page (${dataLabel()}).`,`Fonte: série semanal desta página (${dataLabel()}).`);
   const pfGreen = s => `<b style="color:var(--green)">${s}</b>`;
   const pfSigned = (v, d = 1) => (v > 0 ? "+" : v < 0 ? "−" : "") + nf(Math.abs(v), d);
+  // Splits a whole number by weights with the largest-remainder rule, so the parts always add up to the total.
+  function pfSplitInt(total, weights) {
+    const raw = weights.map(w => total * w), out = raw.map(Math.floor);
+    let left = total - out.reduce((s, v) => s + v, 0);
+    raw.map((v, k) => [v - out[k], k]).sort((a, b) => b[0] - a[0]).forEach(([, k]) => { if (left > 0) { out[k]++; left--; } });
+    return out;
+  }
   // Stage split of the days-to-first-discount cycle: a fixed rule of thumb, not a measured breakdown.
   function pfStageSplit(d) {
     const invite = d >= 18 ? 3 : d >= 13 ? 2 : 1, docs = d >= 18 ? 11 : d >= 15 ? 8 : d >= 12 ? 5 : d >= 10 ? 4 : 3, kyc = d >= 15 ? 4 : d >= 11 ? 3 : 2;
@@ -5873,7 +5918,7 @@ Write all prose in ${langName}.`;
         badge: T("Arithmetic reproduced","Conta reproduzida"),
         formula: `<code>${bn(spBn, 1)} × ${sp}% = ${bn(capBn, 2)}</code> · ${pfSigned(dSp, 0)} pp vs ${WL()}1`,
         table: pTable([T(`Spend category (${pfIllus()})`,`Categoria (${pfIllus()})`), T("Share","%"), T("Annual spend","Volume anual"), T("Suppliers","Fornecedores")],
-          cats.map(([n, w]) => [n, Math.round(w * 100) + "%", bn(capBn * w, 2), Math.round(D.active[i] * w)]),
+          cats.map(([n, w], k) => [n, Math.round(w * 100) + "%", bn(capBn * w, 2), pfSplitInt(D.active[i], cats.map(c => c[1]))[k]]),
           [T("Total under program","Total sob o programa"), "100%", bn(capBn, 2), D.active[i]]),
         source: pfSeries() + T(" The category split uses fixed illustrative weights; in a live program it would come from the anchor's payables file."," A divisão por categoria usa pesos ilustrativos fixos; em um programa real viria do arquivo de contas a pagar da âncora.")
       };
@@ -5925,8 +5970,8 @@ Write all prose in ${langName}.`;
       const dl = v => v < 0 ? pfGreen(`${pfSigned(v, 0)} d`) : `${pfSigned(v, 0)} d`;
       return {
         title: T("Days to first discount: stage breakdown","Dias até o 1º desconto: decomposição por etapa"), value: `${d} ${T("days","dias")}`,
-        claim: (diff > 0 ? T(`The median cycle is ${diff} days shorter than in ${WL()}1 (${d0}d → ${d}d).`,`O ciclo mediano está ${diff} dias mais curto que na ${WL()}1 (${d0}d → ${d}d).`)
-          : diff < 0 ? T(`The median cycle is ${-diff} days longer than in ${WL()}1 (${d0}d → ${d}d).`,`O ciclo mediano está ${-diff} dias mais longo que na ${WL()}1 (${d0}d → ${d}d).`)
+        claim: (diff > 0 ? T(`The median cycle is ${diff} day${diff === 1 ? "" : "s"} shorter than in ${WL()}1 (${d0}d → ${d}d).`,`O ciclo mediano está ${diff} dia${diff === 1 ? "" : "s"} mais curto que na ${WL()}1 (${d0}d → ${d}d).`)
+          : diff < 0 ? T(`The median cycle is ${-diff} day${diff === -1 ? "" : "s"} longer than in ${WL()}1 (${d0}d → ${d}d).`,`O ciclo mediano está ${-diff} dia${diff === -1 ? "" : "s"} mais longo que na ${WL()}1 (${d0}d → ${d}d).`)
           : T(`The median cycle is ${d} days, the same as in ${WL()}1.`,`O ciclo mediano é de ${d} dias, igual ao da ${WL()}1.`))
           + (demo ? T(` In the example data, document AI goes live in ${WL()}5.`,` Nos dados de exemplo, a IA de documentos entra em produção na ${WL()}5.`) : ""),
         badge: T("Total from series · stages illustrative","Total da série · etapas ilustrativas"), badgeWarn:true,
@@ -5987,7 +6032,8 @@ Write all prose in ${langName}.`;
         title: T("Risk flags: open count and example alert list","Alertas de risco: contagem em aberto e lista de exemplo"), value: `${open} ${T("open","em aberto")}`,
         claim: T(`${open} open flag${open === 1 ? "" : "s"} in ${WL()}${week}. Rule of this cockpit to scale outreach: fewer than 3 open flags.`,`${open} alerta${open === 1 ? "" : "s"} em aberto na ${WL()}${week}. Regra deste cockpit para ampliar a campanha: menos de 3 alertas em aberto.`),
         badge: open < 3 ? T("Rule met · can scale","Regra atendida · pode ampliar") : T("Review before scaling","Revisar antes de ampliar"), badgeWarn: open >= 3,
-        formula: `<code>${T("Listed","Listados")}: ${activeAlerts.length}</code> · <code>${T("Open","Em aberto")}: ${open}</code> · <code>${T("Rule","Regra")}: &lt; 3</code>`,
+        formula: `<code>${T("Example alerts shown","Alertas de exemplo exibidos")}: ${activeAlerts.length}</code> · <code>${T("Open (series)","Em aberto (série)")}: ${open}</code> · <code>${T("Rule","Regra")}: &lt; 3</code>`,
+        note: open > activeAlerts.length ? T(`The open count comes from the weekly series; the list holds only the example alerts written for this prototype, so it shows ${activeAlerts.length} of the ${open} open flags.`,`A contagem em aberto vem da série semanal; a lista traz só os alertas de exemplo escritos para este protótipo, por isso mostra ${activeAlerts.length} dos ${open} alertas em aberto.`) : undefined,
         table: pTable([T("Week","Sem."), T("Example alert","Alerta de exemplo"), T("Owner (illustrative)","Responsável (ilustrativo)"), T("Status (illustrative)","Situação (ilustrativa)")],
           activeAlerts.map((a, idx) => [`${WL()}${a[0]}`, L(a[2]), owners[ALERTS.indexOf(a) % owners.length], idx < open ? `<span class="sig-badge warn">${T("Open","Em aberto")}</span>` : `<span class="sig-badge pos">${T("Mitigated","Mitigado")}</span>`])),
         source: T(`Open count: weekly series (${dataLabel()}). The alert list, owners and status are example entries of this prototype, not the output of a risk system.`,`Contagem em aberto: série semanal (${dataLabel()}). A lista de alertas, os responsáveis e a situação são entradas de exemplo deste protótipo, não a saída de um sistema de risco.`)
@@ -6164,14 +6210,14 @@ Write all prose in ${langName}.`;
 
   // 2 · Why Now
   S(() => { const dupVol = ccy === "USD" ? +(10 / FX_RATE).toFixed(1) : 10, fidcLo = Math.round(60 / fx()), fidcHi = Math.round(75 / fx()); return {
-    html:`<div class="eyebrow">${T("Why now","Por que agora")}</div><h2>${T("Expensive working capital and a new digital invoice open a window","Capital de giro caro e uma duplicata digital abrem uma janela")}</h2>
+    html:`<div class="eyebrow">${T("Why now","Por que agora")}</div><h2>${T("Expensive working capital and the electronic duplicata open a window","Capital de giro caro e a duplicata escritural abrem uma janela")}</h2>
     <div class="gs split"><div class="gs c2 stats">
       <div class="stat"><b data-to="13.75" data-d="2" data-suf="%">${nf(13.75, 2)}%</b><span>${T("Selic, held on 4 Nov 2026 after 15% from Jun/25 to Mar/26","Selic mantida em 4/11/2026, após 15% de jun/25 a mar/26")}</span></div>
       <div class="stat"><b data-to="${dupVol}" data-d="${ccy === "USD" ? 1 : 0}" data-pre="≈ ${sym()}" data-suf="${T(" tn"," tri")}">≈ ${sym()}${nf(dupVol, ccy === "USD" ? 1 : 0)} ${T("tn","tri")}</b><span>${T("annual volume of duplicatas, per the Central Bank","volume anual de duplicatas, segundo o Banco Central")}</span></div>
       <div class="stat"><b>${sym()}${fidcLo}–${fidcHi} ${T("bn","bi")}</b><span>${T("market estimate of risco sacado in FIDCs — capital markets compete for the obligor","estimativa de mercado de risco sacado em FIDCs — o mercado disputa o sacado")}</span></div>
-      <div class="stat"><b>2027</b><span>${T("digital duplicata mandatory for large companies; medium & small in 2028","duplicata escritural obrigatória para grandes empresas; médias e pequenas em 2028")}</span></div>
-    </div><div class="panel"><div class="lbl2">${T("Digital duplicata roadmap","Linha do tempo da duplicata escritural")}</div>
-      <svg viewBox="0 0 520 195" class="chart" role="img" aria-label="timeline">
+      <div class="stat"><b>2027</b><span>${T("electronic duplicata (duplicata escritural) mandatory for large companies; medium & small in 2028","duplicata escritural obrigatória para grandes empresas; médias e pequenas em 2028")}</span></div>
+    </div><div class="panel"><div class="lbl2">${T("Electronic duplicata roadmap","Linha do tempo da duplicata escritural")}</div>
+      <svg viewBox="0 26 520 169" class="chart" role="img" aria-label="timeline">
         <line x1="30" y1="102" x2="495" y2="102" stroke="${C.grid}" stroke-width="4" stroke-linecap="round"/>
         <line x1="30" y1="102" x2="185" y2="102" stroke="${C.blue}" stroke-width="4" stroke-linecap="round" pathLength="1" class="draw"/>
         ${[[40,T("Jun 2026","jun/2026"),[T("Ecosystem launched","Ecossistema lançado"),T("B3, CERC, Núclea","B3, CERC e Núclea")],C.blue,-1],[185,T("Nov 2026","nov/2026"),[T("This document","Este documento")],C.amber,1],[330,"2027",[T("Mandatory for","Obrigatória para"),T("large companies","grandes empresas")],C.navy,-1],[475,"2028",[T("Medium &","Médias e"),T("small companies","pequenas empresas")],C.slate,1]]
@@ -6185,7 +6231,7 @@ Write all prose in ${langName}.`;
     ${foot(T("Rates, dates and market sizes entered by the author from the linked sources as of Nov 2026; verify before use.","Taxas, datas e tamanhos de mercado informados pelo autor a partir das fontes indicadas, posição de nov/2026; conferir antes de usar."), ["selic","b3","dup","dupAuth","fidc"])}`, mount:countUp}; });
 
   // 3 · How it works
-  S(() => { const steps = [[T("Delivery + duplicata","Entrega + duplicata"),"D0",T("The supplier delivers and issues the duplicata, registered in an authorized system.","O fornecedor entrega e emite a duplicata, registrada em sistema autorizado.")],[T("Anchor confirms","Âncora confirma"),"D+5",T("The anchor approves the invoice and confirms payment at maturity — credit risk shifts to the anchor.","A âncora aprova o título e confirma o pagamento no vencimento — o risco passa a ser da âncora.")],[T("Citi pays early","Citi antecipa"),"D+6",T("Citi buys the receivable without recourse and provides a credit advance at a rate tied to the anchor's credit.","O Citi compra o recebível sem regresso e realiza a antecipação de crédito, com taxa ligada ao crédito da âncora.")],[T("Anchor pays Citi","Âncora paga o Citi"),"D+90",T("At maturity the anchor pays Citi in full. The anchor keeps its term; supplier got cash 84 days earlier.","No vencimento a âncora paga o Citi integralmente. A âncora mantém seu prazo; fornecedor recebeu 84 dias antes.")]];
+  S(() => { const steps = [[T("Delivery + duplicata","Entrega + duplicata"),"D0",T("The supplier delivers and issues the duplicata, registered in an authorized system.","O fornecedor entrega e emite a duplicata, registrada em sistema autorizado.")],[T("Anchor confirms","Âncora confirma"),"D+5",T("The anchor approves the invoice and confirms payment at maturity — credit risk shifts to the anchor.","A âncora aprova o título e confirma o pagamento no vencimento — o risco passa a ser da âncora.")],[T("Citi pays early","Citi antecipa"),"D+6",T("Citi buys the receivable without recourse and pays the supplier early, at a rate tied to the anchor's credit.","O Citi compra o recebível sem regresso e antecipa o pagamento ao fornecedor, com taxa ligada ao crédito da âncora.")],[T("Anchor pays Citi","Âncora paga o Citi"),"D+90",T("At maturity the anchor pays Citi in full. The anchor keeps its term; supplier got cash 84 days earlier.","No vencimento a âncora paga o Citi integralmente. A âncora mantém seu prazo; fornecedor recebeu 84 dias antes.")]];
     return {html:`<div class="eyebrow">${T("The product","O produto")}</div><h2>${T("Risco sacado in four moves","Risco sacado em quatro movimentos")}</h2>
     <div class="gs split4"><svg viewBox="0 0 960 415" class="chart" id="how" role="img">
       <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${C.blue}"/></marker>
@@ -6206,10 +6252,10 @@ Write all prose in ${langName}.`;
 
   // 4 · Economics simulator
   S(() => ({html:`<div class="eyebrow">${T("Economics · simulator","Economia · simulador")}</div><h2>${T("Why a supplier says yes — and what the bank earns","Por que o fornecedor aceita — e quanto o banco ganha")}</h2>
-    <div class="gs split"><div class="controls2">${rangeHTML("e-v",T("Invoice value","Valor da duplicata"),1,50,1,10,moneyD(10,0))}${rangeHTML("e-d",T("Days to maturity","Dias até vencimento"),15,180,5,90,"90")}${rangeHTML("e-x",T("Supplier funding: CDI +","Custo fornecedor: CDI +"),2,12,0.5,6,pct(6))}${rangeHTML("e-y",T("Risco sacado: CDI +","Risco sacado: CDI +"),0.4,3,0.1,G.spread,pct(G.spread))}<p class="note2">${T(`CDI ≈ Selic ${nf(SELIC,2)}%.`,`CDI ≈ Selic ${nf(SELIC,2)}%.`)}</p></div>
+    <div class="gs split"><div class="controls2">${rangeHTML("e-v",T("Invoice value","Valor da duplicata"),1,50,1,10,moneyD(10,ccy === "USD" ? 1 : 0))}${rangeHTML("e-d",T("Days to maturity","Dias até vencimento"),15,180,5,90,"90")}${rangeHTML("e-x",T("Supplier funding: CDI +","Custo fornecedor: CDI +"),2,12,0.5,6,pct(6))}${rangeHTML("e-y",T("Risco sacado: CDI +","Risco sacado: CDI +"),0.4,3,0.1,G.spread,pct(G.spread))}<p class="note2">${T(`CDI ≈ Selic ${nf(SELIC,2)}%.`,`CDI ≈ Selic ${nf(SELIC,2)}%.`)}</p></div>
     <div><div class="gs c3 bignums"><div><span>${T("Supplier saves","Economia fornecedor")}</span><b id="e-sav"></b></div><div><span>${T("Bank spread","Spread banco")}</span><b id="e-bank"></b></div><div><span>${T("Annual rate","Taxa anual")}</span><b id="e-rate"></b></div></div><svg viewBox="0 0 520 118" class="chart" id="e-bars" role="img"></svg><div class="lbl2">${T("Supplier saving by tenor","Economia por prazo")}</div><svg viewBox="0 0 520 165" class="chart" id="e-line" role="img"></svg></div></div>
     ${foot(T("Illustrative rates; actual pricing depends on the anchor's rating and on credit approval.","Taxas ilustrativas; o preço real depende do rating da âncora e da aprovação de crédito."), ["selic"])}`,
-    mount(root) { const disc = (V, r, d) => V * (1 - Math.pow(1 + r / 100, -d / 365)); const draw = () => { const V = +$("e-v").value, d = +$("e-d").value, x = +$("e-x").value, y = +$("e-y").value; $("e-v-o").textContent = moneyD(V, 0); $("e-d-o").textContent = d; $("e-x-o").textContent = pct(x); $("e-y-o").textContent = pct(y); const alt = disc(V, SELIC + x, d), scf = disc(V, SELIC + y, d), cdi = disc(V, SELIC, d); $("e-sav").textContent = kmoney(alt - scf); $("e-bank").textContent = kmoney(scf - cdi); $("e-rate").textContent = pct(SELIC + y, 2) + " vs " + pct(SELIC + x, 2); const mx = Math.max(alt, scf) * 1.12, W2 = 300; $("e-bars").innerHTML = [[T("Own funding","Crédito próprio"),alt,C.slate],[T("Risco sacado","Risco sacado"),scf,C.blue]].map(([n, v, c], k) => `<text x="0" y="${30 + k * 46}" font-size="13.5" fill="${C.navy}" font-weight="600">${n}</text><rect x="135" y="${14 + k * 46}" width="${W2 * v / mx}" height="24" rx="5" fill="${c}"/><text x="${143 + W2 * v / mx}" y="${31 + k * 46}" font-size="13.5" font-weight="700" fill="${C.navy}">${kmoney(v)}</text>`).join(""); const ds = []; for (let dd = 15; dd <= 180; dd += 5) ds.push([dd, disc(V, SELIC + x, dd) - disc(V, SELIC + y, dd)]); const my = Math.max(...ds.map(p => p[1])) * 1.15, X = dd => 56 + (dd - 15) / 165 * 444, Y = v => 140 - v / my * 120; $("e-line").innerHTML = [0,.5,1].map(f => `<line x1="56" x2="500" y1="${Y(my * f)}" y2="${Y(my * f)}" stroke="${C.grid}"/><text x="50" y="${Y(my * f) + 4}" text-anchor="end" font-size="10" fill="${C.muted}">${kmoney(my * f)}</text>`).join("") + [15,60,90,120,180].map(dd => `<text x="${X(dd)}" y="158" text-anchor="middle" font-size="10.5" fill="${C.muted}">${dd}d</text>`).join("") + `<path d="M${ds.map(p => X(p[0]) + "," + Y(p[1])).join("L")}L${X(180)},140L${X(15)},140z" fill="rgba(0,189,242,.22)"/><path d="M${ds.map(p => X(p[0]) + "," + Y(p[1])).join("L")}" fill="none" stroke="${C.blue}" stroke-width="3"/><line x1="${X(d)}" x2="${X(d)}" y1="16" y2="140" stroke="${C.amber}" stroke-dasharray="3 4"/><circle cx="${X(d)}" cy="${Y(alt - scf)}" r="6" fill="${C.amber}"/>`; }; root.querySelectorAll(".controls2 input").forEach(i => i.oninput = draw); draw(); }}));
+    mount(root) { const disc = (V, r, d) => V * (1 - Math.pow(1 + r / 100, -d / 365)); const draw = () => { const V = +$("e-v").value, d = +$("e-d").value, x = +$("e-x").value, y = +$("e-y").value; $("e-v-o").textContent = moneyD(V, ccy === "USD" ? 1 : 0); $("e-d-o").textContent = d; $("e-x-o").textContent = pct(x); $("e-y-o").textContent = pct(y); const alt = disc(V, SELIC + x, d), scf = disc(V, SELIC + y, d), cdi = disc(V, SELIC, d); $("e-sav").textContent = kmoney(alt - scf); $("e-bank").textContent = kmoney(scf - cdi); $("e-rate").textContent = pct(SELIC + y, 2) + " vs " + pct(SELIC + x, 2); const mx = Math.max(alt, scf) * 1.12, W2 = 300; $("e-bars").innerHTML = [[T("Own funding","Crédito próprio"),alt,C.slate],[T("Risco sacado","Risco sacado"),scf,C.blue]].map(([n, v, c], k) => `<text x="0" y="${30 + k * 46}" font-size="13.5" fill="${C.navy}" font-weight="600">${n}</text><rect x="135" y="${14 + k * 46}" width="${W2 * v / mx}" height="24" rx="5" fill="${c}"/><text x="${143 + W2 * v / mx}" y="${31 + k * 46}" font-size="13.5" font-weight="700" fill="${C.navy}">${kmoney(v)}</text>`).join(""); const ds = []; for (let dd = 15; dd <= 180; dd += 5) ds.push([dd, disc(V, SELIC + x, dd) - disc(V, SELIC + y, dd)]); const my = Math.max(...ds.map(p => p[1])) * 1.15, X = dd => 56 + (dd - 15) / 165 * 444, Y = v => 140 - v / my * 120; $("e-line").innerHTML = [0,.5,1].map(f => `<line x1="56" x2="500" y1="${Y(my * f)}" y2="${Y(my * f)}" stroke="${C.grid}"/><text x="50" y="${Y(my * f) + 4}" text-anchor="end" font-size="10" fill="${C.muted}">${kmoney(my * f)}</text>`).join("") + [15,60,90,120,180].map(dd => `<text x="${X(dd)}" y="158" text-anchor="middle" font-size="10.5" fill="${C.muted}">${dd}d</text>`).join("") + `<path d="M${ds.map(p => X(p[0]) + "," + Y(p[1])).join("L")}L${X(180)},140L${X(15)},140z" fill="rgba(0,189,242,.22)"/><path d="M${ds.map(p => X(p[0]) + "," + Y(p[1])).join("L")}" fill="none" stroke="${C.blue}" stroke-width="3"/><line x1="${X(d)}" x2="${X(d)}" y1="16" y2="140" stroke="${C.amber}" stroke-dasharray="3 4"/><circle cx="${X(d)}" cy="${Y(alt - scf)}" r="6" fill="${C.amber}"/>`; }; root.querySelectorAll(".controls2 input").forEach(i => i.oninput = draw); draw(); }}));
 
   // 5 · Anchor working capital
   S(() => ({html:`<div class="eyebrow">${T("Economics · anchor side","Economia · lado da âncora")}</div><h2>${T("Longer terms release working capital — if suppliers are kept whole","Prazo maior libera capital de giro — se o fornecedor não sair perdendo")}</h2>${tabsHTML()}
@@ -6219,20 +6265,22 @@ Write all prose in ${langName}.`;
     mount(root) { const draw = () => { const a = +$("w-a").value, b = +$("w-b").value, e = eligOf(selA), rel = e * 1000 * Math.max(0, b - a) / 365; $("w-a-o").textContent = a; $("w-b-o").textContent = b; $("w-rel").textContent = money(rel); $("w-ben").textContent = money(rel * SELIC / 100); $("w-note").textContent = T(`${ANCHORS[selA].name}: estimated eligible purchases of ${bn(e, 1)}/yr (${nf(P[selA].addr, 1)}% of the ${dkBase()}; the percentage is a working hypothesis).`,`${ANCHORS[selA].name}: compras elegíveis estimadas em ${bn(e, 1)}/ano (${nf(P[selA].addr, 1)}% da ${dkBase()}; o percentual é uma hipótese de trabalho).`); const mx = 180, X = d => 150 + d / mx * 310; $("w-chart").innerHTML = [[T("Today","Hoje"),a,C.slate],[T("With program","Com programa"),b,C.blue]].map(([n, d, c], k) => `<text x="0" y="${42 + k * 58}" font-size="14" font-weight="600" fill="${C.navy}">${n}</text><rect x="150" y="${22 + k * 58}" width="${X(d) - 150}" height="30" rx="6" fill="${c}"/><text x="${X(d) + 8}" y="${43 + k * 58}" font-size="13.5" font-weight="700" fill="${C.navy}">${d} ${T("days","dias")}</text>`).join("") + (b > a ? `<rect x="${X(a)}" y="80" width="${X(b) - X(a)}" height="30" rx="5" fill="${C.amber}" opacity=".92"/><text x="${(X(a) + X(b)) / 2}" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">+${b - a}d</text>` : ""); }; root.querySelectorAll(".controls2 input").forEach(i => i.oninput = draw); bindTabs(root, draw); draw(); }}));
 
   // 6 · Shortlist (dataset-aware: quarter line and fact lines only where the active dataset has them)
-  S(() => { const mx = Math.max(...ANCHORS.map(a => a.rev)), d = DS(), isQ3 = datasetId === "q3";
-    const sub = a => a.q3 != null ? `${L(d.revTag)}: ${bn(a.q3, a.q3 < 15 ? 3 : 1)}` : T(`full year ${L(d.revTag)}`,`ano de ${L(d.revTag)}`);
+  S(() => { const d = DS(), isQ3 = datasetId === "q3";
+    // Bars in the display currency; in USD, companies that report in dollars show the figure they published (revRep).
+    const rv = a => { const r = revRep(a); return r != null ? r : a.rev / fx(); }, mx = Math.max(...ANCHORS.map(rv), 1e-9);
+    const sub = a => (a.q3 != null ? `${L(d.revTag)}: ${revFmt(a, "q3", a.q3 < 15 ? 3 : 1)}` : T(`full year ${L(d.revTag)}`,`ano de ${L(d.revTag)}`)) + (revRep(a) != null ? T(" · as reported"," · divulgado") : "");
     const facts = isQ3
       ? [T("Embraer: record 3Q26 R$12.067bn (US$2.347bn, 10 Nov 2026) and 2026 guidance raised to US$8.4–8.6bn.","Embraer: recorde 3T26 R$ 12,067 bi (US$ 2,347 bi, 10/nov/2026) e guidance 2026 elevado para US$ 8,4–8,6 bi."),
          T("JBS: 3Q26 R$116.8bn (US$22.7bn); MBRF: 3Q26 R$41.424bn post-merger.","JBS: 3T26 R$ 116,8 bi (US$ 22,7 bi); MBRF: 3T26 R$ 41,424 bi pós-fusão."),
-         T("Votorantim: 3Q26 R$16.3bn holding (V. Cimentos R$8.5bn); Natura: 3Q26 R$5.038bn (Brazil R$2.920bn).","Votorantim: 3T26 R$ 16,3 bi holding (V. Cimentos R$ 8,5 bi); Natura: 3T26 R$ 5,038 bi (Brasil R$ 2,920 bi).")]
+         T("Votorantim: 3Q26 net revenue R$16.3bn in the holding's economic view (V. Cimentos R$8.5bn); Natura: 3Q26 R$5.038bn (Brazil R$2.920bn).","Votorantim: 3T26 receita líquida de R$ 16,3 bi na visão econômica da holding (V. Cimentos R$ 8,5 bi); Natura: 3T26 R$ 5,038 bi (Brasil R$ 2,920 bi).")]
       : ANCHORS.map(a => `${esc(a.name)}: ${esc(L(a.revNote))} (${esc(L(d.revTag))}).`);
     return {html:`<div class="eyebrow">${T("Starting shortlist","Shortlist inicial")}</div><h2>${T("Five anchors with public evidence of a Citi relationship","Cinco âncoras com evidência pública de relacionamento com o Citi")}</h2>
     <div class="gs split2"><svg viewBox="0 0 650 335" class="chart" role="img"><text x="0" y="14" font-size="12" font-weight="700" fill="${C.muted}">${T(`REVENUE BASE: ${dsBaseLabel().toUpperCase()}, ${ccyCode()} BN`,`BASE DE RECEITA: ${dsBaseLabel().toUpperCase()}, ${ccyCode()} BI`)}</text>
-      ${ANCHORS.map((a, k) => `<g transform="translate(0,${34 + k * 60})">${svgBrandMark(a.id, 0, 0, 44)}<text x="56" y="18" font-size="15" font-weight="700" fill="${C.navy}">${a.name}</text><text x="56" y="36" font-size="11.5" fill="${C.muted}">${sub(a)}</text><rect x="232" y="8" width="${330 * a.rev / mx}" height="28" rx="6" fill="${a.color}" class="growx" style="animation-delay:${k * 80}ms"/><text x="${240 + 330 * a.rev / mx}" y="27" font-size="13.5" font-weight="700" fill="${C.navy}">${nf(a.rev / fx(), 1)}</text></g>`).join("")}</svg>
-    <div><p>${T("All five were named as Brazilian clients by Citi's Corporate Banking heads in July 2025 (Bloomberg Línea, linked below). That shows a relationship, not an active supplier-finance program.","As cinco foram citadas como clientes brasileiras pelos responsáveis do Corporate Banking do Citi em jul/2025 (Bloomberg Línea, link abaixo). Isso mostra relacionamento, não um programa de risco sacado ativo.")} ${isQ3 ? T("Revenue scale: 3Q26 releases (Nov 2026), annualised.","Escala de receita: balanços do 3T26 (nov/2026), anualizados.") : T("Revenue scale: reported 2025 net revenue.","Escala de receita: receita líquida divulgada de 2025.")}</p>
+      ${ANCHORS.map((a, k) => `<g transform="translate(0,${34 + k * 60})">${svgBrandMark(a.id, 0, 0, 44)}<text x="56" y="18" font-size="15" font-weight="700" fill="${C.navy}">${a.name}</text><text x="56" y="36" font-size="11.5" fill="${C.muted}">${sub(a)}</text><rect x="232" y="8" width="${330 * rv(a) / mx}" height="28" rx="6" fill="${a.color}" class="growx" style="animation-delay:${k * 80}ms"/><text x="${240 + 330 * rv(a) / mx}" y="27" font-size="13.5" font-weight="700" fill="${C.navy}">${nf(rv(a), 1)}</text></g>`).join("")}</svg>
+    <div><p>${T("All five were named as Brazilian clients by Citi's Corporate Banking heads in July 2025 (Bloomberg Línea, linked below). That shows a relationship, not an active supplier-finance program.","As cinco foram citadas como clientes brasileiras pelos responsáveis do Corporate Banking do Citi em jul/2025 (Bloomberg Línea, link abaixo). Isso mostra relacionamento, não um programa de risco sacado ativo.")} ${isQ3 ? T("Revenue scale: 3Q26 releases (Nov 2026), annualized.","Escala de receita: balanços do 3T26 (nov/2026), anualizados.") : T("Revenue scale: reported 2025 net revenue.","Escala de receita: receita líquida divulgada de 2025.")}</p>
     <ul class="facts">${facts.map(f => `<li>${f}</li>`).join("")}</ul>
     <div class="key">${T("Revenue measures scale. The opportunity is unserved eligible volume — qualify all five in parallel.","Receita mede escala. A oportunidade é o volume elegível não atendido — qualificar as cinco em paralelo.")}</div></div></div>
-    ${foot(pubNote() + " " + T("Amounts in the fact lines are quoted as reported (BRL unless stated).","Os valores das linhas de fatos estão como divulgados (em reais, salvo indicação)."), ["linea", ...dkAnchorSrc()])}`}; });
+    ${foot(pubNote() + " " + T("Amounts in the fact lines are quoted as reported (BRL unless stated)." + (ccy === "USD" ? " In USD, JBS and Embraer show the dollars they reported (Embraer: midpoint of its 2026 guidance); the others are converted at the panel rate." : ""),"Os valores das linhas de fatos estão como divulgados (em reais, salvo indicação)." + (ccy === "USD" ? " Em dólar, JBS e Embraer aparecem com os dólares divulgados (Embraer: ponto médio do guidance de 2026); as demais são convertidas pela taxa do painel." : "")), ["linea", ...dkAnchorSrc()])}`}; });
 
   // 7 · Sizing funnel per anchor (live-synced to Step 3 + Market + Action Plan!)
   S(() => ({html:`<div class="eyebrow">${T("Sizing · per anchor","Dimensionamento · por âncora")}</div><h2>${T("From revenue to discounting flow, one lever at a time","Da receita ao fluxo antecipado, uma alavanca de cada vez")}</h2>${tabsHTML()}
@@ -6241,12 +6289,12 @@ Write all prose in ${langName}.`;
     <div class="gs c3 bignums small" style="margin-top:.8em"><div><span>${T("Annual flow","Fluxo anual")}</span><b id="f-flow"></b></div><div><span>${T("Balance","Saldo")}</span><b id="f-bal"></b></div><div><span>${T("Spread / yr","Spread / ano")}</span><b id="f-rev"></b></div></div></div></div>
     ${foot(T("Sliders edit the same hypotheses as Step 3, the market module and the Monday action plan. Only revenue is public data; every percentage is a working hypothesis.","Os controles editam as mesmas hipóteses da Etapa 3, do módulo de mercado e do plano de ação. Só a receita é dado público; todo percentual é hipótese de trabalho."), [ANCHORS[selA].src])}`,
     mount(root) { const keys = ["addr","cov","adh","util"], load = () => keys.forEach(k => { $("f-" + k).value = P[selA][k]; });
-      const draw = () => { const a = ANCHORS[selA], p = P[selA]; keys.forEach(k => $("f-" + k + "-o").textContent = pct(p[k], k === "addr" ? 1 : 0)); const e = eligOf(selA), vals = [[T("Eligible purchases","Compras elegíveis"),e],[T("Covered","Cobertas"),e*p.cov/100],[T("Adopting suppliers","Aderentes"),e*p.cov/100*p.adh/100],[T("Discounted flow","Fluxo anual"),flowOf(selA)]], f = flowOf(selA), b = balOf(f); $("f-flow").textContent = bn(f); $("f-bal").textContent = money(b); $("f-rev").textContent = moneyD(revOf(b)); $("f-svg").innerHTML = `<text x="0" y="16" font-size="11.5" fill="${C.muted}">${T("Revenue base","Base de receita")} (${dsBaseLabel(true)}): <tspan font-weight="700" fill="${C.navy}">${bn(a.rev,1)}</tspan> × ${pct(p.addr,1)}</text>` + vals.map(([n, v], k) => { const sw = u => 170 + 330 * Math.sqrt(Math.max(0, u) / Math.max(e, 1e-9)), w = sw(v), x = (520 - w) / 2, w2 = k < 3 ? sw(vals[k + 1][1]) : w, x2 = (520 - w2) / 2, y = 34 + k * 72, tf = isDark() ? (k < 2 ? "#fff" : "#041225") : (k < 3 ? "#fff" : C.navy); return `<path d="M${x},${y}H${x + w}L${x2 + w2},${y + 56}H${x2}z" fill="${C.series[k]}" opacity="${k === 3 ? 1 : .92}"/><text x="260" y="${y + 23}" text-anchor="middle" font-size="12.5" fill="${tf}" font-weight="600">${n}</text><text x="260" y="${y + 43}" text-anchor="middle" font-size="16" fill="${tf}" font-weight="800">${bn(v)}</text>`; }).join(""); };
+      const draw = () => { const a = ANCHORS[selA], p = P[selA]; keys.forEach(k => $("f-" + k + "-o").textContent = pct(p[k], k === "addr" ? 1 : 0)); const e = eligOf(selA), vals = [[T("Eligible purchases","Compras elegíveis"),e],[T("Covered","Cobertas"),e*p.cov/100],[T("Adopting suppliers","Aderentes"),e*p.cov/100*p.adh/100],[T("Discounted flow","Fluxo anual"),flowOf(selA)]], f = flowOf(selA), b = balOf(f); $("f-flow").textContent = bn(f); $("f-bal").textContent = money(b); $("f-rev").textContent = moneyD(revOf(b)); $("f-svg").innerHTML = `<text x="0" y="16" font-size="11.5" fill="${C.muted}">${T("Revenue base","Base de receita")} (${dsBaseLabel(true)}): <tspan font-weight="700" fill="${C.navy}">${revFmt(a)}</tspan> × ${pct(p.addr,1)}</text>` + vals.map(([n, v], k) => { const sw = u => 170 + 330 * Math.sqrt(Math.max(0, u) / Math.max(e, 1e-9)), w = sw(v), x = (520 - w) / 2, w2 = k < 3 ? sw(vals[k + 1][1]) : w, x2 = (520 - w2) / 2, y = 34 + k * 72, tf = isDark() ? (k < 2 ? "#fff" : "#041225") : (k < 3 ? "#fff" : C.navy); return `<path d="M${x},${y}H${x + w}L${x2 + w2},${y + 56}H${x2}z" fill="${C.series[k]}" opacity="${k === 3 ? 1 : .92}"/><text x="260" y="${y + 23}" text-anchor="middle" font-size="12.5" fill="${tf}" font-weight="600">${n}</text><text x="260" y="${y + 43}" text-anchor="middle" font-size="16" fill="${tf}" font-weight="800">${bn(v)}</text>`; }).join(""); };
       keys.forEach(k => $("f-" + k).oninput = e => { P[selA][k] = +e.target.value; draw(); syncPipelineInputs(); });
       bindTabs(root, () => { load(); draw(); }); load(); draw(); }}));
 
   // 8 · Pipeline bubble map (fixed collisions + BRL/USD ticks)
-  S(() => { const t = totals(), my = Math.max(...t.flows) * 1.28, lx = v => Math.log10(v), X = v => 76 + (lx(v) - 1) / (lx(1000) - 1) * 784, Y = v => 286 - v / my * 236;
+  S(() => { const t = totals(), my = Math.max(Math.max(...t.flows) * 1.28, 1e-6), lx = v => Math.log10(v), X = v => 76 + (lx(v) - 1) / (lx(1000) - 1) * 784, Y = v => 286 - v / my * 236;
     const order = t.flows.map((f, i) => [f, i]).sort((a, b) => b[0] - a[0]);
     const lblPos = (id, cx, cy, r) => id === "emb" ? {x:cx - r - 6, y:cy + 5, anchor:"end"} : id === "vot" ? {x:cx + r + 6, y:cy - r * .4, anchor:"start"} : {x:cx, y:cy - r - 8, anchor:"middle"};
     return {html:`<div class="eyebrow">${T("Pipeline map","Mapa do pipeline")}</div><h2>${T("The largest company is not automatically the largest opportunity","A maior empresa não é automaticamente a maior oportunidade")}</h2>
@@ -6257,7 +6305,7 @@ Write all prose in ${langName}.`;
       <text x="76" y="20" font-size="13.5" font-weight="600" fill="${C.muted}">↑ ${T(`Annual flow, ${ccyCode()} bn`,`Fluxo anual, ${ccyCode()} bi`)}</text>
       ${ANCHORS.map((a, i) => { const cx = X(a.rev), cy = Y(t.flows[i]), r = 14 + Math.sqrt(balOf(t.flows[i])) * 1.9, lp = lblPos(a.id, cx, cy, r); return `<g><circle cx="${cx}" cy="${cy}" r="${r}" fill="${a.color}" fill-opacity=".86" stroke="#fff" stroke-width="2.5"/><text x="${lp.x}" y="${lp.y}" text-anchor="${lp.anchor}" font-size="16" font-weight="700" fill="${C.navy}">${a.name}</text></g>`; }).join("")}
     </svg><div><div class="lbl2">${T("Ranking by potential flow","Ranking por fluxo potencial")}</div>
-      ${order.map(([f, i], k) => `<div class="sbar"><span class="sbar-brand">${brandBadge(ANCHORS[i].id, "xs")}<span>#${k + 1} ${ANCHORS[i].name.split(" ")[0]}</span></span><div class="track"><div class="fill" style="width:${100 * f / order[0][0]}%;background:${ANCHORS[i].color}"></div></div><b>${bn(f)}</b></div>`).join("")}
+      ${order.map(([f, i], k) => `<div class="sbar"><span class="sbar-brand">${brandBadge(ANCHORS[i].id, "xs")}<span>#${k + 1} ${ANCHORS[i].name.split(" ")[0]}</span></span><div class="track"><div class="fill" style="width:${order[0][0] > 0 ? 100 * f / order[0][0] : 0}%;background:${ANCHORS[i].color}"></div></div><b>${bn(f)}</b></div>`).join("")}${t.flow > 0 ? "" : `<p class="fnote">${T("No discounting flow under the current hypotheses (addressable, coverage, adoption or utilization at zero).","Nenhum fluxo de antecipação com as hipóteses atuais (endereçável, cobertura, adesão ou utilização em zero).")}</p>`}
       <div class="sbar total"><span>${T("Total","Total")}</span><span>${money(t.bal)}</span><b>${bn(t.flow)}</b></div></div></div>
     ${foot(T("Flow = revenue × addressable % × coverage × adoption × utilization. Hypotheses editable on slide 7 or in Step 3; the ranking reflects them, not Citi data.","Fluxo = receita × % endereçável × cobertura × adesão × utilização. Hipóteses editáveis no slide 7 ou na Etapa 3; o ranking reflete essas hipóteses, não dados do Citi."))}`}; });
 
@@ -6279,7 +6327,7 @@ Write all prose in ${langName}.`;
     ${foot(T("Model, not a forecast: each anchor ramps on an S-curve to its potential flow, starting one quarter apart in ranking order. Downside = 60% of potential, two quarters slower; upside = 130%, faster.","Modelo, não projeção: cada âncora sobe em curva S até seu fluxo potencial, com início espaçado de um trimestre na ordem do ranking. Pessimista = 60% do potencial, dois trimestres mais lento; otimista = 130%, mais rápido."))}`,
     mount(root) { const SC = {Downside:{lvl:.6,lag:2}, Base:{lvl:1,lag:0}, Upside:{lvl:1.3,lag:-.7}};
       const series = s => { const t = totals(), order = t.flows.map((f, i) => [f, i]).sort((a, b) => b[0] - a[0]).map(x => x[1]); return ANCHORS.map((_, i) => { const r = order.indexOf(i); return Array.from({length:12}, (_, q) => balOf(t.flows[i] * SC[s].lvl / (1 + Math.exp(-((q + 1) - (3 + r + SC[s].lag)) / 1.1)))); }); };
-      const draw = () => { const all = {}; ["Downside","Base","Upside"].forEach(s => all[s] = series(s)); const ser = all[scen], tot = q => ser.reduce((s, a) => s + a[q], 0), totOf = (s, q) => all[s].reduce((x, a) => x + a[q], 0), my = Math.max(...Array.from({length:12}, (_, q) => totOf("Upside", q))) * 1.1, X = q => 72 + q * (748 / 11), Y = v => 220 - v / my * 202; let acc = Array(12).fill(0), areas = ""; ser.forEach((a, i) => { const top = a.map((v, q) => acc[q] + v); areas += `<path d="M${top.map((v, q) => X(q) + "," + Y(v)).join("L")}L${acc.map((v, q) => X(q) + "," + Y(v)).reverse().join("L")}z" fill="${ANCHORS[i].color}" fill-opacity=".9"/>`; acc = top; }); const others = ["Downside","Base","Upside"].filter(s => s !== scen).map(s => `<path d="M${Array.from({length:12}, (_, q) => X(q) + "," + Y(totOf(s, q))).join("L")}" fill="none" stroke="${C.amber}" stroke-width="2" stroke-dasharray="6 5"/><text x="${X(11) + 8}" y="${Y(totOf(s, 11)) + 4}" font-size="12" font-weight="700" fill="${C.amber}">${scName(s)}</text>`).join(""); $("s-svg").innerHTML = [0,.5,1].map(f => `<line x1="72" x2="820" y1="${Y(my * f)}" y2="${Y(my * f)}" stroke="${C.grid}"/><text x="64" y="${Y(my * f) + 4}" text-anchor="end" font-size="11.5" fill="${C.muted}">${money(my * f)}</text>`).join("") + Array.from({length:12}, (_, q) => `<text x="${X(q)}" y="242" text-anchor="middle" font-size="12" fill="${C.muted}">${T("Q","T")}${q + 1}</text>`).join("") + areas + others; $("s-bal").textContent = money(tot(11)); $("s-rev").textContent = moneyD(Array.from({length:12}, (_, q) => tot(q)).reduce((s, v) => s + v, 0) * G.spread / 100 / 4); $("s-flow").textContent = bn(totals().flow * SC[scen].lvl); root.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === scen))); };
+      const draw = () => { const all = {}; ["Downside","Base","Upside"].forEach(s => all[s] = series(s)); const ser = all[scen], tot = q => ser.reduce((s, a) => s + a[q], 0), totOf = (s, q) => all[s].reduce((x, a) => x + a[q], 0), my = Math.max(Math.max(...Array.from({length:12}, (_, q) => totOf("Upside", q))) * 1.1, 1e-6), X = q => 72 + q * (748 / 11), Y = v => 220 - v / my * 202; let acc = Array(12).fill(0), areas = ""; ser.forEach((a, i) => { const top = a.map((v, q) => acc[q] + v); areas += `<path d="M${top.map((v, q) => X(q) + "," + Y(v)).join("L")}L${acc.map((v, q) => X(q) + "," + Y(v)).reverse().join("L")}z" fill="${ANCHORS[i].color}" fill-opacity=".9"/>`; acc = top; }); const others = ["Downside","Base","Upside"].filter(s => s !== scen).map(s => `<path d="M${Array.from({length:12}, (_, q) => X(q) + "," + Y(totOf(s, q))).join("L")}" fill="none" stroke="${C.amber}" stroke-width="2" stroke-dasharray="6 5"/><text x="${X(11) + 8}" y="${Y(totOf(s, 11)) + 4}" font-size="12" font-weight="700" fill="${C.amber}">${scName(s)}</text>`).join(""); $("s-svg").innerHTML = [0,.5,1].map(f => `<line x1="72" x2="820" y1="${Y(my * f)}" y2="${Y(my * f)}" stroke="${C.grid}"/><text x="64" y="${Y(my * f) + 4}" text-anchor="end" font-size="11.5" fill="${C.muted}">${money(my * f)}</text>`).join("") + Array.from({length:12}, (_, q) => `<text x="${X(q)}" y="242" text-anchor="middle" font-size="12" fill="${C.muted}">${T("Q","T")}${q + 1}</text>`).join("") + areas + others; $("s-bal").textContent = money(tot(11)); $("s-rev").textContent = moneyD(Array.from({length:12}, (_, q) => tot(q)).reduce((s, v) => s + v, 0) * G.spread / 100 / 4); $("s-flow").textContent = bn(totals().flow * SC[scen].lvl); root.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === scen))); };
       root.querySelectorAll(".seg button").forEach(b => b.onclick = () => { scen = b.dataset.s; draw(); }); draw(); }}));
 
   // 11 · Three account situations
@@ -6305,7 +6353,7 @@ Write all prose in ${langName}.`;
     <ol class="qlist">${[["Does the company already offer risco sacado? Through which CNPJs and institutions?","A companhia já oferece risco sacado? Em quais CNPJs e instituições?"],["What volume of supplier payments is available today?","Qual volume de pagamentos está disponível hoje?"],["Which eligible suppliers are not participating yet?","Quais fornecedores elegíveis ainda não participam?"],["How long between invoice approval and maturity?","Quanto tempo entre aprovação do título e vencimento?"],["Is the main obstacle coverage, onboarding, integration, pricing or limit?","O principal obstáculo é cobertura, cadastro, integração, preço ou limite?"],["Which areas must approve: treasury, procurement, payables, legal, IT?","Quais áreas aprovam: tesouraria, compras, contas a pagar, jurídico, TI?"]].map(q => `<li>${L(q)}</li>`).join("")}</ol></div>`}));
 
   // 15 · 90-Day Plan
-  S(() => { const tasks = [[T("Qualify the five accounts","Qualificar as cinco contas"),1,3,C.navy],[T("Analyse payables files","Analisar arquivos de contas a pagar"),2,6,C.blue],[T("Credit proposal and approval","Proposta e aprovação de crédito"),4,9,C.blue],[T("Legal: assignment agreements","Jurídico: contratos de cessão"),6,10,"#1E88C7"],[T("ERP + registry integration","Integração ERP + registradora"),5,11,"#1E88C7"],[T("Supplier wave 1 (propensity)","Onda 1 fornecedores (score)"),9,13,C.amber]]; const X = w => 300 + (w - 1) * (580 / 13);
+  S(() => { const tasks = [[T("Qualify the five accounts","Qualificar as cinco contas"),1,3,C.navy],[T("Analyze payables files","Analisar arquivos de contas a pagar"),2,6,C.blue],[T("Credit proposal and approval","Proposta e aprovação de crédito"),4,9,C.blue],[T("Legal: assignment agreements","Jurídico: contratos de cessão"),6,10,"#1E88C7"],[T("ERP + registrar integration","Integração ERP + registradora"),5,11,"#1E88C7"],[T("Supplier wave 1 (propensity)","Onda 1 fornecedores (score)"),9,13,C.amber]]; const X = w => 300 + (w - 1) * (580 / 13);
     return {html:`<div class="eyebrow">${T("90-day plan · estimate","Plano de 90 dias · estimativa")}</div><h2>${T("From first meeting to first discount in ~11 weeks","Da primeira reunião ao primeiro desconto em ~11 semanas")}</h2>
     <svg viewBox="0 0 900 350" class="chart" role="img">${Array.from({length:13}, (_, w) => `<line x1="${X(w + 1)}" x2="${X(w + 1)}" y1="22" y2="296" stroke="${C.grid}"/><text x="${X(w + 1) + 22}" y="15" text-anchor="middle" font-size="11.5" fill="${C.muted}">${WL()}${w + 1}</text>`).join("")}
       ${tasks.map(([n, a, b, c], k) => `<text x="0" y="${52 + k * 42}" font-size="13.5" fill="${C.navy}" font-weight="600">${n}</text><rect x="${X(a)}" y="${34 + k * 42}" width="${X(b + 1) - X(a)}" height="26" rx="6" fill="${c}"/>`).join("")}
@@ -6314,7 +6362,7 @@ Write all prose in ${langName}.`;
     ${foot(T("Indicative timeline for a first anchor, an estimate by the author; it depends on credit approval, legal review and the anchor's ERP.","Cronograma indicativo para uma primeira âncora, estimativa do autor; depende de aprovação de crédito, revisão jurídica e do ERP da âncora."))}`}; });
 
   // 16 · Risks (dark-mode safe heatmap + circles)
-  S(() => { const R = [[1,T("Obligor concentration","Concentração no sacado"),2,3,T("Limits per anchor & diversification","Limites por âncora e diversificação")],[2,T("Duplicate invoices","Duplicatas repetidas"),1,3,T("Digital duplicata + anchor confirmation","Duplicata escritural + confirmação")],[3,T("Low supplier adoption","Baixa adesão"),3,2,T("Document AI + propensity score","IA de documentos + score propensão")],[4,T("ERP / registry delays","Atraso ERP / registradora"),2,2,T("Start integration W5; registry-agnostic layer","Iniciar S5; camada independente da registradora")],[5,T("Disclosure scrutiny","Escrutínio contábil"),2,3,T("Agree IAS 7 / IFRS 7 disclosure upfront","Combinar a divulgação IAS 7 / IFRS 7 desde a proposta")],[6,T("Price competition","Competição de preço"),3,2,T("Compete on coverage & onboarding","Competir em cobertura e adesão")]];
+  S(() => { const R = [[1,T("Obligor concentration","Concentração no sacado"),2,3,T("Limits per anchor & diversification","Limites por âncora e diversificação")],[2,T("Duplicate invoices","Duplicatas em duplicidade"),1,3,T("Electronic duplicata + anchor confirmation","Duplicata escritural + confirmação")],[3,T("Low supplier adoption","Baixa adesão"),3,2,T("Document AI + propensity score","IA de documentos + score propensão")],[4,T("ERP / registrar delays","Atraso ERP / registradora"),2,2,T("Start the integration in week 5 of the plan; a layer that works with any registrar","Iniciar a integração na semana 5 do plano; camada que funciona com qualquer registradora")],[5,T("Disclosure scrutiny","Escrutínio contábil"),2,3,T("Agree IAS 7 / IFRS 7 disclosure upfront","Combinar a divulgação IAS 7 / IFRS 7 desde a proposta")],[6,T("Price competition","Competição de preço"),3,2,T("Compete on coverage & onboarding","Competir em cobertura e adesão")]];
     const cell = (p, i) => (isDark() ? ["rgba(52,211,153,.14)","rgba(251,191,36,.15)","rgba(248,113,113,.16)"] : ["#E6F6F0","#FEF5E7","#FDECEC"])[Math.min(2, Math.max(0, p + i - 3))];
     return {html:`<div class="eyebrow">${T("Risks & guardrails","Riscos e salvaguardas")}</div><h2>${T("Grow safely: risks we price and controls we build","Crescer com segurança: riscos precificados e controles")}</h2>
     <div class="gs split"><svg viewBox="0 0 420 360" class="chart" role="img">
@@ -6326,7 +6374,7 @@ Write all prose in ${langName}.`;
 
   // 17 · Next Steps
   S(() => { const t = totals(); return {cls:"dark", html:`<div class="eyebrow">${T("Next step","Próximo passo")}${aiDeckNote ? " · ✦ AI Analysis ON" : ""}</div><h2>${T("Turn the shortlist into pipeline","Transformar a shortlist em pipeline")}</h2>
-    <div class="gs c3">${[[T("Cross the data","Cruzar os dados"),T("Relationship, credit and payables for each anchor.","Relacionamento, crédito e contas a pagar de cada âncora.")],[T("Size the gap","Dimensionar a lacuna"),T("Fill the qualification sheet; replace each hypothesis with account data.","Preencher a ficha de qualificação; trocar cada hipótese por dados da conta.")],[T("Prioritise","Priorizar"),T("Start where unserved eligible volume and rollout readiness are highest.","Começar onde o volume elegível não atendido e as condições de implantação forem maiores.")]].map(([h, b], k) => `<div class="box dbox"><span class="num">${k + 1}</span><b>${h}</b><p>${b}</p></div>`).join("")}</div>
+    <div class="gs c3">${[[T("Cross the data","Cruzar os dados"),T("Relationship, credit and payables for each anchor.","Relacionamento, crédito e contas a pagar de cada âncora.")],[T("Size the gap","Dimensionar a lacuna"),T("Fill the qualification sheet; replace each hypothesis with account data.","Preencher a ficha de qualificação; trocar cada hipótese por dados da conta.")],[T("Prioritize","Priorizar"),T("Start where unserved eligible volume and rollout readiness are highest.","Começar onde o volume elegível não atendido e as condições de implantação forem maiores.")]].map(([h, b], k) => `<div class="box dbox"><span class="num">${k + 1}</span><b>${h}</b><p>${b}</p></div>`).join("")}</div>
     <div class="key">${T(`Working estimate for the ${ANCHORS.length} anchors (${dkBase()} · ${G.tenor}d tenor · ${nf(G.spread, Math.round(G.spread * 10) !== G.spread * 10 ? 2 : 1)}% spread · ${scName(scen)}): ${bn(t.flow)} annual discounted flow, ${money(t.bal)} balance and ${moneyD(t.rev)}/yr spread revenue — to be confirmed account by account.`,`Estimativa de trabalho para as ${ANCHORS.length} âncoras (${dkBase()} · prazo ${G.tenor}d · spread ${nf(G.spread, Math.round(G.spread * 10) !== G.spread * 10 ? 2 : 1)}% · ${scName(scen)}): ${bn(t.flow)} de fluxo anual antecipado, ${money(t.bal)} de saldo e ${moneyD(t.rev)} de receita de spread por ano — a confirmar conta a conta.`)}${aiDeckNote ? `<div style="margin-top:6px;font-weight:500;font-size:.88em;opacity:.92">✦ <b>AI Analysis ON:</b> ${esc(aiDeckNote)}</div>` : ""}</div>
     <div class="foot"><div>${L(I18N["ft.guard"])}</div><div style="margin-top:6px;opacity:.9"><b>${T("Sources","Fontes")}:</b> ${Object.keys(SRC).filter(dkOtherSrc()).map(src).join(" · ")}</div><div style="margin-top:6px;opacity:.9">${pubNote()}</div></div>`}; });
 
@@ -6386,6 +6434,7 @@ Write all prose in ${langName}.`;
     if (!deck.hidden) {
       if (e.key === "Tab") { trapFocus(deck, e); return; }
       if (e.target.closest("input,select,a")) return;
+      if (e.key === " " && e.target.closest("button,summary,[role=button]")) return;   // Space activates the focused control
       if (["ArrowRight","PageDown"," "].includes(e.key)) { e.preventDefault(); $("deck-next").click(); }
       if (["ArrowLeft","PageUp"].includes(e.key)) { e.preventDefault(); $("deck-prev").click(); }
       if (e.key === "Home") { slideIdx = 0; renderSlide(); }
@@ -6432,7 +6481,7 @@ Write all prose in ${langName}.`;
     document.querySelectorAll(".ccy-switch").forEach(e => { e.title = fxLabel(); });
     // Data badge: same vocabulary as the source chip. With the user's own weekly data it says so, and what is still an example.
     const db = $("dataBadge");
-    if (db) db.textContent = SRCINFO ? T("Your weekly data · other figures are examples","Seus dados semanais · demais números são exemplos") : T("Example data","Dados de exemplo");
+    if (db) db.textContent = SRCINFO ? T("Your weekly data · other figures are examples","Seus dados semanais · demais números são exemplos") : T("Illustrative data","Dados ilustrativos");
   }
   function setCcy(c, redraw = true) {
     ccy = c === "USD" ? "USD" : "BRL";
@@ -6950,7 +6999,8 @@ Write all prose in ${langName}.`;
   function engShareTotals() {
     const rows = shareRows(), s = k => rows.reduce((x, r) => x + r[k], 0), elig = s("elig") || 1;
     const best = rows.slice().sort((a, b) => b.free - a.free)[0];
-    return { rows, elig, pc: 100 * s("citi") / elig, pp: 100 * s("peers") / elig, pf: 100 * s("fidc") / elig, pw: 100 * s("free") / elig, free: s("free"), best };
+    const base = s("base") || elig;   // per anchor max(eligible, funded): shares never exceed 100% (10-market.js shareRows)
+    return { rows, elig, pc: 100 * s("citi") / base, pp: 100 * s("peers") / base, pf: 100 * s("fidc") / base, pw: 100 * s("free") / base, free: s("free"), best };
   }
   function engAnsShare() {
     const t = engShareTotals();
@@ -7526,10 +7576,10 @@ Format: plain text, at most about 150 words, short paragraphs or "- " bullets, n
 
   [
     // Vocabulary: the app says "example data" everywhere (source chip, data editor, briefing, proofs, deck).
-    ["badge", ["Example data","Dados de exemplo"]],
+    ["badge", ["Illustrative data","Dados ilustrativos"]],
     ["ft.by", ["Concept by <b>José Edson Matos da Costa</b> · example data and working hypotheses, not Citi data","Conceito de <b>José Edson Matos da Costa</b> · dados de exemplo e hipóteses de trabalho, não são dados do Citi"]],
     // The page cannot show that anything was built with these teams: it lists what a real rollout needs.
-    ["ft.guard", ["<b>Guardrails for a real rollout:</b> design with Legal, Compliance and Risk · bank secrecy (LC 105/2001), LGPD, model validation · client data only aggregated, anonymised or with consent.","<b>Salvaguardas para uma implantação real:</b> desenho com Jurídico, Compliance e Risco · sigilo bancário (LC 105/2001), LGPD, validação de modelos · dados de clientes apenas agregados, anonimizados ou com consentimento."]],
+    ["ft.guard", ["<b>Guardrails for a real rollout:</b> design with Legal, Compliance and Risk · bank secrecy (LC 105/2001), LGPD, model validation · client data only aggregated, anonymized or with consent.","<b>Salvaguardas para uma implantação real:</b> desenho com Jurídico, Compliance e Risco · sigilo bancário (LC 105/2001), LGPD, validação de modelos · dados de clientes apenas agregados, anonimizados ou com consentimento."]],
     // The cards open a calculation, recomputed on the page; there is no audit against a system of record.
     ["pf.cue", ["View calculation ↗","Ver memória de cálculo ↗"]],
     ["sec.perf.n", ["Click any card to open the calculation behind its number","Clique em qualquer card para abrir a memória de cálculo do número"]],

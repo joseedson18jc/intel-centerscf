@@ -332,7 +332,8 @@
   function engShareTotals() {
     const rows = shareRows(), s = k => rows.reduce((x, r) => x + r[k], 0), elig = s("elig") || 1;
     const best = rows.slice().sort((a, b) => b.free - a.free)[0];
-    return { rows, elig, pc: 100 * s("citi") / elig, pp: 100 * s("peers") / elig, pf: 100 * s("fidc") / elig, pw: 100 * s("free") / elig, free: s("free"), best };
+    const base = s("base") || elig;   // per anchor max(eligible, funded): shares never exceed 100% (10-market.js shareRows)
+    return { rows, elig, pc: 100 * s("citi") / base, pp: 100 * s("peers") / base, pf: 100 * s("fidc") / base, pw: 100 * s("free") / base, free: s("free"), best };
   }
   function engAnsShare() {
     const t = engShareTotals();

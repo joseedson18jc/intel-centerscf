@@ -52,7 +52,7 @@
     const lost = Math.round((1 - v[3] / v[2]) * 100);
     $("fcall").innerHTML = mode === "before"
       ? T(`Biggest leak: <b>−${lost}%</b> of suppliers lost at the documents step.`,`Maior perda: <b>−${lost}%</b> dos fornecedores na etapa de documentos.`)
-      : T(`Document AI cuts the leak to <b style="color:var(--blue)">−${lost}%</b> and lifts first discounts from ${F.before[5]} to <b style="color:var(--blue)">${F.after[5]}</b>.`,`A IA de documentos reduz a perda para <b style="color:var(--blue)">−${lost}%</b> e eleva os primeiros descontos de ${F.before[5]} para <b style="color:var(--blue)">${F.after[5]}</b>.`);
+      : T(`Document AI cuts the loss at the documents step from ${Math.round((1 - F.before[3] / F.before[2]) * 100)}% to <b style="color:var(--blue)">${lost}%</b> and lifts first discounts from ${F.before[5]} to <b style="color:var(--blue)">${F.after[5]}</b>.`,`A IA de documentos reduz a perda na etapa de documentos de ${Math.round((1 - F.before[3] / F.before[2]) * 100)}% para <b style="color:var(--blue)">${lost}%</b> e eleva os primeiros descontos de ${F.before[5]} para <b style="color:var(--blue)">${F.after[5]}</b>.`);
     funnelNote();
   }
   // Labels the funnel as the example invitation wave and, when the supplier base differs from the wave,

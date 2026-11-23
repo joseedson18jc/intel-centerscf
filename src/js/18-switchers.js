@@ -16,7 +16,7 @@
     document.querySelectorAll(".ccy-switch").forEach(e => { e.title = fxLabel(); });
     // Data badge: same vocabulary as the source chip. With the user's own weekly data it says so, and what is still an example.
     const db = $("dataBadge");
-    if (db) db.textContent = SRCINFO ? T("Your weekly data · other figures are examples","Seus dados semanais · demais números são exemplos") : T("Example data","Dados de exemplo");
+    if (db) db.textContent = SRCINFO ? T("Your weekly data · other figures are examples","Seus dados semanais · demais números são exemplos") : T("Illustrative data","Dados ilustrativos");
   }
   function setCcy(c, redraw = true) {
     ccy = c === "USD" ? "USD" : "BRL";

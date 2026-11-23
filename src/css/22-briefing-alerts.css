@@ -12,3 +12,4 @@
   .alert-item b{font-weight:700;color:var(--navy)}
   .sev{flex:0 0 auto;width:9px;height:9px;border-radius:50%;margin-top:5px}
 
+  #briefingWeekTag{max-width:100%;min-width:0;overflow-wrap:anywhere}   /* long CSV file names wrap */

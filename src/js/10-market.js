@@ -36,8 +36,9 @@
     const visibleFunders = FUNDERS.filter(f => compFilter === "banks" ? (f.type === "bank" || f.type === "citi") : compFilter === "fidc" ? (f.type === "fidc" || f.type === "citi") : true);
     const mxMax = Math.max(1, ...COMP_DATA.map(r => Math.max(...FUNDERS.map(f => r[f.k] || 0))));
     const lvlCls = v => v / mxMax >= 0.6 ? "lvl-3" : v / mxMax >= 0.33 ? "lvl-2" : "lvl-1";
-    const citiZero = T("Relationship, no active program: zero in this dataset","Relacionamento, sem programa ativo: zero neste conjunto");
-    const headCols = visibleFunders.map(f => `<th><div class="funder-hd"><span class="funder-dot" style="background:${f.col}">${f.abbr}</span><span>${esc(fName(f))}</span></div></th>`).join("");
+    const citiZero = T("Assumed zero: there is no public information on a Citi program at this anchor","Assumido como zero: não há informação pública sobre programa do Citi nesta âncora");
+    const dotTxt = h => { const n = parseInt(h.slice(1), 16), c = v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }; return .2126 * c(n >> 16 & 255) + .7152 * c(n >> 8 & 255) + .0722 * c(n & 255) > .18 ? "#1A1200" : "#fff"; };   // readable text on brand colours
+    const headCols = visibleFunders.map(f => `<th><div class="funder-hd"><span class="funder-dot" style="background:${f.col};color:${dotTxt(f.col)}">${f.abbr}</span><span>${esc(fName(f))}</span></div></th>`).join("");
     const bodyRows = COMP_DATA.map((row, idx) => {
       const a = ANCHORS[idx], total = rowFunded(row);
       const cells = visibleFunders.map(f => {
@@ -54,14 +55,14 @@
     const colTotals = visibleFunders.map(f => `<td>${mxFmt(colTot(f.k))}</td>`).join("");
     const grandTotal = COMP_DATA.reduce((s, r) => s + rowFunded(r), 0);
     const totalGap = COMP_DATA.reduce((s, r) => s + r.gap, 0);
-    const thAnchor = flow ? T("Anchor (click row for detail)","Âncora (clique p/ detalhe)") : T("Anchor (click row for IAS 7 note)","Âncora (clique p/ nota IAS 7)");
-    const thTotal = flow ? T("Total funded","Total financiado") : T("Disclosed (IAS 7)","Divulgado (IAS 7)");
+    const thAnchor = T("Anchor (click row for detail)","Âncora (clique p/ detalhe)");
+    const thTotal = flow ? T("Total funded","Total financiado") : T("Estimated total (fabricated)","Total estimado (fabricado)");
     const thGap = flow ? `<span title="${T("Step 3 eligible purchases minus funded flow","Compras elegíveis da Etapa 3 menos o fluxo financiado")}">${T("White space","Espaço livre")}</span>` : T("Citi headroom","Espaço Citi");
     $("compMatrix").innerHTML = `<thead><tr><th>${thAnchor}</th>${headCols}<th>${thTotal}</th><th>${thGap}</th></tr></thead><tbody>${bodyRows}</tbody><tfoot><tr><td>${T("5-anchor total","Total 5 âncoras")}</td>${colTotals}<td>${mxFmt(grandTotal)}</td><td style="color:var(--green)">+${mxFmt(totalGap)}</td></tr></tfoot>`;
 
     if ($("compUnit")) $("compUnit").innerHTML = `<span class="fab-tag">${L(I18N["ds.fab.tag"])}</span> ` + (flow
       ? T("Estimated annual reverse-factoring flow by funder. Darker = bigger program. White space = Step 3 eligible purchases not funded by anyone.","Fluxo anual estimado de risco sacado por financiador. Mais escuro = programa maior. Espaço livre = compras elegíveis da Etapa 3 sem nenhum financiador.")
-      : T("Estimated supplier-finance balance by funder. Darker = bigger program. The Citi column is an invented position, not Citi data.","Saldo estimado de risco sacado por financiador. Mais escuro = programa maior. A coluna do Citi é uma posição inventada, não dado do Citi."));
+      : T("Estimated supplier-finance balance by funder. Darker = bigger program. The Citi column is assumed zero: there is no public information on a Citi program at these anchors.","Saldo estimado de risco sacado por financiador. Mais escuro = programa maior. A coluna do Citi é assumida como zero: não há informação pública sobre programa do Citi nessas âncoras."));
 
     // Result line: who leads, how much sits in FIDCs, where Citi stands in this dataset.
     if ($("compRes")) {
@@ -71,7 +72,7 @@
       const pTop = nf(100 * colTot(topF.k) / grandTotal, 0), pFidc = nf(100 * colTot("fidc") / grandTotal, 0), n = COMP_DATA.length;
       $("compRes").innerHTML = T(`<b>${esc(fName(topF))}</b> leads in ${cnt[topF.k]} of ${n} anchors and funds ${pTop}% of the ${mxFmt(grandTotal)} mapped. FIDCs already hold ${pFidc}%. `,`<b>${esc(fName(topF))}</b> lidera em ${cnt[topF.k]} de ${n} âncoras e financia ${pTop}% dos ${mxFmt(grandTotal)} mapeados. Os FIDCs já têm ${pFidc}%. `)
         + (colTot("citi") ? T(`Citi position in this dataset: ${mxFmt(colTot("citi"))} across the ${n} anchors (invented for the prototype).`,`Posição do Citi neste conjunto: ${mxFmt(colTot("citi"))} nas ${n} âncoras (inventada para o protótipo).`)
-                          : T(`Citi: relationship in all ${n}, program in none.`,`Citi: relacionamento nas ${n}, programa em nenhuma.`));
+                          : T(`Citi: public relationship with all ${n}; its program position is assumed zero, as there is no public information.`,`Citi: relacionamento público com as ${n}; a posição em programa é assumida como zero, pois não há informação pública.`));
     }
 
     const sel = COMP_DATA[selCompIdx], anc = ANCHORS[selCompIdx], selTot = rowFunded(sel), fidcPct = selTot ? Math.round((sel.fidc || 0) / selTot * 100) : 0;
@@ -79,12 +80,12 @@
       const lead = FUNDERS.filter(f => f.type !== "citi").slice().sort((x, y) => (sel[y.k] || 0) - (sel[x.k] || 0))[0];
       $("iasDrawer").innerHTML = `
         <div><h4>${brandBadge(anc.id, "xs")}<span>${esc(anc.name)} · ${T("funding snapshot","retrato do financiamento")}</span></h4><p><strong>${mxFmt(selTot)}</strong> ${T("of estimated annual flow funded today","de fluxo anual estimado financiado hoje")} (${fidcPct}% ${T("by FIDCs and fintechs","por FIDCs e fintechs")}). ${T("Lead funder","Principal financiador")}: <strong>${esc(fName(lead))}</strong> (${mxFmt(sel[lead.k] || 0)}).</p></div>
-        <div><span class="lbl">${T("Citi position","Posição do Citi")}</span><p>${T("Relationship, no active supplier-finance program: zero in this dataset.","Relacionamento, sem programa de risco sacado ativo: zero neste conjunto.")}</p></div>
+        <div><span class="lbl">${T("Citi position","Posição do Citi")}</span><p>${T("Public relationship; no public information on a supplier-finance program, so assumed zero in this dataset.","Relacionamento público; sem informação pública sobre programa de risco sacado, por isso assumido como zero neste conjunto.")}</p></div>
         <div><span class="lbl">${T("White space","Espaço livre")}</span><p><strong>+${mxFmt(sel.gap)}</strong> ${T(`of the ${bn(eligOf(selCompIdx), 1)} eligible purchases in Step 3 not funded by anyone.`,`dos ${bn(eligOf(selCompIdx), 1)} de compras elegíveis da Etapa 3 sem nenhum financiador.`)} ${T("IAS 7 terms and CVM notes:","Prazos IAS 7 e notas da CVM:")} ${naTxt()}.</p></div>`;
     } else {
       $("iasDrawer").innerHTML = `
-        <div><h4>${brandBadge(anc.id, "xs")}<span>${esc(anc.name)} · ${T("IAS 7 / IFRS 7 disclosure snapshot","Nota explicativa IAS 7 / IFRS 7")}</span></h4><p><strong>${mxFmt(selTot)}</strong> ${T("estimated total supplier finance balance","de saldo estimado de risco sacado")} (${fidcPct}% ${T("in CVM FIDCs","em FIDCs CVM")}). ${sel.iasTerms ? L(sel.iasTerms) : naTxt()}</p></div>
-        <div><span class="lbl">${T("CVM FIDC filings","Informes FIDC · CVM")}</span><p>${sel.cvmNote ? L(sel.cvmNote) : naTxt()}</p></div>
+        <div><h4>${brandBadge(anc.id, "xs")}<span>${esc(anc.name)} · ${T("illustrative snapshot (real data would come from the IAS 7 / IFRS 7 note)","retrato ilustrativo (o dado real viria da nota IAS 7 / IFRS 7)")}</span></h4><p><strong>${mxFmt(selTot)}</strong> ${T("of estimated supplier finance balance (fabricated)","de saldo estimado de risco sacado (fabricado)")} (${fidcPct}% ${T("in CVM FIDCs","em FIDCs CVM")}). ${sel.iasTerms ? L(sel.iasTerms) : naTxt()}</p></div>
+        <div><span class="lbl">${T("CVM FIDC filings (illustrative)","Informes FIDC · CVM (ilustrativo)")}</span><p>${sel.cvmNote ? L(sel.cvmNote) : naTxt()}</p></div>
         <div><span class="lbl">${T("Commercial play","Ação comercial recomendada")}</span><p><strong>+${mxFmt(sel.gap)}</strong> ${T("addressable headroom:","de espaço endereçável:")} ${sel.play ? L(sel.play) : naTxt()}</p></div>`;
     }
   }
@@ -145,50 +146,56 @@
   function shareRows() {
     const d = DS();
     if (d.share) return d.share.map((s, i) => { const elg = eligOf(i);
-      return {id:s.id, name:ANCHORS[i].name, elig:elg, pc:s.citi, pp:s.peers, pf:s.fidc, pw:s.free, citi:elg * s.citi / 100, peers:elg * s.peers / 100, fidc:elg * s.fidc / 100, free:elg * s.free / 100, reg:s.reg, regPct:s.regPct}; });
+      return {id:s.id, name:ANCHORS[i].name, elig:elg, base:elg, pc:s.citi, pp:s.peers, pf:s.fidc, pw:s.free, citi:elg * s.citi / 100, peers:elg * s.peers / 100, fidc:elg * s.fidc / 100, free:elg * s.free / 100, reg:s.reg, regPct:s.regPct}; });
     return COMP_DATA.map((row, i) => {
       const elg = eligOf(i), citi = (row.citi || 0) / 1000;
       const peers = FUNDERS.filter(f => f.type === "bank").reduce((s, f) => s + (row[f.k] || 0), 0) / 1000;
       const fidc = FUNDERS.filter(f => f.type === "fidc").reduce((s, f) => s + (row[f.k] || 0), 0) / 1000;
       const base = Math.max(elg, citi + peers + fidc, 0.0001), free = Math.max(0, elg - citi - peers - fidc), h = EXT_HEALTH[i] || {};
-      return {id:row.id, name:ANCHORS[i].name, elig:elg, pc:100 * citi / base, pp:100 * peers / base, pf:100 * fidc / base, pw:100 * free / base, citi, peers, fidc, free, reg:h.reg || null, regPct:h.dupPct, over:citi + peers + fidc > elg + 1e-9};
+      return {id:row.id, name:ANCHORS[i].name, elig:elg, base, pc:100 * citi / base, pp:100 * peers / base, pf:100 * fidc / base, pw:100 * free / base, citi, peers, fidc, free, reg:h.reg || null, regPct:h.dupPct, over:citi + peers + fidc > elg + 1e-9};
     });
   }
   function renderShareReal() {
     const d = DS(), rows = shareRows();
     // Keep the container other modules read in step with what is on screen.
     dsRefill(SHARE_DATA, rows.map(r => ({id:r.id, citi:Math.round(r.pc), peers:Math.round(r.pp), fidc:Math.round(r.pf), free:Math.round(r.pw), reg:r.reg, regPct:r.regPct})));
-    let totElig = 0, wCiti = 0, wPeers = 0, wFidc = 0, wFree = 0, bestWS = null;
-    rows.forEach(r => { totElig += r.elig; wCiti += r.citi; wPeers += r.peers; wFidc += r.fidc; wFree += r.free; if (!bestWS || r.free > bestWS.ws) bestWS = {name:r.name, ws:r.free}; });
+    // totBase: per anchor the larger of eligible and funded, so the consolidated shares never add up to more than 100%.
+    let totElig = 0, totBase = 0, wCiti = 0, wPeers = 0, wFidc = 0, wFree = 0, bestWS = null;
+    rows.forEach(r => { totElig += r.elig; totBase += r.base; wCiti += r.citi; wPeers += r.peers; wFidc += r.fidc; wFree += r.free; if (!bestWS || r.free > bestWS.ws) bestWS = {name:r.name, ws:r.free}; });
     MKT_STATE.bestWS = bestWS;
 
     const seg = (p, bg, cls = "") => `<div class="sh-seg${cls}" style="width:${p}%${bg ? ";background:" + bg : ""}">${p >= 8 ? nf(p, 0) + "%" : ""}</div>`;
     const item = (r, badge) => `<div class="sh-item"><div class="sh-top"><div class="sh-left">${badge}<div><b>${esc(r.name)}</b><small>${T("Eligible payables","Contas a pagar elegíveis")}: ${bn(r.elig, 1)} / ${T("yr","ano")}</small></div></div><div class="sh-right">${r.reg ? INFRA_SVGS[r.reg] : ""}${r.regPct != null ? `<span>${r.regPct}% ${T("electronic","escritural")}</span>` : ""}</div></div>
-        <div class="sh-stack">${seg(r.pc, "var(--bar-citi)")}${seg(r.pp, "var(--bar-peers)")}${seg(r.pf, "var(--bar-fidc)")}${seg(r.pw, "", " free")}</div>
+        <div class="sh-stack">${seg(r.pc, "var(--bar-citi)")}${seg(r.pp, "var(--bar-peers)")}${seg(r.pf, "var(--bar-fidc)", " dk")}${seg(r.pw, "", " free")}</div>
         <div class="sh-sub"><span>Citi: <b>${bn(r.citi, 2)}</b> (${nf(r.pc, 0)}%)</span><span>${T("Unfinanced headroom","Espaço não financiado")}: <b style="color:var(--green)">${bn(r.free, 2)}</b> (${nf(r.pw, 0)}%)</span></div>${r.note ? `<small class="sh-over">${r.note}</small>` : ""}${r.over ? `<small class="sh-over">${T("Funded flow in this dataset exceeds the Step 3 eligible estimate: bars are scaled to the funded total.","O fluxo financiado neste conjunto supera a estimativa elegível da Etapa 3: barras na escala do total financiado.")}</small>` : ""}</div>`;
     let html = rows.map(r => item(r, brandBadge(r.id, "sm"))).join(""), pilot = null;
     if (d.pilotOthers) {
-      // Pilot anchor row (V13): Citi share comes from the weekly share-of-wallet series; other funders are fabricated.
-      const wi = Math.max(0, Math.min(W, week) - 1), elg = SPEND / 1000, citi = elg * D.sow[wi] / 100, peers = (d.pilotOthers.itau || 0) / 1000, fidc = (d.pilotOthers.fidc || 0) / 1000;
+      // Pilot anchor row (V13). Citi = the pilot's discounted flow, as in the Step 1 utilization proof (spend × % under program
+      // × utilization). Share of wallet is a share of the financed wallet, so the peers + FIDCs block is citi × (100 − sow) / sow,
+      // split as in the Step 1 share-of-wallet proof (illustrative weights). d.pilotOthers only marks that the set has this row.
+      const wi = Math.max(0, Math.min(W, week) - 1), elg = SPEND / 1000, citi = elg * D.spend[wi] / 100 * D.util[wi] / 100, sw = Math.max(1, D.sow[wi]);
+      const othersPct = 100 - sw, peersPct = Math.round(othersPct * .68), peers = citi * peersPct / sw, fidc = citi * (othersPct - peersPct) / sw;
       const base = Math.max(elg, citi + peers + fidc, 0.0001), free = Math.max(0, elg - citi - peers - fidc);
       pilot = {id:"pilot", name:SRCINFO ? SRCINFO.name : T("Pilot anchor","Âncora piloto"), elig:elg, pc:100 * citi / base, pp:100 * peers / base, pf:100 * fidc / base, pw:100 * free / base, citi, peers, fidc, free, reg:null, regPct:null, over:citi + peers + fidc > elg + 1e-9,
-        note:T(`Citi share follows the share-of-wallet series of week ${wi + 1} (example data); the other funders are fabricated.`,`O share do Citi segue a série de share of wallet da semana ${wi + 1} (dados de exemplo); os outros financiadores são fabricados.`)};
+        note:T(`Citi = the pilot's discounted flow in week ${wi + 1} (${bn(elg, 1)} × ${D.spend[wi]}% × ${D.util[wi]}%, example data). Peers and FIDCs complete the financed wallet so that Citi holds the ${D.sow[wi]}% share of wallet of the Step 1 proof (illustrative split).`,`Citi = fluxo antecipado do piloto na semana ${wi + 1} (${bn(elg, 1)} × ${D.spend[wi]}% × ${D.util[wi]}%, dados de exemplo). Bancos pares e FIDCs completam o volume financiado para que o Citi tenha o share of wallet de ${D.sow[wi]}% da prova da Etapa 1 (divisão ilustrativa).`)};
       html = item(pilot, `<span class="brand-badge sm ds-pilot" aria-hidden="true">PIL</span>`) + html;
     }
     $("realShareRows").innerHTML = html;
 
-    const pCiti = totElig ? wCiti / totElig * 100 : 0, pPeers = totElig ? wPeers / totElig * 100 : 0, pFidc = totElig ? wFidc / totElig * 100 : 0, pFree = totElig ? wFree / totElig * 100 : 0;
+    const pCiti = totBase ? wCiti / totBase * 100 : 0, pPeers = totBase ? wPeers / totBase * 100 : 0, pFidc = totBase ? wFidc / totBase * 100 : 0, pFree = totBase ? wFree / totBase * 100 : 0;
     const r = 68, circ = 2 * Math.PI * r, sum = Math.max(100, pCiti + pPeers + pFidc + pFree);
-    const segs = [{pct:pCiti, col:isDark() ? "#0284C7" : "#00205B"}, {pct:pPeers, col:isDark() ? "#2563EB" : "#056DAE"}, {pct:pFidc, col:"#D97706"}, {pct:pFree, col:C.freeSeg}];
+    const segs = [{pct:pCiti, col:isDark() ? "#0369A1" : "#00205B"}, {pct:pPeers, col:isDark() ? "#2563EB" : "#056DAE"}, {pct:pFidc, col:"#D97706"}, {pct:pFree, col:C.freeSeg}];
     let offset = 0;
     const arcs = segs.map(sg => { const len = circ * sg.pct / sum, c = `<circle cx="90" cy="90" r="${r}" fill="none" stroke="${sg.col}" stroke-width="20" stroke-dasharray="${len.toFixed(2)} ${(circ - len).toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 90 90)"/>`; offset += len; return c; }).join("");
     $("realShareRing").innerHTML = arcs + `<text x="90" y="86" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-size="28" font-weight="800" fill="${C.navy}">${nf(pCiti, 1)}%</text><text x="90" y="106" text-anchor="middle" font-size="11.5" font-weight="600" fill="${C.muted}">${T("Citi share","Share do Citi")}</text><text x="90" y="122" text-anchor="middle" font-size="10.5" fill="${C.subtle}">${bn(totElig, 1)} ${T("eligible","elegíveis")}</text>`;
     $("realShareKpis").innerHTML = `<div><span><i style="background:var(--bar-citi)"></i>Citi</span><b>${bn(wCiti, 2)} (${nf(pCiti, 1)}%)</b></div><div><span><i style="background:var(--bar-peers)"></i>${T("Peer banks","Bancos pares")}</span><b>${bn(wPeers, 2)} (${nf(pPeers, 1)}%)</b></div><div><span><i style="background:var(--bar-fidc)"></i>FIDCs</span><b>${bn(wFidc, 2)} (${nf(pFidc, 1)}%)</b></div><div><span><i style="background:var(--bar-free)"></i>${T("Open headroom","Espaço livre")}</span><b style="color:var(--green)">${bn(wFree, 2)} (${nf(pFree, 1)}%)</b></div>`;
 
     if ($("shareRes")) $("shareRes").innerHTML = `<span class="fab-tag">${L(I18N["ds.fab.tag"])}</span> ` + (pilot
-      ? T(`Citi holds ${nf(100 * pilot.citi / pilot.elig, 0)}% of the pilot anchor and ${nf(pCiti, 0)}% of the ${rows.length} pipeline anchors. `,`O Citi tem ${nf(100 * pilot.citi / pilot.elig, 0)}% da âncora piloto e ${nf(pCiti, 0)}% das ${rows.length} âncoras do pipeline. `)
-      : T(`In this dataset Citi holds ${nf(pCiti, 1)}% of the eligible payables of the ${rows.length} pipeline anchors. `,`Neste conjunto o Citi tem ${nf(pCiti, 1)}% do contas a pagar elegível das ${rows.length} âncoras do pipeline. `))
-      + (bestWS ? T(`Biggest white space: <b>${esc(bestWS.name)}</b>, ${bn(bestWS.ws, 1)} a year not funded by anyone.`,`Maior espaço livre: <b>${esc(bestWS.name)}</b>, ${bn(bestWS.ws, 1)} por ano sem nenhum financiador.`) : "");
+      ? T(`Citi covers ${nf(100 * pilot.citi / pilot.elig, 0)}% of the pilot anchor's eligible payables (example data) and is assumed at zero at the ${rows.length} pipeline anchors. `,`O Citi cobre ${nf(100 * pilot.citi / pilot.elig, 0)}% do contas a pagar elegível da âncora piloto (dados de exemplo) e é assumido como zero nas ${rows.length} âncoras do pipeline. `)
+      : wCiti ? T(`In this dataset Citi holds ${nf(pCiti, 1)}% of the eligible payables of the ${rows.length} pipeline anchors. `,`Neste conjunto o Citi tem ${nf(pCiti, 1)}% do contas a pagar elegível das ${rows.length} âncoras do pipeline. `)
+      : T(`Citi is assumed at zero at the ${rows.length} pipeline anchors (no public information on a program). `,`O Citi é assumido como zero nas ${rows.length} âncoras do pipeline (sem informação pública sobre programa). `))
+      + (bestWS ? T(`Biggest white space: <b>${esc(bestWS.name)}</b>, ${bn(bestWS.ws, 1)} a year not funded by anyone.`,`Maior espaço livre: <b>${esc(bestWS.name)}</b>, ${bn(bestWS.ws, 1)} por ano sem nenhum financiador.`) : "")
+      + (totBase > totElig + 1e-9 ? " " + T(`Funded flow exceeds the Step 3 eligible estimate at ${esc(rows.filter(r => r.over).map(r => r.name).join(", "))}: the consolidated shares are taken on ${bn(totBase, 1)} (eligible or funded, whichever is larger, per anchor).`,`O fluxo financiado supera a estimativa elegível da Etapa 3 em ${esc(rows.filter(r => r.over).map(r => r.name).join(", "))}: os shares consolidados são calculados sobre ${bn(totBase, 1)} (o maior entre elegível e financiado, por âncora).`) : "");
   }
 
   // ---------- 4.4 External signals ----------
@@ -207,9 +214,9 @@
     $("sigFeed").innerHTML = filtered.length ? filtered.map(s => {
       const a = ANCHORS.find(x => x.id === s.id), stepNum = s.route === "step1" ? 1 : 3;
       return `<div class="sig-event"><div class="sig-event-top"><div class="sig-event-brand">${brandBadge(a.id, "xs")}<span class="sev" style="background:${C[s.sev] || C.blue};margin-top:0"></span><b>${esc(a.name)}</b></div><span class="sig-badge ${s.route === "step1" ? "warn" : "neu"}">${s.route === "step1" ? T("Feeds Step 1 · Risk","Alimenta Etapa 1 · Risco") : T("Feeds Step 3 · Credit","Alimenta Etapa 3 · Crédito")}</span></div>
-        <strong class="sig-title">${L(s.title)}</strong><p>${L(s.body)}</p>
+        <strong class="sig-title">${s.pub ? `<span class="sig-pub">${T("Public · 3Q26 release","Público · release do 3T26")}</span> ` : `<span class="fab-tag">${L(I18N["ds.fab.tag"])}</span> `}${L(s.title)}</strong><p>${s.pub && s.bodyFab ? `<span class="fab-tag">${T("Invented for the prototype","Inventado para o protótipo")}</span> ` : ""}${L(s.body)}</p>
         <div class="sig-event-foot"><div class="infra-logos" style="margin-top:0">${s.sources.length ? s.sources.map(k => INFRA_SVGS[k]).join("") : `<span class="fab-tag">${L(I18N["ds.fab.tag"])}</span>`}</div><button class="sig-route-btn" data-route-step="${stepNum}">${s.route === "step1" ? T("→ Open Step 1 (Risk)","→ Abrir Etapa 1 (Risco)") : T("→ Open Step 3 (Credit)","→ Abrir Etapa 3 (Crédito)")}</button></div></div>`;
-    }).join("") + (ccy === "USD" && filtered.some(x => /R\$/.test(L(x.title) + L(x.body))) ? `<p class="fnote sig-asrep">${T("Amounts inside the signal texts are quoted as reported by the companies, in BRL.","Os valores dentro dos textos dos sinais são citados como divulgados pelas empresas, em reais.")}</p>` : "")
+    }).join("") + (ccy === "USD" && filtered.some(x => /R\$/.test(L(x.title) + L(x.body))) ? `<p class="fnote sig-asrep">${T("Amounts inside the signal texts are quoted as reported by the companies (BRL unless stated).","Os valores dentro dos textos dos sinais são citados como divulgados pelas empresas (em reais, salvo indicação).")}</p>` : "")
       : `<p class="ds-na-block">${T("No signal in this dataset feeds this step.","Nenhum sinal deste conjunto alimenta esta etapa.")}</p>`;
   }
   $("sigFilter").addEventListener("click", e => { const b = e.target.closest("[data-sf]"); if (!b) return; sigFilter = b.dataset.sf; $("sigFilter").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); renderSignals(); });

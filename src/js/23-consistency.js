@@ -14,10 +14,10 @@
 
   [
     // Vocabulary: the app says "example data" everywhere (source chip, data editor, briefing, proofs, deck).
-    ["badge", ["Example data","Dados de exemplo"]],
+    ["badge", ["Illustrative data","Dados ilustrativos"]],
     ["ft.by", ["Concept by <b>José Edson Matos da Costa</b> · example data and working hypotheses, not Citi data","Conceito de <b>José Edson Matos da Costa</b> · dados de exemplo e hipóteses de trabalho, não são dados do Citi"]],
     // The page cannot show that anything was built with these teams: it lists what a real rollout needs.
-    ["ft.guard", ["<b>Guardrails for a real rollout:</b> design with Legal, Compliance and Risk · bank secrecy (LC 105/2001), LGPD, model validation · client data only aggregated, anonymised or with consent.","<b>Salvaguardas para uma implantação real:</b> desenho com Jurídico, Compliance e Risco · sigilo bancário (LC 105/2001), LGPD, validação de modelos · dados de clientes apenas agregados, anonimizados ou com consentimento."]],
+    ["ft.guard", ["<b>Guardrails for a real rollout:</b> design with Legal, Compliance and Risk · bank secrecy (LC 105/2001), LGPD, model validation · client data only aggregated, anonymized or with consent.","<b>Salvaguardas para uma implantação real:</b> desenho com Jurídico, Compliance e Risco · sigilo bancário (LC 105/2001), LGPD, validação de modelos · dados de clientes apenas agregados, anonimizados ou com consentimento."]],
     // The cards open a calculation, recomputed on the page; there is no audit against a system of record.
     ["pf.cue", ["View calculation ↗","Ver memória de cálculo ↗"]],
     ["sec.perf.n", ["Click any card to open the calculation behind its number","Clique em qualquer card para abrir a memória de cálculo do número"]],

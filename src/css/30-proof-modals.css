@@ -63,7 +63,7 @@
   .csv-opts label{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--navy)}
   .csv-opts input{width:76px;text-align:right;border:1px solid var(--hair-strong);border-radius:6px;padding:4px 6px;background:var(--surface);color:var(--navy);font:600 12.5px var(--body)}
   #data-msg{font-size:13px;font-weight:600}#data-msg.ok{color:var(--green)}#data-msg.err{color:var(--red)}
-  .brief-prev{border:1px solid var(--hair);border-radius:12px;padding:16px;font-size:13px;background:var(--surface-alt)}
+  .brief-prev{border:1px solid var(--hair);border-radius:12px;padding:16px;font-size:13px;background:var(--surface-alt);overflow-wrap:anywhere}
   .brief-prev h4{color:var(--navy);margin:14px 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.1em;font-family:var(--head)}
   .brief-prev table{width:100%;border-collapse:collapse}.brief-prev td{padding:5px 6px;border-top:1px solid var(--hair)}
   .brief-prev ol,.brief-prev ul{padding-left:18px}.brief-prev li{margin:4px 0;line-height:1.45}

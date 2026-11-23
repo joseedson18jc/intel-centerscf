@@ -34,6 +34,9 @@
   .srcchip:hover{border-color:var(--blue);color:var(--navy)}
   .srcchip i{width:7px;height:7px;border-radius:50%;background:var(--amber);display:inline-block}
   .srcchip.live i{background:var(--green)}
+  /* A long file name (no spaces) must wrap instead of widening the page. */
+  .hero>*{min-width:0}
+  .kick-row>*,.hero .sub,.srcchip,.srcchip span{max-width:100%;min-width:0;overflow-wrap:anywhere}
 
   .hero-art{width:300px;height:auto;display:block}
   .hero-art .flow{stroke-dasharray:3 6;animation:dash 1.8s linear infinite}

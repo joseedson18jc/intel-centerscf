@@ -14,6 +14,13 @@
   const pfSeries = () => T(`Source: weekly series on this page (${dataLabel()}).`,`Fonte: série semanal desta página (${dataLabel()}).`);
   const pfGreen = s => `<b style="color:var(--green)">${s}</b>`;
   const pfSigned = (v, d = 1) => (v > 0 ? "+" : v < 0 ? "−" : "") + nf(Math.abs(v), d);
+  // Splits a whole number by weights with the largest-remainder rule, so the parts always add up to the total.
+  function pfSplitInt(total, weights) {
+    const raw = weights.map(w => total * w), out = raw.map(Math.floor);
+    let left = total - out.reduce((s, v) => s + v, 0);
+    raw.map((v, k) => [v - out[k], k]).sort((a, b) => b[0] - a[0]).forEach(([, k]) => { if (left > 0) { out[k]++; left--; } });
+    return out;
+  }
   // Stage split of the days-to-first-discount cycle: a fixed rule of thumb, not a measured breakdown.
   function pfStageSplit(d) {
     const invite = d >= 18 ? 3 : d >= 13 ? 2 : 1, docs = d >= 18 ? 11 : d >= 15 ? 8 : d >= 12 ? 5 : d >= 10 ? 4 : 3, kyc = d >= 15 ? 4 : d >= 11 ? 3 : 2;
@@ -39,7 +46,7 @@
         badge: T("Arithmetic reproduced","Conta reproduzida"),
         formula: `<code>${bn(spBn, 1)} × ${sp}% = ${bn(capBn, 2)}</code> · ${pfSigned(dSp, 0)} pp vs ${WL()}1`,
         table: pTable([T(`Spend category (${pfIllus()})`,`Categoria (${pfIllus()})`), T("Share","%"), T("Annual spend","Volume anual"), T("Suppliers","Fornecedores")],
-          cats.map(([n, w]) => [n, Math.round(w * 100) + "%", bn(capBn * w, 2), Math.round(D.active[i] * w)]),
+          cats.map(([n, w], k) => [n, Math.round(w * 100) + "%", bn(capBn * w, 2), pfSplitInt(D.active[i], cats.map(c => c[1]))[k]]),
           [T("Total under program","Total sob o programa"), "100%", bn(capBn, 2), D.active[i]]),
         source: pfSeries() + T(" The category split uses fixed illustrative weights; in a live program it would come from the anchor's payables file."," A divisão por categoria usa pesos ilustrativos fixos; em um programa real viria do arquivo de contas a pagar da âncora.")
       };
@@ -91,8 +98,8 @@
       const dl = v => v < 0 ? pfGreen(`${pfSigned(v, 0)} d`) : `${pfSigned(v, 0)} d`;
       return {
         title: T("Days to first discount: stage breakdown","Dias até o 1º desconto: decomposição por etapa"), value: `${d} ${T("days","dias")}`,
-        claim: (diff > 0 ? T(`The median cycle is ${diff} days shorter than in ${WL()}1 (${d0}d → ${d}d).`,`O ciclo mediano está ${diff} dias mais curto que na ${WL()}1 (${d0}d → ${d}d).`)
-          : diff < 0 ? T(`The median cycle is ${-diff} days longer than in ${WL()}1 (${d0}d → ${d}d).`,`O ciclo mediano está ${-diff} dias mais longo que na ${WL()}1 (${d0}d → ${d}d).`)
+        claim: (diff > 0 ? T(`The median cycle is ${diff} day${diff === 1 ? "" : "s"} shorter than in ${WL()}1 (${d0}d → ${d}d).`,`O ciclo mediano está ${diff} dia${diff === 1 ? "" : "s"} mais curto que na ${WL()}1 (${d0}d → ${d}d).`)
+          : diff < 0 ? T(`The median cycle is ${-diff} day${diff === -1 ? "" : "s"} longer than in ${WL()}1 (${d0}d → ${d}d).`,`O ciclo mediano está ${-diff} dia${diff === -1 ? "" : "s"} mais longo que na ${WL()}1 (${d0}d → ${d}d).`)
           : T(`The median cycle is ${d} days, the same as in ${WL()}1.`,`O ciclo mediano é de ${d} dias, igual ao da ${WL()}1.`))
           + (demo ? T(` In the example data, document AI goes live in ${WL()}5.`,` Nos dados de exemplo, a IA de documentos entra em produção na ${WL()}5.`) : ""),
         badge: T("Total from series · stages illustrative","Total da série · etapas ilustrativas"), badgeWarn:true,
@@ -153,7 +160,8 @@
         title: T("Risk flags: open count and example alert list","Alertas de risco: contagem em aberto e lista de exemplo"), value: `${open} ${T("open","em aberto")}`,
         claim: T(`${open} open flag${open === 1 ? "" : "s"} in ${WL()}${week}. Rule of this cockpit to scale outreach: fewer than 3 open flags.`,`${open} alerta${open === 1 ? "" : "s"} em aberto na ${WL()}${week}. Regra deste cockpit para ampliar a campanha: menos de 3 alertas em aberto.`),
         badge: open < 3 ? T("Rule met · can scale","Regra atendida · pode ampliar") : T("Review before scaling","Revisar antes de ampliar"), badgeWarn: open >= 3,
-        formula: `<code>${T("Listed","Listados")}: ${activeAlerts.length}</code> · <code>${T("Open","Em aberto")}: ${open}</code> · <code>${T("Rule","Regra")}: &lt; 3</code>`,
+        formula: `<code>${T("Example alerts shown","Alertas de exemplo exibidos")}: ${activeAlerts.length}</code> · <code>${T("Open (series)","Em aberto (série)")}: ${open}</code> · <code>${T("Rule","Regra")}: &lt; 3</code>`,
+        note: open > activeAlerts.length ? T(`The open count comes from the weekly series; the list holds only the example alerts written for this prototype, so it shows ${activeAlerts.length} of the ${open} open flags.`,`A contagem em aberto vem da série semanal; a lista traz só os alertas de exemplo escritos para este protótipo, por isso mostra ${activeAlerts.length} dos ${open} alertas em aberto.`) : undefined,
         table: pTable([T("Week","Sem."), T("Example alert","Alerta de exemplo"), T("Owner (illustrative)","Responsável (ilustrativo)"), T("Status (illustrative)","Situação (ilustrativa)")],
           activeAlerts.map((a, idx) => [`${WL()}${a[0]}`, L(a[2]), owners[ALERTS.indexOf(a) % owners.length], idx < open ? `<span class="sig-badge warn">${T("Open","Em aberto")}</span>` : `<span class="sig-badge pos">${T("Mitigated","Mitigado")}</span>`])),
         source: T(`Open count: weekly series (${dataLabel()}). The alert list, owners and status are example entries of this prototype, not the output of a risk system.`,`Contagem em aberto: série semanal (${dataLabel()}). A lista de alertas, os responsáveis e a situação são entradas de exemplo deste protótipo, não a saída de um sistema de risco.`)

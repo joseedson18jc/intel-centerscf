@@ -16,14 +16,14 @@
   .stage{flex:1;display:grid;place-items:center;padding:16px 20px 20px;min-height:0}
   .slide{
     width:min(100%,calc((100vh - 104px) * 16 / 9));aspect-ratio:16/9;
-    background:#fff;border-radius:16px;padding:clamp(20px,4%,54px);
+    background:#fff;border-radius:16px;padding:clamp(18px,3%,40px) clamp(20px,4%,54px);
     display:flex;flex-direction:column;overflow:auto;color:var(--ink);
     container-type:inline-size;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.45);
   }
   .slide.enter{animation:slidein .38s var(--ease) both}
   @keyframes slidein{from{opacity:0;transform:translateX(20px)}}
   .slide .eyebrow{font-size:max(11px,1.02cqw);letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:700}
-  .slide h2{font-family:var(--head);font-size:max(21px,3cqw);letter-spacing:-.035em;color:var(--navy);line-height:1.12;margin:.28em 0 .45em;font-weight:700;max-width:34ch}
+  .slide h2{font-family:var(--head);font-size:max(21px,3cqw);letter-spacing:-.035em;color:var(--navy);line-height:1.12;margin:.28em 0 .45em;font-weight:700;max-width:38ch}
   .slide p,.slide li,.slide td,.slide th,.slide dd{font-size:max(13px,1.45cqw);line-height:1.5}
   .slide .lead{font-size:max(14.5px,1.85cqw);color:var(--muted);max-width:60ch;margin-bottom:.8em}
   .slide .gs{display:grid;gap:max(8px,1.3cqw)}
@@ -117,3 +117,5 @@
   .risklist b{color:var(--navy);font-size:max(12.5px,1.4cqw);font-family:var(--head)}.risklist p{font-size:max(11.5px,1.2cqw);color:var(--muted)}
   .gains{margin-top:max(9px,1.2cqw)}
 
+  /* Portrait or square stages (tablets held upright): use the full stage height instead of a short 16:9 box. */
+  @media (max-aspect-ratio:1/1){.slide{aspect-ratio:auto;height:100%}}

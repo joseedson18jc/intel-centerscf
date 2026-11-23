@@ -24,7 +24,7 @@
     fidc:["https://neofeed.com.br/negocios/depois-da-crise-da-americanas-o-risco-sacado-tem-um-novo-dono-os-fidcs/","NeoFeed · risco sacado em FIDCs"],
     ref:["https://www.bcb.gov.br/content/publicacoes/ref/202304/RELESTAB202304-refPub.pdf","BCB · REF mai/2023"],
   };
-  const src = k => `<a href="${SRC[k][0]}" target="_blank" rel="noopener">${SRC[k][1]}</a>`;
+  const src = k => `<a href="${SRC[k][0]}" target="_blank" rel="noopener">${srcLbl(k, SRC[k][1])}</a>`;
   const SELIC = 13.75;
 
   // Anchor rows live in 09a-datasets.js; this container is refilled in place by setDataset().
@@ -53,11 +53,11 @@
     const colLbl = {addr:I18N["pp.th.addr"], cov:I18N["pp.th.cov"], adh:I18N["pp.th.adh"], util:I18N["pp.th.util"]};
     const inp = (i, k, step, max) => `<input type="number" data-i="${i}" data-k="${k}" value="${P[i][k]}" min="0" max="${max}" step="${step}" aria-label="${esc(ANCHORS[i].name)} · ${esc(colLbl[k] ? L(colLbl[k]) : k)}">`;
     // Quarter line only where the dataset has a quarterly figure; otherwise name the reporting period.
-    const revSub = a => a.q3 != null ? `${L(d.revTag)}: ${bn(a.q3, a.q3 < 15 ? 3 : 1)}` : T(`full year ${L(d.revTag)}`,`ano de ${L(d.revTag)}`);
-    const asRep = T("Revenue notes on the cards quote the figures as reported by each company (BRL unless stated); the table converts them at the display rate.","As notas de receita das fichas citam os valores como divulgados por cada empresa (em reais, salvo indicação); a tabela os converte pela taxa de exibição.");
+    const revSub = a => (a.q3 != null ? `${L(d.revTag)}: ${revFmt(a, "q3", a.q3 < 15 ? 3 : 1)}` : T(`full year ${L(d.revTag)}`,`ano de ${L(d.revTag)}`)) + (revRep(a) != null ? T(" · as reported"," · divulgado") : "");
+    const asRep = T("Revenue notes on the cards quote the figures as reported by each company (BRL unless stated). In the USD view, companies that report in US dollars (JBS, Embraer) show the dollars they published (Embraer: midpoint of its 2026 guidance); everything else, including eligible purchases and the model values, is converted from reais at the rate entered in the panel.","As notas de receita das fichas citam os valores como divulgados por cada empresa (em reais, salvo indicação). Na visão em dólar, as empresas que divulgam em dólar (JBS, Embraer) aparecem com os dólares publicados (Embraer: ponto médio do guidance de 2026); todo o resto, inclusive compras elegíveis e valores do modelo, é convertido de reais pela taxa informada no painel.");
     $("pipe-rows").innerHTML = ANCHORS.map((a, i) => `<tr>
       <td><div class="anchor-cell">${brandBadge(a.id)}<span><b>${a.name}</b><small>${L(a.sector)}</small></span></div></td>
-      <td title="${esc(L(a.revNote))}"><b>${bn(a.rev, 1)}</b><small class="rev-sub">${revSub(a)}</small></td>
+      <td title="${esc(L(a.revNote))}"><b>${revFmt(a)}</b><small class="rev-sub">${revSub(a)}</small></td>
       <td>${inp(i, "addr", 0.5, 100)}</td><td id="el-${i}"></td>
       <td>${inp(i, "cov", 5, 100)}</td><td>${inp(i, "adh", 5, 100)}</td><td>${inp(i, "util", 5, 100)}</td>
       <td><div class="flowcell"><span class="rank" id="rk-${i}"></span><div class="track"><div class="fill" id="fb-${i}" style="background:${a.color}"></div></div><b id="fl-${i}"></b></div></td>
@@ -92,7 +92,7 @@
       $("bl-" + i).textContent = money(b); $("rv-" + i).textContent = moneyD(r);
       if ($("ac-fl-" + i)) { $("ac-fl-" + i).textContent = bn(f); $("ac-bl-" + i).textContent = money(b); $("ac-rv-" + i).textContent = moneyD(r); }
     });
-    $("pt-elig").textContent = bn(t.elig, 1); $("pt-revenue").textContent = bn(ANCHORS.reduce((s, a) => s + a.rev, 0), 0);
+    $("pt-elig").textContent = bn(t.elig, 1); $("pt-revenue").textContent = bn(revTotal(), 0);
     $("pt-flow").textContent = bn(t.flow); $("pt-bal").textContent = money(t.bal); $("pt-rev").textContent = moneyD(t.rev);
     if (cascade) {
       recomputeBook();

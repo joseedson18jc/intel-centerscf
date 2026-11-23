@@ -31,6 +31,7 @@
     if (!deck.hidden) {
       if (e.key === "Tab") { trapFocus(deck, e); return; }
       if (e.target.closest("input,select,a")) return;
+      if (e.key === " " && e.target.closest("button,summary,[role=button]")) return;   // Space activates the focused control
       if (["ArrowRight","PageDown"," "].includes(e.key)) { e.preventDefault(); $("deck-next").click(); }
       if (["ArrowLeft","PageUp"].includes(e.key)) { e.preventDefault(); $("deck-prev").click(); }
       if (e.key === "Home") { slideIdx = 0; renderSlide(); }

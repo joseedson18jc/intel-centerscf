@@ -4,9 +4,9 @@
     --navy:#E8F1FC;--navy-mid:#C9DFF8;--blue:#38BDF8;--blue-dark:#0EA5E9;--sky:#38BDF8;
     --sky-soft:rgba(56,189,248,.16);--red:#F87171;--red-soft:rgba(248,113,113,.15);
     --green:#34D399;--green-soft:rgba(52,211,153,.14);--amber:#FBBF24;--amber-soft:rgba(251,191,36,.15);
-    --ink:#E6EEF8;--muted:#9FB3C8;--subtle:#7B93AE;--hair:#1E3350;--hair-strong:#2C466B;
+    --ink:#E6EEF8;--muted:#9FB3C8;--subtle:#8CA3BD;--hair:#1E3350;--hair-strong:#2C466B;
     --canvas:#071120;--surface:#0D1B30;--surface-alt:#12243E;
-    --bar-citi:#0284C7;--bar-peers:#2563EB;--bar-fidc:#D97706;--bar-free:#243C5C;
+    --bar-citi:#0369A1;--bar-peers:#2563EB;--bar-fidc:#D97706;--bar-free:#243C5C;
     --shadow-sm:0 1px 2px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.22);
     --shadow-md:0 4px 12px rgba(0,0,0,.34),0 12px 28px rgba(0,0,0,.28);
   }
@@ -16,6 +16,7 @@
   html[data-theme="dark"] .pill-switch button[aria-pressed="true"]{background:#38BDF8;color:#041225}
   html[data-theme="dark"] .nav-step-btn[aria-current="step"] .sn{background:#041225;color:#38BDF8}
   html[data-theme="dark"] .badge{color:#FCD34D;border-color:rgba(251,191,36,.35)}
+  html[data-theme="dark"] .ds-switch button[aria-pressed="true"] small{color:#041225}
   html[data-theme="dark"] .btn-ico:hover{background:#152A47}
   html[data-theme="dark"] .btn-ico.play{background:#0EA5E9;border-color:#0EA5E9;color:#041225}
   html[data-theme="dark"] .wk-pill,html[data-theme="dark"] .role-chip,html[data-theme="dark"] .rank,html[data-theme="dark"] .rb-code{background:#132946;border-color:#26456E;color:#E8F1FC}
@@ -54,7 +55,7 @@
   html[data-theme="dark"] .infra-chip{background:#12243E;border-color:#274266;color:#DCE9F7}
   html[data-theme="dark"] .proto-pill{color:#6EE7B7;border-color:rgba(52,211,153,.35)}
   html[data-theme="dark"] .proto-pill.amber{color:#FCD34D;border-color:rgba(251,191,36,.35)}
-  html[data-theme="dark"] .mcell.empty{color:#47607E}
+  html[data-theme="dark"] .mcell.empty{color:var(--subtle)}
   html[data-theme="dark"] .mcell.lvl-1{background:rgba(56,189,248,.12);color:#DCE9F7}
   html[data-theme="dark"] .mcell.lvl-2{background:rgba(56,189,248,.22);color:#E8F4FF}
   html[data-theme="dark"] .mcell.lvl-3{background:rgba(56,189,248,.34);color:#FFFFFF}

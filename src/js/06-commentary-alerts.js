@@ -15,7 +15,7 @@
     $("comment").textContent = t;
   }
   const ALERTS = [
-    [3, () => C.red,   ["<b>Duplicate invoice</b> submitted twice by a supplier: blocked for review","<b>Duplicata repetida</b> enviada duas vezes por um fornecedor: bloqueada para análise"]],
+    [3, () => C.red,   ["<b>Duplicate invoice:</b> the same invoice submitted twice by a supplier, blocked for review","<b>Duplicata em duplicidade:</b> o mesmo título apresentado duas vezes por um fornecedor, bloqueado para análise"]],
     [1, () => C.red,   ["<b>Concentration:</b> top 10 suppliers hold 46% of the balance","<b>Concentração:</b> os 10 maiores fornecedores detêm 46% do saldo"]],
     [5, () => C.amber, ["<b>KYC gap:</b> 4 suppliers with expired documents","<b>Pendência de KYC:</b> 4 fornecedores com documentos vencidos"]],
     [8, () => C.amber, ["<b>Utilization drop</b> at one supplier (−30% vs 4-week average)","<b>Queda de utilização</b> em um fornecedor (−30% vs média de 4 semanas)"]],

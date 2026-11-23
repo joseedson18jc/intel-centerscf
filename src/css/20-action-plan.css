@@ -13,6 +13,7 @@
   }
   .act.p1 .pr{background:var(--red)}
   .act.p2 .pr{background:var(--amber)}
+  html[data-theme="dark"] .act .pr{color:#071120}   /* light badges in dark mode: dark digits (contrast) */
   .act.p3 .pr{background:var(--green)}
   .act b{color:var(--navy);font-size:14px;font-family:var(--head)}
   .act p{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.45}

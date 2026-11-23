@@ -7,13 +7,13 @@
     --sky-soft:#E0F5FC;
     --red:#E31B23;
     --red-soft:#FDECEC;
-    --green:#0E8A5F;
+    --green:#097650;
     --green-soft:#E6F6F0;
-    --amber:#C27803;
+    --amber:#9E5D00;
     --amber-soft:#FEF5E7;
     --ink:#0B172A;
     --muted:#4A5D73;
-    --subtle:#6B7E94;
+    --subtle:#56697F;
     --hair:#DFE6EF;
     --hair-strong:#CBD6E4;
     --canvas:#F3F6FA;
@@ -23,8 +23,10 @@
     --bar-peers:#056DAE;
     --bar-fidc:#D97706;
     --bar-free:#DCE7F3;
-    --head:"Plus Jakarta Sans","Inter",system-ui,-apple-system,sans-serif;
-    --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    /* System font stacks only: the page makes no font request (it must work offline). Inter / Plus Jakarta Sans are used
+       only when already installed on the machine. */
+    --head:"Plus Jakarta Sans","Inter",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     --radius-sm:8px;
     --radius-md:14px;
     --radius-lg:18px;
