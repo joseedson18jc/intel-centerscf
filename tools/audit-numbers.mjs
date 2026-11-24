@@ -21,7 +21,10 @@ const rev = bal.map(b=>Math.round(b*SPREAD/100*10)/10);
 const ceil = SPEND*TENOR/365;
 function growth(w, win=4){ if(w===1) return 0.026; const j=Math.max(1,w-win); return Math.pow(bal[w-1]/bal[j-1],1/(w-j))-1; }
 function proj(w,h,mult=1,decay=0.93,win=4){ const g0=growth(w,win), g=g0+(mult-1)*Math.abs(g0); const v=[bal[w-1]]; for(let k=0;k<h;k++) v.push(Math.min(Math.max(ceil,bal[w-1]),Math.max(0,v[k]*(1+g*Math.pow(decay,k))))); return v; }
-function band(w,h,mult=1){ const v=proj(w,h,mult); return v.map((x,k)=>x*D.err[w-1]/100*Math.sqrt(k)/2.2); }
+// one-week error behind the range: RMS of the model's past one-week errors, the reported KPI / 2.2 counted as one more
+function e1(w){ let s=0,n=0; for(let o=1;o<w;o++){ const e=Math.abs(proj(o,1)[1]-bal[o])/bal[o]*100; s+=e*e; n++; } const pr=D.err[w-1]/2.2; return Math.sqrt((s+pr*pr)/(n+1)); }
+function band(w,h,mult=1){ const v=proj(w,h,mult), e=e1(w); return v.map((x,k)=>x*e/100*Math.sqrt(k)); }
+function coverage(w){ let hit=0,n=0; for(let o=1;o<w;o++){ const v=proj(o,w-o), e=e1(o); for(let k=1;o+k<=w;k++){ n++; if(Math.abs(bal[o+k-1]-v[k])<=v[k]*e/100*Math.sqrt(k)+1e-9) hit++; } } return {hit,n}; }
 
 const b = await chromium.launch();
 const p = await (await b.newContext({ viewport:{width:1440,height:900}, locale:"pt-BR", reducedMotion:"reduce" })).newPage();
@@ -69,7 +72,21 @@ for (let w = 1; w <= 12; w++) {
     if (w>1) { let s=0,fl=0; for(let o=1;o<w;o++){ s+=Math.abs(proj(o,1)[1]-bal[o])/bal[o]*100; fl+=Math.abs(bal[o-1]-bal[o])/bal[o]*100; }
       has(`W${w} backtest`, t.acc, `${f(s/(w-1),2)}% no modelo base contra ${f(fl/(w-1),2)}%`);
       const n=Math.min(4,w-1); has(`W${w} growth text`, t.asm, f(Math.abs(growth(w)*100),2)+"%"); }
+    has(`W${w} range width`, t.asm, `A faixa é de ±${f(e1(w),2)}% do saldo`);
+    if (w>1) { const c = coverage(w); has(`W${w} range coverage`, t.asm, `conteve ${c.hit} de ${c.n} projeções (${f(100*c.hit/c.n,0)}%)`); }
   }
+}
+// Pipeline (Step 3, default hypotheses): Embraer's annual base is its US$ 8.5 bn guidance at the panel rate.
+{
+  const FX = 5.8889, DEF = {cov:50, adh:40, util:60, tenor:75, spread:1.2};
+  const A = [["JBS",467.2,null],["MBRF",165.7,null],["Votorantim",65.2,null],["Embraer",Math.round(8.5*FX*10)/10,null],["Natura",20.2,null]];
+  const pt = await p.evaluate(() => ({ rows:[...document.querySelectorAll(".pipe-table tbody tr")].map(r => ({ t:r.textContent, addr:parseFloat((r.querySelector("input")||{}).value) })),
+    flow:document.getElementById("pt-flow").textContent, bal:document.getElementById("pt-bal").textContent, rev:document.getElementById("pt-rev").textContent }));
+  let flow = 0;
+  A.forEach(([name, rev], i) => { const r = pt.rows.find(x => x.t.includes(name)); checks++; if (!r) return fail("pipeline row", name);
+    has(`pipeline ${name} base`, r.t, "R$ " + f(rev,1) + " bi"); flow += rev * r.addr/100 * DEF.cov/100 * DEF.adh/100 * DEF.util/100; });
+  const balT = flow*1000*DEF.tenor/365;
+  eq("pipeline total flow", pt.flow, "R$ " + f(flow,2) + " bi"); eq("pipeline total balance", pt.bal, brl(balT)); eq("pipeline total revenue", pt.rev, "R$ " + f(balT*DEF.spread/100,1) + " mi");
 }
 console.log("numbers audit: " + checks + " checks, " + bad + " mismatches");
 await b.close();

@@ -1,5 +1,12 @@
 # Changelog
 
+## 14.4.0 (2026-11-24): measured forecast range, Embraer base at the panel rate
+
+- Forecast range (Step 2) is now built on the error the model actually made: root mean square of its past one-week-ahead errors (the backtest), with the reported forecast-error KPI / 2.2 counted as one more observation so weeks 1 and 2 still have a range; it grows with the square root of the weeks ahead. Before, the range was the reported KPI / 2.2, which was 2 to 3 times wider than the measured error in the early weeks and never missed a past projection (66 of 66). The measured range is 18% narrower in week 12 (±1.16% instead of ±1.41% for one week ahead; 13-week range R$ 608-661 m instead of R$ 602-667 m, pre-approval ask R$ 11 m instead of R$ 17 m; in week 4 the range is R$ 527-603 m instead of R$ 492-638 m) and contained 57 of 66 past projections (86%). The page prints the width and that hit rate next to the chart.
+- The limit verdict, live insights, assistant answers, proofs and the exported context use the same range (`fcModel().e1`, `fcErr`, `bandCoverage`). The 8% governance tolerance still reads the reported KPI.
+- Embraer annual base in the 3Q26 dataset: the US$ 8.5 bn guidance midpoint is converted at the panel rate (R$ 50.1 bn at 5.8889, was a fixed R$ 43.7 bn at the quarter's 5.14) and follows the FX field. Embraer flow goes from R$ 0.42 bn to R$ 0.48 bn; pipeline total R$ 3.29 bn of flow, R$ 677 m of balance, R$ 8.1 m of spread revenue. The quarter figure stays as published in reais.
+- `tools/audit-numbers.mjs` follows the new range and also checks the range width, its hit rate and the pipeline totals: 2,798 checks, 0 mismatches.
+
 ## 14.3.1 (2026-11-24): numbers audit
 
 - New `tools/audit-numbers.mjs`: recomputes the pilot book, the 8 KPIs and their weekly change, the forecast (3 scenarios x 3 horizons), the modelled range, the limit verdict and the one-week backtest for each of the 12 weeks, independently of the page code, and compares with what the page prints. 2,578 checks, 0 mismatches.

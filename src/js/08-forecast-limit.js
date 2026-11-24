@@ -33,10 +33,10 @@
     const lim = o.lim != null ? o.lim : limitBRL, k0 = o.scale != null ? o.scale : 1;
     const cap = Math.max(fcCeil() * (o.ceilScale || 1), D.bal[w - 1] * k0);
     const values = projection(w, h, sc, {scale:k0, cap});
-    const band = values.map((v, k) => v * D.err[w - 1] / 100 * Math.sqrt(k) / 2.2);
+    const e1 = fcErr(w), band = values.map((v, k) => v * e1 / 100 * Math.sqrt(k));
     const lo = values.map((v, k) => Math.max(0, v - band[k])), hi = values.map((v, k) => Math.min(cap, v + band[k]));
     const peakHigh = Math.max(...hi);
-    return { w, h, sc, lim, cap, values, band, lo, hi, now:values[0], end:values[h], low:lo[h], high:hi[h], peakHigh,
+    return { w, h, sc, lim, cap, values, band, lo, hi, e1, now:values[0], end:values[h], low:lo[h], high:hi[h], peakHigh,
       capped:values.some((v, k) => k > 0 && v + band[k] >= cap), n:growthInfo(w).n,
       kBase:values.findIndex(v => v > lim), kHigh:hi.findIndex(v => v > lim), need:Math.max(0, Math.ceil(peakHigh - lim)) };
   }
@@ -48,6 +48,26 @@
       rows.push({week:origin + 1, model:err(projection(origin, 1, "Base")[1]), flat:err(D.bal[origin - 1])});
     }
     return rows;
+  }
+  // One-week error the range is built on, in % of the balance: root mean square of the one-week-ahead errors this
+  // model actually made up to week w (the backtest), with the reported forecast-error KPI of the week counted as one
+  // more observation (KPI / 2.2, the previous convention) so weeks 1 and 2 still have a range. It grows with the
+  // square root of the weeks ahead. Measured, so it tightens or widens as real misses arrive.
+  function fcErr(w) {
+    const bt = backtest(w), prior = (D.err[w - 1] || 0) / 2.2;
+    const e = Math.sqrt((bt.reduce((s, r) => s + r.model * r.model, 0) + prior * prior) / (bt.length + 1));
+    return isFinite(e) ? e : 0;
+  }
+  // How the range would have done so far: every projection made from weeks 1..w-1 (base case, all horizons already
+  // observed), each with the range it had at the time. Returns {hit, n}.
+  function bandCoverage(w) {
+    let hit = 0, n = 0;
+    for (let o = 1; o < w; o++) {
+      if (!(D.bal[o - 1] > 0)) continue;
+      const v = projection(o, w - o, "Base"), e = fcErr(o);
+      for (let k = 1; o + k <= w; k++) { n++; if (Math.abs(D.bal[o + k - 1] - v[k]) <= v[k] * e / 100 * Math.sqrt(k) + 1e-9) hit++; }
+    }
+    return {hit, n};
   }
   function limitCheck(m) {
     const w = m.w, lim = m.lim, values = m.values, peakHigh = m.peakHigh, kBase = m.kBase, kHigh = m.kHigh;
@@ -82,14 +102,18 @@
       `${scName(scenario)} case · W${w + horizon} closes at ${money(end)} (${chg < 0 ? "−" : "+"}${pctGain}% vs W${w}). Modeled range: ${money(low)} to ${money(high)}.`,
       `Cenário ${scName(scenario).toLowerCase()} · S${w + horizon} fecha em ${money(end)} (${chg < 0 ? pctGain + "% abaixo" : "+" + pctGain + "% acima"} da S${w}). Faixa modelada: ${money(low)} a ${money(high)}.`
     );
+    const cov = bandCoverage(w), nb = backtest(w).length;
+    const bandNote = [
+      `The range is ±${nf(m.e1, 2)}% of the balance for one week ahead, growing with the square root of the weeks: the root-mean-square error of the ${nb} one-week projection${nb === 1 ? "" : "s"} this model has made so far, with the reported error KPI counted as one more observation.${cov.n ? ` Applied to the past, it contained ${cov.hit} of ${cov.n} projections (${nf(100 * cov.hit / cov.n, 0)}%).` : ""} It is one typical error wide, not a statistical confidence interval.`,
+      `A faixa é de ±${nf(m.e1, 2)}% do saldo para uma semana à frente e cresce com a raiz quadrada das semanas: é o erro quadrático médio das ${nb === 1 ? "1 projeção de uma semana que este modelo já fez" : nb + " projeções de uma semana que este modelo já fez"}, com o KPI de erro informado contando como mais uma observação.${cov.n ? ` Aplicada ao passado, ela conteve ${cov.hit} de ${cov.n} projeções (${nf(100 * cov.hit / cov.n, 0)}%).` : ""} Tem a largura de um erro típico; não é um intervalo de confiança estatístico.`];
     const n = m.n, gv = growthAt(w) * 100, g = (gv < 0 ? "−" : "") + nf(Math.abs(gv), 2);
     $("assumption").textContent = (w === 1
       ? T("Week 1 uses a 2.6% starting growth assumption.","A semana 1 usa uma premissa inicial de crescimento de 2,6%.")
       : !n ? T("No positive balance in the last weeks, so base growth is set to 0%.","Não há saldo positivo nas últimas semanas, então o crescimento base fica em 0%.")
       : T(`Base growth uses the last ${n} observed weekly change${n === 1 ? "" : "s"} (geometric mean ${g}%).`, n === 1 ? `O crescimento base usa a última variação semanal observada (${g}%).` : `O crescimento base usa as últimas ${n} variações semanais observadas (média geométrica de ${g}%).`))
       + (w > 1 && n > 0 && n < 3 ? T(` Only ${n} weekly change${n === 1 ? " is" : "s are"} available, so read the projection with care.`, ` Só ${n === 1 ? "há 1 variação semanal" : `há ${n} variações semanais`}, então leia a projeção com cautela.`) : "")
-      + T(` Downside and upside take off or add half of the base growth (0.5× and 1.5× when it is positive), with 93% weekly decay, so the downside path never sits above the base and the upside never below it. Balances follow (${bn(SPEND / 1000, 1)} × spend % × utilization %) × ${PILOT.tenor}d ÷ 365, the pilot tenor set in Data. Projections are capped at ${money(fcCeil())}, the balance with 100% of in-scope spend under the programme at 100% utilization${m.capped ? "; this cap binds in the projection shown" : ""}. The range is a modeled band scaled by this week's forecast error, not a statistical confidence interval.${ccy === "USD" ? ` Displayed in USD. ${fxLabel()}.` : ""}`,
-          ` Os cenários pessimista e otimista tiram ou somam metade do crescimento base (0,5× e 1,5× quando ele é positivo), com decaimento semanal de 93%, de modo que o pessimista nunca fica acima do base nem o otimista abaixo dele. O saldo segue (${bn(SPEND / 1000, 1)} × gasto % × utilização %) × ${PILOT.tenor}d ÷ 365, o prazo do piloto definido em Dados. As projeções ficam limitadas a ${money(fcCeil())}, o saldo com 100% das compras no escopo sob o programa e 100% de utilização${m.capped ? "; esse teto atua na projeção exibida" : ""}. A faixa é uma banda modelada, proporcional ao erro de projeção da semana, e não um intervalo de confiança estatístico.${ccy === "USD" ? ` Valores em USD. ${fxLabel()}.` : ""}`);
+      + T(` Downside and upside take off or add half of the base growth (0.5× and 1.5× when it is positive), with 93% weekly decay, so the downside path never sits above the base and the upside never below it. Balances follow (${bn(SPEND / 1000, 1)} × spend % × utilization %) × ${PILOT.tenor}d ÷ 365, the pilot tenor set in Data. Projections are capped at ${money(fcCeil())}, the balance with 100% of in-scope spend under the programme at 100% utilization${m.capped ? "; this cap binds in the projection shown" : ""}. ${bandNote[0]}${ccy === "USD" ? ` Displayed in USD. ${fxLabel()}.` : ""}`,
+          ` Os cenários pessimista e otimista tiram ou somam metade do crescimento base (0,5× e 1,5× quando ele é positivo), com decaimento semanal de 93%, de modo que o pessimista nunca fica acima do base nem o otimista abaixo dele. O saldo segue (${bn(SPEND / 1000, 1)} × gasto % × utilização %) × ${PILOT.tenor}d ÷ 365, o prazo do piloto definido em Dados. As projeções ficam limitadas a ${money(fcCeil())}, o saldo com 100% das compras no escopo sob o programa e 100% de utilização${m.capped ? "; esse teto atua na projeção exibida" : ""}. ${bandNote[1]}${ccy === "USD" ? ` Valores em USD. ${fxLabel()}.` : ""}`);
 
     fc.replaceChildren();
     tip.classList.remove("show");
