@@ -1,0 +1,97 @@
+  /* ========== MODERN FINTECH FINISH ==========
+     Visual direction asked by the owner: minimal and quiet, in the family of Linear, Stripe and Mercury.
+     What that means here: neutral canvas, hairline borders doing the work shadows used to do, flat surfaces
+     (no decorative gradients), 8-12 px radii instead of pills on actions, calmer labels and one accent colour.
+     The Early Money brand stays: navy band, Plus Jakarta Sans + Inter, the same tokens for meaning (green/amber/red).
+     Loads after 80-polish.css and before 90-dark.css. Hardcoded light colours are scoped to the light theme. */
+  :root{
+    --canvas:#F7F8FA;
+    --surface-alt:#F9FAFB;
+    --hair:#E6E9EE;
+    --hair-strong:#D4D9E1;
+    --tint:#F1F5FA;
+    --radius-sm:8px;
+    --radius-md:12px;
+    --radius-lg:14px;
+    --shadow-sm:0 1px 2px rgba(16,24,40,.04);
+    --shadow-md:0 1px 2px rgba(16,24,40,.04),0 8px 24px -8px rgba(16,24,40,.10);
+    --ring:0 0 0 3px rgba(5,109,174,.18);
+  }
+  body{background:var(--canvas)}
+
+  /* ---------- Surfaces: flat, hairline, almost no shadow ---------- */
+  .card,.li-strip,.step-toolbar,.step-card,.tip-card{box-shadow:var(--shadow-sm)}
+  .card{border-radius:var(--radius-md)}
+  .clickable-card:hover{transform:none;border-color:var(--hair-strong);box-shadow:var(--shadow-md)}
+  .step-card{border-radius:var(--radius-md)}
+  .step-card:hover{transform:none;border-color:var(--hair-strong);box-shadow:var(--shadow-md)}
+  html:not([data-theme="dark"]) .step-card[aria-pressed="true"]{background:var(--surface);border-color:var(--blue);box-shadow:0 0 0 1px var(--blue),var(--shadow-sm)}
+  html:not([data-theme="dark"]) .briefing-card{background:var(--surface);border-color:var(--hair)}
+  html:not([data-theme="dark"]) .kpi.hl{background:var(--navy);border-color:var(--navy)}
+  .pipe-wrap,.matrix-wrap,.ring,.donut-panel,.lev,.callout,.mkt-res,.result-banner,.limitst,.empty-state,.ds-na-block{border-radius:10px}
+  .lev{box-shadow:none}
+
+  /* ---------- Type: sentence-weight headings, quiet labels, numbers carry the page ---------- */
+  .hero h1{font-size:clamp(26px,2.5vw,34px);font-weight:700;letter-spacing:-.03em}
+  .hero .sub{color:var(--muted);max-width:86ch}
+  .kick{font-size:10.5px;letter-spacing:.1em;font-weight:600;color:var(--subtle)}
+  .card .lbl,.li-wk{font-weight:600;letter-spacing:.08em}
+  .card h3{font-size:16px;font-weight:650;letter-spacing:-.015em}
+  .subhead h3{font-size:16px;font-weight:650}
+  .step-banner{border-bottom-color:var(--hair)}
+  .step-banner h2{font-weight:700}
+  .step-pill-lg{border-radius:6px;font-size:10px;font-weight:700;padding:3px 8px;letter-spacing:.08em}
+  .kpi .val{font-weight:700;font-size:32px;letter-spacing:-.03em}
+  .kpi .lbl{color:var(--subtle)}
+  .friction-stat strong,.ring .rval{font-weight:700}
+
+  /* ---------- Actions: 8 px radius, one solid primary, ghost secondaries ---------- */
+  .step-nav-btn,.pill-btn,.mbtn,.btn-present,.sig-route-btn,.of-btn,.asst-go{border-radius:8px}
+  .step-nav-btn{box-shadow:var(--shadow-sm);font-weight:600}
+  .step-nav-btn.primary,.step-nav-btn.primary:hover{box-shadow:var(--shadow-sm);transform:none}
+  html:not([data-theme="dark"]) .step-nav-btn:hover,html:not([data-theme="dark"]) .pill-btn:hover{background:var(--surface-alt);border-color:var(--hair-strong);color:var(--navy)}
+  html:not([data-theme="dark"]) .step-nav-btn.primary:hover{background:var(--navy-mid);border-color:var(--navy-mid);color:#fff}
+  html:not([data-theme="dark"]) .pill-btn.active,html:not([data-theme="dark"]) .pill-btn.active:hover{background:var(--navy);border-color:var(--navy);color:#fff}
+  .mbtn:hover{box-shadow:none}
+  /* Segmented controls: soft grey well, white selected chip */
+  .seg-group,.view-toggle,.asst-seg{border-radius:9px}
+  .seg-group button,.view-toggle button,.asst-seg button{border-radius:6px}
+  html:not([data-theme="dark"]) .seg-group,html:not([data-theme="dark"]) .view-toggle{background:#EEF1F5;border-color:transparent}
+  html:not([data-theme="dark"]) .seg-group button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(16,24,40,.10)}
+  html:not([data-theme="dark"]) .seg-group button:hover:not([aria-pressed="true"]),html:not([data-theme="dark"]) .view-toggle button:hover:not([aria-pressed="true"]){background:rgba(16,24,40,.05)}
+  .limit-ctl input{border-radius:6px}
+  .limit-ctl input,.pipe-table input[type=number],.pipe-globals input{border-radius:6px;background:var(--surface)}
+
+  /* ---------- Chips and badges: tinted text on a faint fill, small radius ---------- */
+  .role-chip,.delta,.step-cadence,.lev-pill,.proto-pill,.fab-tag,.fab-badge,.sig-badge,.sig-pub,.verdict,.ds-chip,.lev-chip,.lev-flag{border-radius:6px}
+  .delta{font-weight:600}
+  html:not([data-theme="dark"]) .delta.flat{background:#EEF1F5;color:var(--muted)}
+  html:not([data-theme="dark"]) .role-chip{background:#EEF1F5;border-color:transparent;color:var(--muted)}
+  .rank{border-radius:5px}
+
+  /* ---------- Guidance and messages: neutral card with a thin accent, not a coloured block ---------- */
+  html:not([data-theme="dark"]) .tip-card{background:var(--surface);border-color:var(--hair);border-left-color:var(--blue)}
+  html:not([data-theme="dark"]) .tip-ico{background:var(--tint);color:var(--blue)}
+  html:not([data-theme="dark"]) .result-banner{background:var(--surface-alt);border:1px solid var(--hair);border-left:3px solid var(--blue);font-weight:600}
+  .limitst{font-weight:600}
+  html:not([data-theme="dark"]) .li-item{background:var(--surface)}
+  .li-item{border-radius:8px}
+
+  /* ---------- Tables: no header band, hairline rows, quiet footer ---------- */
+  html:not([data-theme="dark"]) .pipe-table thead th,html:not([data-theme="dark"]) .pipe-table thead th:first-child,
+  html:not([data-theme="dark"]) .matrix-table thead th,html:not([data-theme="dark"]) .matrix-table thead th:first-child{background:var(--surface-alt)}
+  html:not([data-theme="dark"]) .pipe-table tbody tr:hover td,html:not([data-theme="dark"]) .pipe-table tbody tr:hover td:first-child,
+  html:not([data-theme="dark"]) .matrix-table tbody tr:hover td,html:not([data-theme="dark"]) .matrix-table tbody tr:hover td:first-child{background:var(--surface-alt)}
+  html:not([data-theme="dark"]) .pipe-table tfoot td,html:not([data-theme="dark"]) .pipe-table tfoot td:first-child,
+  html:not([data-theme="dark"]) .matrix-table tfoot td,html:not([data-theme="dark"]) .matrix-table tfoot td:first-child{background:var(--surface-alt);border-top:1px solid var(--hair-strong)}
+  .pipe-table th:first-child,.pipe-table td:first-child,.matrix-table th:first-child,.matrix-table td:first-child{box-shadow:none}
+  html:not([data-theme="dark"]) .formula span{background:var(--surface);border-color:var(--hair);font-weight:500;border-radius:6px}
+  html:not([data-theme="dark"]) .formula span.res{background:var(--tint);border-color:var(--hair-strong);font-weight:600}
+
+  /* ---------- Bars and tracks: thinner, neutral track ---------- */
+  html:not([data-theme="dark"]) .track{background:#EEF1F5}
+
+  @media(max-width:680px){
+    .hero h1{font-size:25px}
+    .kpi .val{font-size:28px}
+  }

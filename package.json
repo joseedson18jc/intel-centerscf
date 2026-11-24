@@ -1,6 +1,6 @@
 {
   "name": "scf-cockpit",
-  "version": "14.2.0",
+  "version": "14.3.0",
   "private": true,
   "description": "Weekly cockpit of a supply chain finance (risco sacado) specialist. Example data only.",
   "type": "module",

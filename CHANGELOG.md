@@ -1,5 +1,14 @@
 # Changelog
 
+## 14.3.0 (2026-11-24): modern fintech finish
+
+Visual direction set by the owner: minimal and quiet, in the family of Linear, Stripe and Mercury (`src/css/81-fintech.css`, after the polish layer).
+- Neutral canvas without the decorative glow; hairline borders and a single faint shadow instead of layered blue shadows; no decorative gradients on cards.
+- 12 px card radius; 8 px radius on actions and 6 px on chips, badges and inputs instead of pills; cards no longer lift on hover, the border darkens.
+- Segmented controls as a grey well with a white selected chip; guidance and result messages as neutral cards with a thin accent.
+- Quieter labels and a lighter page title so the numbers carry the page; tables without a tinted header band or sticky-column shadow.
+- Kept: Early Money navy band, fonts and semantic colours; dark theme unchanged apart from radii.
+
 ## 14.2.0 (2026-11-24): design, chart and performance pass
 
 **Design**
