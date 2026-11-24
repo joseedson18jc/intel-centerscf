@@ -47,18 +47,20 @@
     document.querySelectorAll(".sn-sec").forEach(a => {
       const el = $(a.dataset.snSec), h = el && snHeading(el);
       const t = h ? h.textContent.replace(/\s+/g, " ").trim() : "";
-      a.querySelector(".sn-lbl").textContent = t; a.title = t;
+      if (a._snT === t) return;   // called on every refresh: untouched labels cost no layout
+      a._snT = t; a.querySelector(".sn-lbl").textContent = t; a.title = t;
     });
-    const c = $("snCollapseLbl"); if (c) c.textContent = L(I18N[snCollapsed ? "sn.expand" : "sn.collapse"]);
+    const c = $("snCollapseLbl"), ct = L(I18N[snCollapsed ? "sn.expand" : "sn.collapse"]); if (c && c.textContent !== ct) c.textContent = ct;
   }
 
   // ---------- Current step: accordion in the menu + name in the header ----------
   function syncSideNav() {
-    document.querySelectorAll("[data-sn-secs]").forEach(ul => { ul.hidden = +ul.dataset.snSecs !== activeStep; });
+    document.querySelectorAll("[data-sn-secs]").forEach(ul => { const h = +ul.dataset.snSecs !== activeStep; if (ul.hidden !== h) ul.hidden = h; });
     const n = activeStep, sn = $("tbStepName"), so = $("tbStepOf"), sb = $("tbStepN");
-    if (sn) sn.textContent = L(I18N["st." + n + ".short"]);
-    if (so) so.textContent = viewMode === "all" ? L(I18N["vm.all"]) + " · " + L(I18N["sp." + n]) : L(I18N["sp." + n]);
-    if (sb) sb.textContent = n;
+    const put = (e, t) => { if (e && e.textContent !== String(t)) e.textContent = t; };
+    put(sn, L(I18N["st." + n + ".short"]));
+    put(so, viewMode === "all" ? L(I18N["vm.all"]) + " · " + L(I18N["sp." + n]) : L(I18N["sp." + n]));
+    put(sb, n);
     snSpy();
   }
   stepViewHook = syncSideNav;

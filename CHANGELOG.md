@@ -1,5 +1,50 @@
 # Changelog
 
+## 14.4.0 (2026-11-24): measured forecast range, Embraer base at the panel rate
+
+- Forecast range (Step 2) is now built on the error the model actually made: root mean square of its past one-week-ahead errors (the backtest), with the reported forecast-error KPI / 2.2 counted as one more observation so weeks 1 and 2 still have a range; it grows with the square root of the weeks ahead. Before, the range was the reported KPI / 2.2, which was 2 to 3 times wider than the measured error in the early weeks and never missed a past projection (66 of 66). The measured range is 18% narrower in week 12 (±1.16% instead of ±1.41% for one week ahead; 13-week range R$ 608-661 m instead of R$ 602-667 m, pre-approval ask R$ 11 m instead of R$ 17 m; in week 4 the range is R$ 527-603 m instead of R$ 492-638 m) and contained 57 of 66 past projections (86%). The page prints the width and that hit rate next to the chart.
+- The limit verdict, live insights, assistant answers, proofs and the exported context use the same range (`fcModel().e1`, `fcErr`, `bandCoverage`). The 8% governance tolerance still reads the reported KPI.
+- Embraer annual base in the 3Q26 dataset: the US$ 8.5 bn guidance midpoint is converted at the panel rate (R$ 50.1 bn at 5.8889, was a fixed R$ 43.7 bn at the quarter's 5.14) and follows the FX field. Embraer flow goes from R$ 0.42 bn to R$ 0.48 bn; pipeline total R$ 3.29 bn of flow, R$ 677 m of balance, R$ 8.1 m of spread revenue. The quarter figure stays as published in reais.
+- `tools/audit-numbers.mjs` follows the new range and also checks the range width, its hit rate and the pipeline totals: 2,798 checks, 0 mismatches.
+
+## 14.3.1 (2026-11-24): numbers audit
+
+- New `tools/audit-numbers.mjs`: recomputes the pilot book, the 8 KPIs and their weekly change, the forecast (3 scenarios x 3 horizons), the modelled range, the limit verdict and the one-week backtest for each of the 12 weeks, independently of the page code, and compares with what the page prints. 2,578 checks, 0 mismatches.
+- Fixed: on load the adoption funnel showed the "with document AI" numbers while the "Before" tab looked selected; the tab is now written on every draw.
+
+## 14.3.0 (2026-11-24): modern fintech finish
+
+Visual direction set by the owner: minimal and quiet, in the family of Linear, Stripe and Mercury (`src/css/81-fintech.css`, after the polish layer).
+- Neutral canvas without the decorative glow; hairline borders and a single faint shadow instead of layered blue shadows; no decorative gradients on cards.
+- 12 px card radius; 8 px radius on actions and 6 px on chips, badges and inputs instead of pills; cards no longer lift on hover, the border darkens.
+- Segmented controls as a grey well with a white selected chip; guidance and result messages as neutral cards with a thin accent.
+- Quieter labels and a lighter page title so the numbers carry the page; tables without a tinted header band or sticky-column shadow.
+- Kept: Early Money navy band, fonts and semantic colours; dark theme unchanged apart from radii.
+
+## 14.2.0 (2026-11-24): design, chart and performance pass
+
+**Design**
+- New polish layer (`src/css/80-polish.css`, after the feature partials, before dark/print/responsive): 8/12/16/24/32 spacing rhythm, one type scale, softer card shadows, uniform table headers, one focus ring and one hover/pressed transition for every control.
+- KPI tiles: larger value, unit no longer squeezed by the heading letter-spacing ("em aberto", "mi / ano"), question line reserves two lines so sparklines align across a row.
+- Journey cards: number and cadence stacked, so the four headers wrap the same way.
+- Lever chips wrap inside their column instead of running into the next one.
+- Pipeline and competitor tables: money never breaks across two lines; the pipeline table fits 1440 px without sideways scroll.
+- Empty containers show a shimmer placeholder; empty charts show a dashed message block.
+
+**Cockpit and data**
+- Forecast chart redrawn: gradient area and band, light dashed grid, limit label with a halo, end-of-horizon value label that moves out of the way of the limit line, and a hover/tap guide over the whole plot (week, value, range, % of limit). The tooltip flips below the point near the top edge.
+- "Closing balance by scenario" bars share one scale with the approved limit (red mark, % of limit, over-limit in red) instead of an unanchored bar.
+- KPI sparklines: gradient fill, constant stroke width, round end dot.
+- Quarter revenue in the pipeline uses one decimal for every anchor (was three for Embraer).
+- Share donut: centre text fits the hole (base value moved to a short third line).
+- Backtest shows an explicit empty state on week 1.
+
+**Performance**
+- Editing a pipeline input no longer recomputes the pilot book, KPIs and forecast (they do not depend on it).
+- Levers, dataset bars and side-menu labels rebuild only when their inputs change.
+- Header metrics write CSS variables only on change; scroll progress uses `transform` in one animation frame.
+- Pulsing dots animate `transform`/`opacity` on a pseudo-element instead of `box-shadow`.
+
 ## 14.1.0 (2026-11-23): Early Money design system applied
 
 - Brand fonts embedded (Inter and Plus Jakarta Sans, Latin subset, SIL OFL 1.1): same typography on every device, still no network request.

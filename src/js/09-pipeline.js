@@ -53,7 +53,7 @@
     const colLbl = {addr:I18N["pp.th.addr"], cov:I18N["pp.th.cov"], adh:I18N["pp.th.adh"], util:I18N["pp.th.util"]};
     const inp = (i, k, step, max) => `<input type="number" data-i="${i}" data-k="${k}" value="${P[i][k]}" min="0" max="${max}" step="${step}" aria-label="${esc(ANCHORS[i].name)} · ${esc(colLbl[k] ? L(colLbl[k]) : k)}">`;
     // Quarter line only where the dataset has a quarterly figure; otherwise name the reporting period.
-    const revSub = a => (a.q3 != null ? `${L(d.revTag)}: ${revFmt(a, "q3", a.q3 < 15 ? 3 : 1)}` : T(`full year ${L(d.revTag)}`,`ano de ${L(d.revTag)}`)) + (revRep(a) != null ? T(" · as reported"," · divulgado") : "");
+    const revSub = a => (a.q3 != null ? `${L(d.revTag)}: ${revFmt(a, "q3", 1)}` : T(`full year ${L(d.revTag)}`,`ano de ${L(d.revTag)}`)) + (revRep(a) != null ? T(" · as reported"," · divulgado") : "");
     const asRep = T("Revenue notes on the cards quote the figures as reported by each company (BRL unless stated). In the USD view, companies that report in US dollars (JBS, Embraer) show the dollars they published (Embraer: midpoint of its 2026 guidance); everything else, including eligible purchases and the model values, is converted from reais at the rate entered in the panel.","As notas de receita das fichas citam os valores como divulgados por cada empresa (em reais, salvo indicação). Na visão em dólar, as empresas que divulgam em dólar (JBS, Embraer) aparecem com os dólares publicados (Embraer: ponto médio do guidance de 2026); todo o resto, inclusive compras elegíveis e valores do modelo, é convertido de reais pela taxa informada no painel.");
     $("pipe-rows").innerHTML = ANCHORS.map((a, i) => `<tr>
       <td><div class="anchor-cell">${brandBadge(a.id)}<span><b>${a.name}</b><small>${L(a.sector)}</small></span></div></td>
@@ -95,9 +95,8 @@
     $("pt-elig").textContent = bn(t.elig, 1); $("pt-revenue").textContent = bn(revTotal(), 0);
     $("pt-flow").textContent = bn(t.flow); $("pt-bal").textContent = money(t.bal); $("pt-rev").textContent = moneyD(t.rev);
     if (cascade) {
-      recomputeBook();
-      updateKpis(week);
-      forecast(week);
+      // The pilot book (KPI tiles, forecast) reads PILOT, not the pipeline hypotheses G and P, so it is not redrawn here.
+      // The market module and the action plan do read the pipeline, so they follow every edit.
       if (G.spread !== lastPipeSpread) mktSpread = Math.min(2.6, Math.max(0.6, G.spread));
       renderMarket();
       plan(week);

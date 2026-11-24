@@ -82,21 +82,33 @@
   $("modeAll").onclick  = () => { const keep = activeStep; viewMode = "all"; updateStepView(false); activeStep = keep; scrollToPanel(keep); };
 
   // Scroll progress bar + scroll spy
-  addEventListener("scroll", () => {
+  // The bar is scaled with a transform (no layout, no repaint of the header) and written at most once per frame.
+  const scrollProgEl = $("scrollProg");
+  let progPending = false;
+  function paintScrollProg() {
+    progPending = false;
     const max = document.documentElement.scrollHeight - innerHeight;
-    $("scrollProg").style.width = (max > 0 ? Math.min(100, 100 * scrollY / max) : 0) + "%";
+    if (scrollProgEl) scrollProgEl.style.transform = "scaleX(" + (max > 0 ? Math.min(1, scrollY / max) : 0).toFixed(4) + ")";
+  }
+  addEventListener("scroll", () => {
+    if (!progPending) { progPending = true; requestAnimationFrame(paintScrollProg); }
     if (viewMode === "all" && !spyPending) { spyPending = true; requestAnimationFrame(stepSpy); }
   }, {passive:true});
 
   // ========== HEADER: STICKY METRICS, DERIVED LABELS ==========
   // The tools and preferences live in the side menu (31-sidenav.js); the header keeps the notice, the step name and the week control.
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => syncHeaderMetrics());
+  // Runs on every refresh. All sizes are read first and a custom property is written only when its value changed:
+  // writing one on <html> restyles the whole page, and a write between two reads forces an extra layout.
+  const headerNoticeEl = document.querySelector(".header-notice"), headerBarEl = document.querySelector("header.topbar");
+  const hmLast = {};
   function syncHeaderMetrics() {
-    const n = document.querySelector(".header-notice"), root = document.documentElement;
-    root.style.setProperty("--notice-h", (n ? n.offsetHeight : 0) + "px");
-    const tb = document.querySelector("header.topbar");
-    if (tb) root.style.setProperty("--topbar-h", tb.offsetHeight + "px");   // side-menu header matches it (61-sidenav.css)
-    root.style.scrollPaddingTop = (stickyHeaderH() + 12) + "px";
+    const root = document.documentElement;
+    const nh = (headerNoticeEl ? headerNoticeEl.offsetHeight : 0) + "px", th = headerBarEl ? headerBarEl.offsetHeight + "px" : null;
+    if (hmLast.nh !== nh) { hmLast.nh = nh; root.style.setProperty("--notice-h", nh); }
+    if (th && hmLast.th !== th) { hmLast.th = th; root.style.setProperty("--topbar-h", th); }   // side-menu header matches it (61-sidenav.css)
+    const sp = (stickyHeaderH() + 12) + "px";
+    if (hmLast.sp !== sp) { hmLast.sp = sp; root.style.scrollPaddingTop = sp; }
   }
   addEventListener("resize", () => { syncHeaderMetrics(); if (viewMode === "all") stepSpy(); }, {passive:true});
   onRefresh(() => {

@@ -20,23 +20,29 @@
       c.setAttribute("role", "button");
       c.setAttribute("aria-label", `${L(m.lbl)}: ${T("view calculation","ver memória de cálculo")}`);
       c.innerHTML = `<div class="top"><span class="lbl">${L(m.lbl)}</span><span class="delta flat" id="d_${m.k}">–</span></div>
-        <div class="val"><span id="v_${m.k}"></span><span class="u">${unitOf(m)}</span></div>
+        <div class="val"><span id="v_${m.k}"></span><span class="u">${esc(unitOf(m))}</span></div>
         <div class="q">${L(m.q)}</div>
-        <svg class="spark" id="s_${m.k}" viewBox="0 0 200 32" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <svg class="spark" id="s_${m.k}" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"></svg>
         <span class="proof-cue">${T("View calculation ↗","Ver cálculo ↗")}</span>`;
       kpiWrap.appendChild(c);
     });
   }
+  // Sparkline: muted dashed path for the whole series, gradient area and solid line up to the selected week.
+  // Strokes do not scale with the tile (the SVG stretches to the card width), so line and end dot keep their shape.
   function spark(m, w) {
     const s = $("s_" + m.k); if (!s) return;
-    s.innerHTML = "";
     const vals = m.series, mn = Math.min(...vals), mx = Math.max(...vals);
     const X = i => 4 + i * (192 / Math.max(1, W - 1));
-    const Y = v => 28 - (v - mn) / ((mx - mn) || 1) * 22;
-    const col = m.hl ? "#7FD8F7" : C.blue;
-    el("path", {d: vals.map((v, i) => `${i ? "L" : "M"}${X(i)},${Y(v)}`).join(" "), fill:"none", stroke: m.hl ? "rgba(255,255,255,.18)" : C.grid, "stroke-width":2}, s);
-    el("path", {d: vals.slice(0, w).map((v, i) => `${i ? "L" : "M"}${X(i)},${Y(v)}`).join(" "), fill:"none", stroke:col, "stroke-width":2.4, "stroke-linecap":"round", "stroke-linejoin":"round"}, s);
-    el("circle", {cx:X(w - 1), cy:Y(vals[w - 1]), r:3.8, fill:col}, s);
+    const Y = v => 30 - (v - mn) / ((mx - mn) || 1) * 23;
+    const col = m.hl ? "#7FD8F7" : C.blue, gid = "sg_" + m.k;
+    const path = arr => arr.map((v, i) => `${i ? "L" : "M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ");
+    const cur = path(vals.slice(0, w)), lx = X(w - 1).toFixed(1), ly = Y(vals[w - 1]).toFixed(1);
+    s.innerHTML = `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity="${m.hl ? .3 : .2}"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>`
+      + `<path d="${path(vals)}" fill="none" stroke="${m.hl ? "rgba(255,255,255,.28)" : C.slate}" stroke-opacity="${m.hl ? 1 : .55}" stroke-width="1.4" stroke-dasharray="2 4" vector-effect="non-scaling-stroke"/>`
+      + (w > 1 ? `<path d="${cur} L${lx},40 L4,40 Z" fill="url(#${gid})"/>` : "")
+      + `<path d="${cur}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`
+      + `<path d="M${lx},${ly}h.01" fill="none" stroke="${m.hl ? "#00205B" : "var(--surface)"}" stroke-width="11" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`
+      + `<path d="M${lx},${ly}h.01" fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`;
   }
   function updateKpis(w) {
     KPIS.forEach(m => {

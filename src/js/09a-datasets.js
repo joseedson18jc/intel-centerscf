@@ -50,9 +50,15 @@
           addr:9.0, sector:["Industrial holding","Holding industrial"],
           look:["Map opportunity by operating company (V. Cimentos, metals, energy), not as one group-level anchor.","Mapear oportunidade por empresa operacional (V. Cimentos, metais, energia), não como âncora única."],
           check:["Which CNPJ buys, which entity holds the Citi relationship and limit, and which units can join.","Qual CNPJ compra, qual entidade tem relacionamento e limite com o Citi e quais unidades podem aderir."]},
-        {id:"emb", name:"Embraer", color:"#056DAE", src:"emb", q3:12.067, rev:43.7, usd:{q3:2.347, rev:8.5},   // reports in US$: rev = midpoint of 2026 guidance
+        {id:"emb", name:"Embraer", color:"#056DAE", src:"emb", q3:12.067, usd:{q3:2.347, rev:8.5},
+          // Reports in US$. The annual base is the midpoint of the 2026 guidance (US$ 8.5 bn) converted at the panel
+          // rate, so it follows the FX field and matches every other US$ conversion on the page. The quarter stays
+          // as the company published it in reais.
+          get rev() { return Math.round(this.usd.rev * FX_RATE * 10) / 10; },
+          get revNote() { const v = this.rev.toFixed(1), r = String(FX_RATE);
+            return [`3Q26 record R$12.067bn (US$2.347bn) · 2026 guidance US$8.4–8.6bn (midpoint US$8.5bn ≈ R$${v}bn at the panel rate of R$${r}/US$)`,
+                    `Recorde 3T26 R$ 12,067 bi (US$ 2,347 bi) · guidance 2026 US$ 8,4–8,6 bi (ponto médio US$ 8,5 bi ≈ R$ ${v.replace(".", ",")} bi ao câmbio do painel de R$ ${r.replace(".", ",")}/US$)`]; },
           q3Note:["3Q26 record: R$12.067bn (US$2.347bn, +17% YoY USD, 10 Nov 2026); 2026 guidance raised to US$8.4–8.6bn","Recorde 3T26: R$ 12,067 bi (US$ 2,347 bi, +17% a/a USD, 10/nov/2026); guidance 2026 elevado p/ US$ 8,4–8,6 bi"],
-          revNote:["3Q26 record R$12.067bn (US$2.347bn) · 2026 guidance US$8.4–8.6bn (≈ R$43.7bn)","Recorde 3T26 R$ 12,067 bi (US$ 2,347 bi) · guidance 2026 US$ 8,4–8,6 bi (≈ R$ 43,7 bi)"],
           addr:8.0, sector:["Aerospace","Aeroespacial"],
           look:["Industrial suppliers, components, engineering and services — domestic receivables separated from exports.","Fornecedores industriais, componentes, engenharia e serviços — separando recebíveis domésticos dos internacionais."],
           check:["Which invoices are already approved and free of acceptance conditions; Q4 delivery ramp drives seasonal peak.","Quais títulos já estão aprovados e livres de condições de aceite; pico de entregas no 4T eleva sazonalidade."]},
@@ -274,6 +280,7 @@
   }
   Object.assign(I18N, DS().i18n);
 
+  let dsBarHtml = "";
   function renderDatasetBars() {
     const d = DS();
     const btn = k => { const x = DATASETS[k]; return `<button type="button" data-ds="${k}" aria-pressed="${k === datasetId}">${esc(L(x.name))}<small>${esc(L(x.tag))}</small></button>`; };
@@ -286,6 +293,9 @@
         <li><span class="ds-chip pub">${T("Public · not checked live","Público · sem checagem ao vivo")}</span>${T("Company revenues are public figures quoted from the linked sources; this page does not verify them live.","As receitas das empresas são números públicos citados das fontes indicadas; esta página não os verifica ao vivo.")}</li>
         <li><span class="ds-chip fab">${esc(L(I18N["ds.fab.tag"]))}</span>${T("Everything in the market module (funder amounts, shares, price bands, ratings and signals) is fabricated for the prototype, in both datasets.","Tudo no módulo de mercado (valores por financiador, shares, faixas de preço, ratings e sinais) é fabricado para o protótipo, nos dois conjuntos.")}</li>
       </ul>`;
+    // Called on every refresh: the bars are only rewritten when their text actually changes.
+    if (html === dsBarHtml) return;
+    dsBarHtml = html;
     document.querySelectorAll("[data-ds-bar]").forEach(e => { e.innerHTML = html; });
   }
   document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-ds]"); if (b && b.closest("[data-ds-bar]")) setDataset(b.dataset.ds); });
