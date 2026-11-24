@@ -3924,13 +3924,15 @@
   let mode = "after", modeManual = false;
   function setMode(m) {
     mode = m;
-    $("before").setAttribute("aria-pressed", String(m === "before"));
-    $("after").setAttribute("aria-pressed", String(m === "after"));
     funnel();
   }
   function syncFunnel(w) { if (!modeManual) { const target = w >= 5 ? "after" : "before"; if (target !== mode) setMode(target); } }
   function funnel() {
     const box = $("funnel"), v = F[mode];
+    // The selected tab is written on every draw, so it can never disagree with the numbers shown
+    // (on load the page opens in week 12 with the "after" funnel while the markup marked "before").
+    $("before").setAttribute("aria-pressed", String(mode === "before"));
+    $("after").setAttribute("aria-pressed", String(mode === "after"));
     if (!box.children.length) STEPS.forEach(() => { const r = document.createElement("div"); r.className = "fstep"; r.innerHTML = `<span></span><div class="track"><div class="fill"></div></div><span class="n">0</span>`; box.appendChild(r); });
     [...box.children].forEach((r, i) => {
       r.firstChild.textContent = L(STEPS[i]);

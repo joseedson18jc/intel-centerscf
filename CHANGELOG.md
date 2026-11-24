@@ -1,5 +1,10 @@
 # Changelog
 
+## 14.3.1 (2026-11-24): numbers audit
+
+- New `tools/audit-numbers.mjs`: recomputes the pilot book, the 8 KPIs and their weekly change, the forecast (3 scenarios x 3 horizons), the modelled range, the limit verdict and the one-week backtest for each of the 12 weeks, independently of the page code, and compares with what the page prints. 2,578 checks, 0 mismatches.
+- Fixed: on load the adoption funnel showed the "with document AI" numbers while the "Before" tab looked selected; the tab is now written on every draw.
+
 ## 14.3.0 (2026-11-24): modern fintech finish
 
 Visual direction set by the owner: minimal and quiet, in the family of Linear, Stripe and Mercury (`src/css/81-fintech.css`, after the polish layer).
