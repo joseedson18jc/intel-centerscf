@@ -36,9 +36,14 @@
     const x = g.lv.find(l => !l[2]);
     return x ? L(x) : "";
   }
+  let levSig = "";
   function renderLevers() {
     const box = $("levers"); if (!box) return;
     const v = F[mode], worst = worstStep(v), aiLive = week >= 5, sub = $("lv-sub");
+    // Called on every refresh (each week of the slider): skip when nothing this block shows has changed.
+    const sig = [mode, aiLive, lang].join("|");
+    if (sig === levSig && box.children.length) return;
+    levSig = sig;
     if (sub) sub.textContent = mode === "before"
       ? T("Conversion of each step in the baseline funnel. The step in red has the weakest conversion.","Conversão de cada etapa no funil-base. A etapa em vermelho tem a pior conversão.")
       : T("Conversion of each step with document AI live. The weakest conversion moves to the step in red.","Conversão de cada etapa com a IA de documentos em produção. A pior conversão passa para a etapa em vermelho.");

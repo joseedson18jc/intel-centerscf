@@ -1,5 +1,29 @@
 # Changelog
 
+## 14.2.0 (2026-11-24): design, chart and performance pass
+
+**Design**
+- New polish layer (`src/css/80-polish.css`, after the feature partials, before dark/print/responsive): 8/12/16/24/32 spacing rhythm, one type scale, softer card shadows, uniform table headers, one focus ring and one hover/pressed transition for every control.
+- KPI tiles: larger value, unit no longer squeezed by the heading letter-spacing ("em aberto", "mi / ano"), question line reserves two lines so sparklines align across a row.
+- Journey cards: number and cadence stacked, so the four headers wrap the same way.
+- Lever chips wrap inside their column instead of running into the next one.
+- Pipeline and competitor tables: money never breaks across two lines; the pipeline table fits 1440 px without sideways scroll.
+- Empty containers show a shimmer placeholder; empty charts show a dashed message block.
+
+**Cockpit and data**
+- Forecast chart redrawn: gradient area and band, light dashed grid, limit label with a halo, end-of-horizon value label that moves out of the way of the limit line, and a hover/tap guide over the whole plot (week, value, range, % of limit). The tooltip flips below the point near the top edge.
+- "Closing balance by scenario" bars share one scale with the approved limit (red mark, % of limit, over-limit in red) instead of an unanchored bar.
+- KPI sparklines: gradient fill, constant stroke width, round end dot.
+- Quarter revenue in the pipeline uses one decimal for every anchor (was three for Embraer).
+- Share donut: centre text fits the hole (base value moved to a short third line).
+- Backtest shows an explicit empty state on week 1.
+
+**Performance**
+- Editing a pipeline input no longer recomputes the pilot book, KPIs and forecast (they do not depend on it).
+- Levers, dataset bars and side-menu labels rebuild only when their inputs change.
+- Header metrics write CSS variables only on change; scroll progress uses `transform` in one animation frame.
+- Pulsing dots animate `transform`/`opacity` on a pseudo-element instead of `box-shadow`.
+
 ## 14.1.0 (2026-11-23): Early Money design system applied
 
 - Brand fonts embedded (Inter and Plus Jakarta Sans, Latin subset, SIL OFL 1.1): same typography on every device, still no network request.

@@ -5,8 +5,9 @@
   .li-head{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:2px 12px 2px 4px;border-right:1px solid var(--hair);min-width:0;position:relative}
   .li-lbl{font-family:var(--head);font-size:12.5px;font-weight:800;color:var(--navy);letter-spacing:-.01em;white-space:nowrap;padding-left:14px}
   .li-wk{font-size:10.5px;font-weight:600;color:var(--subtle);letter-spacing:.02em;white-space:nowrap;padding-left:14px}
-  .li-pulse{position:absolute;left:4px;top:50%;width:7px;height:7px;margin-top:-10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(14,138,95,.45);animation:liPulse 2.6s var(--ease) infinite}
-  @keyframes liPulse{0%{box-shadow:0 0 0 0 rgba(14,138,95,.45)}70%{box-shadow:0 0 0 7px rgba(14,138,95,0)}100%{box-shadow:0 0 0 0 rgba(14,138,95,0)}}
+  .li-pulse{position:absolute;left:4px;top:50%;width:7px;height:7px;margin-top:-10px;border-radius:50%;background:var(--green)}
+  .li-pulse::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--green);opacity:0;animation:liPulse 2.6s var(--ease) infinite;will-change:transform,opacity}
+  @keyframes liPulse{0%{transform:scale(1);opacity:.5}70%{transform:scale(3);opacity:0}100%{transform:scale(3);opacity:0}}
   .li-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;min-width:0}
   .li-item{--li:var(--blue);--li-soft:var(--sky-soft);display:flex;align-items:flex-start;gap:8px;min-width:0;text-align:left;font:inherit;font-size:12.5px;line-height:1.4;color:var(--ink);background:var(--surface-alt);border:1px solid var(--hair);border-left:3px solid var(--li);border-radius:10px;padding:7px 8px 7px 9px;cursor:pointer;transition:border-color .18s,background-color .18s,box-shadow .18s}
   .li-item[data-tone="good"]{--li:var(--green);--li-soft:var(--green-soft)}
@@ -40,15 +41,14 @@
   .li-pop-note{margin-top:9px;font-size:11px;color:var(--subtle)}
 
   html[data-theme="dark"] .li-ic{color:#071120}
-  html[data-theme="dark"] .li-pulse{box-shadow:0 0 0 0 rgba(52,211,153,.45)}
   html[data-theme="dark"] .li-pop-chips button{color:var(--blue)}
 
   @media(max-width:1180px){
     .li-strip{grid-template-columns:minmax(0,1fr)}
     .li-head{flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;border-right:0;padding:0 2px 0 4px;flex-wrap:wrap}
-    .li-pulse{position:static;margin:0;flex:none}
+    .li-pulse{position:relative;left:auto;top:auto;margin:0;flex:none}
     .li-lbl,.li-wk{padding-left:0}
   }
   @media(max-width:860px){.li-list{grid-template-columns:minmax(0,1fr)}.li-item{padding:9px 9px 9px 10px}}
-  @media(prefers-reduced-motion:reduce){.li-pulse,.li-item.li-flash{animation:none}.li-item,.li-go{transition:none}}
+  @media(prefers-reduced-motion:reduce){.li-pulse::after,.li-item.li-flash{animation:none}.li-item,.li-go{transition:none}}
   @media print{.li-pop,.li-go,.li-pulse{display:none}.li-strip{box-shadow:none;break-inside:avoid}}

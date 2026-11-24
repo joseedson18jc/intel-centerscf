@@ -119,9 +119,10 @@
     position:relative;min-height:56px;
   }
   #scrollProg{
-    position:absolute;left:0;bottom:0;height:2.5px;width:0;
+    position:absolute;left:0;right:0;bottom:0;height:2.5px;
     background:linear-gradient(90deg,#00BDF2,#38BDF8);
-    transition:width .1s linear;pointer-events:none;
+    transform:scaleX(0);transform-origin:0 50%;will-change:transform;
+    transition:transform .1s linear;pointer-events:none;
   }
   .tb-menu-btn{
     display:none;flex-shrink:0;width:40px;height:40px;border-radius:10px;
@@ -426,8 +427,10 @@
   /* ========== BRIEFING & ALERTS ========== */
   .briefing-card{background:linear-gradient(180deg,#F5FAFE 0%,#FFFFFF 100%);border-color:#CFE2F2;display:flex;flex-direction:column;gap:12px}
   .aibadge{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--blue)}
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--sky);box-shadow:0 0 0 0 rgba(0,189,242,.6);animation:pulse 2s infinite}
-  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,189,242,.55)}70%{box-shadow:0 0 0 9px rgba(0,189,242,0)}100%{box-shadow:0 0 0 0 rgba(0,189,242,0)}}
+  /* The halo is a pseudo-element animated with transform and opacity only, so it never repaints the card. */
+  .dot{position:relative;flex:none;width:8px;height:8px;border-radius:50%;background:var(--sky)}
+  .dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--sky);opacity:0;animation:pulse 2.4s var(--ease) infinite;will-change:transform,opacity}
+  @keyframes pulse{0%{transform:scale(1);opacity:.55}70%{transform:scale(3.2);opacity:0}100%{transform:scale(3.2);opacity:0}}
   #comment{font-size:14px;line-height:1.6;color:var(--ink)}
   .alerts-box{border-top:1px solid var(--hair);padding-top:12px;display:flex;flex-direction:column;gap:8px}
   .alert-item{
@@ -1189,8 +1192,9 @@
   .li-head{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:2px 12px 2px 4px;border-right:1px solid var(--hair);min-width:0;position:relative}
   .li-lbl{font-family:var(--head);font-size:12.5px;font-weight:800;color:var(--navy);letter-spacing:-.01em;white-space:nowrap;padding-left:14px}
   .li-wk{font-size:10.5px;font-weight:600;color:var(--subtle);letter-spacing:.02em;white-space:nowrap;padding-left:14px}
-  .li-pulse{position:absolute;left:4px;top:50%;width:7px;height:7px;margin-top:-10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(14,138,95,.45);animation:liPulse 2.6s var(--ease) infinite}
-  @keyframes liPulse{0%{box-shadow:0 0 0 0 rgba(14,138,95,.45)}70%{box-shadow:0 0 0 7px rgba(14,138,95,0)}100%{box-shadow:0 0 0 0 rgba(14,138,95,0)}}
+  .li-pulse{position:absolute;left:4px;top:50%;width:7px;height:7px;margin-top:-10px;border-radius:50%;background:var(--green)}
+  .li-pulse::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--green);opacity:0;animation:liPulse 2.6s var(--ease) infinite;will-change:transform,opacity}
+  @keyframes liPulse{0%{transform:scale(1);opacity:.5}70%{transform:scale(3);opacity:0}100%{transform:scale(3);opacity:0}}
   .li-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;min-width:0}
   .li-item{--li:var(--blue);--li-soft:var(--sky-soft);display:flex;align-items:flex-start;gap:8px;min-width:0;text-align:left;font:inherit;font-size:12.5px;line-height:1.4;color:var(--ink);background:var(--surface-alt);border:1px solid var(--hair);border-left:3px solid var(--li);border-radius:10px;padding:7px 8px 7px 9px;cursor:pointer;transition:border-color .18s,background-color .18s,box-shadow .18s}
   .li-item[data-tone="good"]{--li:var(--green);--li-soft:var(--green-soft)}
@@ -1224,17 +1228,16 @@
   .li-pop-note{margin-top:9px;font-size:11px;color:var(--subtle)}
 
   html[data-theme="dark"] .li-ic{color:#071120}
-  html[data-theme="dark"] .li-pulse{box-shadow:0 0 0 0 rgba(52,211,153,.45)}
   html[data-theme="dark"] .li-pop-chips button{color:var(--blue)}
 
   @media(max-width:1180px){
     .li-strip{grid-template-columns:minmax(0,1fr)}
     .li-head{flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;border-right:0;padding:0 2px 0 4px;flex-wrap:wrap}
-    .li-pulse{position:static;margin:0;flex:none}
+    .li-pulse{position:relative;left:auto;top:auto;margin:0;flex:none}
     .li-lbl,.li-wk{padding-left:0}
   }
   @media(max-width:860px){.li-list{grid-template-columns:minmax(0,1fr)}.li-item{padding:9px 9px 9px 10px}}
-  @media(prefers-reduced-motion:reduce){.li-pulse,.li-item.li-flash{animation:none}.li-item,.li-go{transition:none}}
+  @media(prefers-reduced-motion:reduce){.li-pulse::after,.li-item.li-flash{animation:none}.li-item,.li-go{transition:none}}
   @media print{.li-pop,.li-go,.li-pulse{display:none}.li-strip{box-shadow:none;break-inside:avoid}}
   /* ========== ASSISTANT (topbar button, side panel) + SETTINGS / PARAMETER-REVIEW ADDITIONS ========== */
   /* Topbar: the assistant button is the single entry point. When it is present, the older "AI" pill
@@ -1668,6 +1671,223 @@
   .sidenav .sn-src{display:flex;align-items:flex-start;gap:7px;width:auto;margin:0 6px 4px 39px;padding:5px 9px;border-radius:8px;font-size:10.5px;line-height:1.35;text-align:left;white-space:normal;box-shadow:none}
   .sidenav .sn-src i{flex:0 0 auto;margin-top:4px}
   @media (min-width:1100px){.sn-collapsed .sn-src{display:none}}
+  /* ========== POLISH LAYER ==========
+     One place for the rules that make every view read as the same product: spacing grid, type scale, card depth,
+     control states, tables, charts and edge states. It loads after the feature partials and before 90-dark.css,
+     so it refines what they define and the dark theme still has the last word. Colours come from the tokens only. */
+  :root{
+    --radius-md:16px;
+    --gap:16px;
+    --shadow-sm:0 1px 2px rgba(11,23,42,.05),0 1px 1px rgba(11,23,42,.02);
+    --shadow-md:0 4px 10px -2px rgba(0,32,91,.07),0 16px 32px -10px rgba(0,32,91,.12);
+    --ring:0 0 0 3px rgba(0,189,242,.26);
+    --t-fast:.14s;
+    --t-ctl:background-color .16s,border-color .16s,color .16s,box-shadow .16s,transform .12s,opacity .16s;
+  }
+  body{text-rendering:optimizeLegibility;-moz-osx-font-smoothing:grayscale}
+  ::selection{background:rgba(0,189,242,.26)}
+  *{scrollbar-width:thin;scrollbar-color:var(--hair-strong) transparent}
+
+  /* ---------- Spacing grid: 8 / 12 / 16 / 24 / 32 ---------- */
+  .wrap{padding-top:24px}
+  .grid{gap:var(--gap)}
+  .journey-bar{gap:var(--gap);margin-bottom:var(--gap)}
+  .step-toolbar{margin-bottom:24px;padding:10px 16px;border-radius:var(--radius-md);box-shadow:var(--shadow-sm)}
+  .step-banner{margin:32px 0 16px;padding-bottom:12px;border-bottom-width:1px}
+  .subhead{margin:32px 0 12px}
+  .card{padding:20px 24px}
+  .mkt-mod,.maturity-card{margin-bottom:var(--gap)}
+  .pipe-detail{gap:var(--gap);margin-top:var(--gap)}
+  .levers{gap:12px}
+  .step-footer-nav{margin-top:32px;padding-top:20px}
+  footer{margin-top:40px;padding-top:20px}
+
+  /* ---------- Type: clear steps between page title, section, card title, label and body ---------- */
+  .hero h1{font-weight:800;letter-spacing:-.035em}
+  .hero .sub{font-size:14px;line-height:1.55;margin-top:8px}
+  .kick{font-size:11px;letter-spacing:.12em}
+  .step-banner h2{font-size:clamp(20px,1.8vw,24px);letter-spacing:-.03em}
+  .subhead h3{font-size:17px;letter-spacing:-.02em}
+  .subhead span,.step-banner .sub-meta{font-size:12.5px;color:var(--subtle)}
+  .card h3{font-size:17px;line-height:1.3}
+  .card .lbl{font-size:10.5px;letter-spacing:.1em;line-height:1.5}
+  .card .note{font-size:13px;line-height:1.5}
+
+  /* ---------- Cards: one depth, one hover ---------- */
+  .card,.li-strip,.step-card{border-color:var(--hair)}
+  .clickable-card{transition:border-color .18s,box-shadow .22s,transform .18s var(--ease)}
+  .clickable-card:hover{transform:translateY(-2px)}
+  .clickable-card:active{transform:translateY(0);transition-duration:.06s}
+  .card:focus-visible,.step-card:focus-visible{outline:2.5px solid var(--sky);outline-offset:3px}
+
+  /* ---------- Journey cards: number and cadence stack, so the four cards keep the same rhythm at any width ---------- */
+  .step-card{padding:16px 18px;gap:6px;transition:border-color .18s,box-shadow .22s,transform .18s var(--ease),background-color .2s}
+  .step-card:active{transform:translateY(0)}
+  .step-card-top{flex-wrap:wrap;row-gap:6px}
+  .step-num,.step-cadence{white-space:nowrap}
+  .step-num i{width:22px;height:22px}
+  .step-card strong{font-size:15px;margin-top:2px}
+  .step-card p{font-size:12.5px;line-height:1.45}
+  .step-owner{padding-top:10px;margin-top:auto}
+  @media(min-width:681px){
+    .step-card-top{flex-direction:column;align-items:flex-start}
+    .step-cadence{padding:0;background:transparent!important;color:var(--subtle);font-size:10px;letter-spacing:.08em}
+  }
+
+  /* ---------- KPI tiles: big number, quiet unit, question on two reserved lines so the trend lines align ---------- */
+  .kpi{min-height:176px;padding:18px 20px 14px;gap:4px}
+  .kpi .top{min-height:22px}
+  .kpi .val{font-size:34px;font-weight:800;letter-spacing:-.035em;line-height:1.08;margin-top:6px;display:flex;align-items:baseline;flex-wrap:wrap;gap:0 6px}
+  /* letter-spacing is inherited as a length: reset it so the small unit keeps its own spacing ("em aberto", "mi / ano") */
+  .kpi .val .u{font-family:var(--body);font-size:13px;font-weight:600;letter-spacing:0;margin-left:0;color:var(--subtle);white-space:nowrap}
+  .kpi .q{font-size:12.5px;line-height:1.4;min-height:2.8em;margin-top:2px}
+  .spark{height:40px;margin-top:auto;overflow:visible;display:block}
+  .delta{font-size:11px;line-height:1.5;padding:2px 9px;font-variant-numeric:tabular-nums}
+  .kpi .proof-cue{margin-top:6px}
+
+  /* ---------- Headline figures elsewhere share the same treatment ---------- */
+  .friction-stat strong{letter-spacing:-.03em;font-size:32px}
+  .ub .v,.pp{letter-spacing:-.02em}
+  .lev-cv{font-size:28px}
+  .wk-pill span{letter-spacing:-.02em}
+
+  /* ---------- Controls: one transition, one pressed state, one focus ring ---------- */
+  .btn-ico,.pill-btn,.step-nav-btn,.view-toggle button,.seg-group button,.mkt-subnav button,.sig-route-btn,.srcchip,.mbtn,.btn-present,.modal-close,.li-pop-x{transition:var(--t-ctl)}
+  .pill-btn:active,.step-nav-btn:active,.mbtn:active,.btn-present:active,.sig-route-btn:active,.btn-ico:active,.seg-group button:active,.view-toggle button:active,.mkt-subnav button:active{transform:scale(.97)}
+  .step-nav-btn{padding:11px 18px}
+  .step-nav-btn.primary{box-shadow:0 2px 8px rgba(0,32,91,.18)}
+  .step-nav-btn.primary:hover{box-shadow:0 4px 14px rgba(5,109,174,.28);transform:translateY(-1px)}
+  .seg-group,.view-toggle{padding:3px;gap:2px}
+  .seg-group button:hover:not([aria-pressed="true"]),.view-toggle button:hover:not([aria-pressed="true"]){color:var(--navy);background:rgba(5,109,174,.07)}
+  .mbtn:hover{filter:none;box-shadow:0 2px 10px rgba(5,109,174,.18)}
+  .mbtn:not(.pri):not(.danger):hover{background:var(--sky-soft)}
+
+  /* Number fields (limit, pipeline hypotheses, pipeline globals): same height, radius, hover and focus */
+  .limit-ctl input,.pipe-table input[type=number],.pipe-globals input{
+    height:32px;border-radius:8px;transition:border-color .16s,box-shadow .16s,background-color .16s;
+  }
+  .limit-ctl input{border-radius:999px;height:28px}
+  .limit-ctl input:hover,.pipe-table input[type=number]:hover,.pipe-globals input:hover{border-color:var(--blue)}
+  .limit-ctl input:focus,.pipe-table input[type=number]:focus,.pipe-globals input:focus{outline:none;border-color:var(--blue);box-shadow:var(--ring)}
+  .act input[type=checkbox]{transition:transform .12s}
+  .act input[type=checkbox]:active{transform:scale(.9)}
+
+  /* ---------- Badges and chips: same line box, wrap instead of overflowing ---------- */
+  .badge,.fx-badge,.role-chip,.lev-pill,.proto-pill,.verdict,.sig-badge,.lev-chip,.sig-pub,.fab-tag{line-height:1.5}
+  .role-chip{padding:3px 11px}
+  /* A chip longer than its column wraps inside it (it used to run over the next column). */
+  .lev-chip{white-space:normal;max-width:100%;border-radius:9px;padding:1px 7px;margin-top:3px}
+  .lev li{overflow-wrap:anywhere}
+  .lev{padding:14px 14px 12px;gap:8px;border-radius:14px}
+  .lev-st{min-height:58px;font-size:12.5px}
+  .lev.worst{box-shadow:inset 0 3px 0 var(--red)}
+
+  /* ---------- Tables: same header, row rhythm and numeric alignment ---------- */
+  .pipe-table thead th,.matrix-table thead th:first-child,.data-table thead th,.friction-table thead th{
+    font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--subtle);font-weight:700;
+  }
+  .pipe-table td,.matrix-table td,.data-table td,.friction-table td{font-variant-numeric:tabular-nums}
+  .pipe-table th,.pipe-table td{padding:12px 7px}
+  .pipe-table tbody tr,.data-table tbody tr,.friction-table tbody tr{transition:background-color var(--t-fast)}
+  .data-table tbody tr:hover,.friction-table tbody tr:hover{background:var(--surface-alt)}
+  /* Revenue column: amount and quarter line each stay on one line */
+  .pipe-table td:nth-child(n+2){white-space:nowrap}
+  .pipe-table .rev-sub{margin-top:2px;white-space:nowrap}
+  .pipe-table input[type=number]{width:56px}
+  .flowcell{min-width:150px;grid-template-columns:26px 1fr auto}
+  .anchor-cell{min-width:150px}
+  .pipe-wrap,.matrix-wrap{border-radius:14px}
+  .matrix-table td:nth-child(n+2),.matrix-table tfoot td{white-space:nowrap}
+  .matrix-table th,.matrix-table td{padding:10px 5px}
+  .friction-table th,.friction-table td{padding:11px 10px}
+  .friction-table thead th{border-bottom:1px solid var(--hair-strong)}
+
+  /* ---------- Charts ---------- */
+  .chart-wrap{margin-top:4px}
+  .legend{gap:16px;font-size:12px}
+  .legend i{border-radius:999px}
+  .chart-tip{
+    display:flex;flex-direction:column;gap:1px;min-width:132px;
+    padding:9px 12px;border-radius:10px;font-size:12px;line-height:1.45;
+    background:rgba(4,18,42,.96);box-shadow:0 10px 28px rgba(0,18,52,.28);
+    transform:translate(-50%,calc(-100% - 12px));transition:opacity .12s,left .08s linear,top .08s linear;
+  }
+  .chart-tip .ct-k{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9FC5EB}
+  .chart-tip strong{font-family:var(--head);font-size:16px;font-weight:700;letter-spacing:-.01em}
+  .chart-tip .ct-r{color:#B9D4EE;font-size:11.5px}
+  #fc text,#accuracy text,#dec text{font-family:var(--body);font-variant-numeric:tabular-nums}
+  .ring svg{width:116px;height:116px}
+  .ring .rval{font-size:25px;font-weight:800;letter-spacing:-.02em}
+  .ring{padding:14px 8px 12px;border-radius:14px}
+  .donut-panel{border-radius:14px;padding:20px 16px 16px}
+  .donut-panel svg{width:184px;height:184px;margin-bottom:14px}
+  .donut-kpis div{border-radius:10px;padding:10px 12px}
+  .donut-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .donut-kpis b{font-size:14.5px;white-space:nowrap}
+  .sh-stack{height:20px;border-radius:7px}
+  .sh-seg{font-size:10.5px}
+
+  /* Closing balance by scenario: bar, limit mark, amount and share of the limit */
+  .case-row{grid-template-columns:86px minmax(0,1fr) auto 104px;gap:12px;margin:16px 0}
+  .case-row>span{color:var(--muted)}
+  .case-row.selected>span{color:var(--navy);font-weight:700}
+  .case-track{position:relative;height:10px;overflow:visible}
+  .case-track .case-fill{border-radius:999px}
+  .case-lim{position:absolute;top:-5px;bottom:-5px;width:2px;margin-left:-1px;border-radius:2px;background:var(--red)}
+  .case-row b{white-space:nowrap;font-variant-numeric:tabular-nums}
+  .case-pct{font-size:11.5px;color:var(--muted);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .case-pct.over{color:var(--red);font-weight:700}
+  .case-foot{display:block;margin-top:18px;padding-top:12px;border-top:1px dashed var(--hair);font-size:12.5px;line-height:1.5;color:var(--muted)}
+  .case-lim-key{display:inline-block;width:2px;height:12px;border-radius:2px;background:var(--red);margin-right:8px;vertical-align:-2px}
+
+  /* ---------- Messages ---------- */
+  .result-banner{padding:12px 16px;border-radius:12px;border-left-width:3px;font-size:13.5px}
+  .limitst{padding:11px 16px;border-radius:12px}
+  .callout,.mkt-res{border-radius:12px;padding:12px 14px}
+
+  /* ---------- Edge states: nothing to plot, nothing matching, and the instant before the first render ---------- */
+  .empty-state,.ds-na-block{
+    display:flex;align-items:center;gap:12px;margin-top:12px;padding:16px 18px;
+    border:1px dashed var(--hair-strong);border-radius:12px;background:var(--surface-alt);
+    color:var(--muted);font-size:13px;font-style:normal;line-height:1.5;
+  }
+  .empty-state::before,.ds-na-block::before{
+    content:"";flex:none;width:30px;height:30px;border-radius:50%;
+    background:var(--sky-soft) no-repeat 50% 50%/16px 16px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23056DAE' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M2.5 13.5h11M4.5 11V8M8 11V4.5M11.5 11V6.5'/%3E%3C/svg%3E");
+  }
+  #par-msg.err,#data-msg.err,.field-hint{display:flex;align-items:flex-start;gap:8px}
+  .field-hint[hidden]{display:none}
+  .field-hint::before,#par-msg.err::before,#data-msg.err::before{content:"!";flex:none;width:16px;height:16px;margin-top:1px;border-radius:50%;background:var(--red);color:#fff;font-size:11px;font-weight:800;line-height:16px;text-align:center}
+  html[data-theme="dark"] .field-hint::before,html[data-theme="dark"] #par-msg.err::before,html[data-theme="dark"] #data-msg.err::before{color:#071120}
+  /* Containers the script fills on load: a quiet shimmer instead of a blank gap while the page is still parsing. */
+  #kpis:empty,#act-list:empty,#pipe-detail:empty,#realShareRows:empty,#levers:empty{
+    display:block;min-height:180px;border-radius:var(--radius-md);
+    background:linear-gradient(100deg,var(--surface-alt) 38%,var(--surface) 50%,var(--surface-alt) 62%) 0 0/220% 100%;
+    animation:shimmer 1.3s linear infinite;
+  }
+  #kpis:empty{min-height:368px}
+  @keyframes shimmer{to{background-position:-220% 0}}
+
+  /* ---------- Phones ---------- */
+  @media(max-width:680px){
+    .donut-kpis b{white-space:normal}
+    #fc{min-width:640px}   /* keeps axis labels legible; the chart scrolls sideways inside its card */
+    .card{padding:16px}
+    .subhead,.step-banner{margin-top:24px}
+    .step-toolbar{margin-bottom:16px}
+    .kpi{min-height:150px}.kpi .val{font-size:30px}.kpi .q{min-height:0}
+    .case-row{grid-template-columns:76px minmax(0,1fr) auto;row-gap:2px}
+    .case-pct{grid-column:2/-1}
+    .step-nav-btn{padding:10px 14px}
+  }
+
+  /* ---------- Dark theme for what this layer adds ---------- */
+  html[data-theme="dark"] .seg-group button:hover:not([aria-pressed="true"]),html[data-theme="dark"] .view-toggle button:hover:not([aria-pressed="true"]){background:rgba(56,189,248,.1)}
+  html[data-theme="dark"] .empty-state::before,html[data-theme="dark"] .ds-na-block::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2338BDF8' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M2.5 13.5h11M4.5 11V8M8 11V4.5M11.5 11V6.5'/%3E%3C/svg%3E")}
+  html[data-theme="dark"] .step-nav-btn.primary{box-shadow:none}
+  html[data-theme="dark"] .mbtn:not(.pri):not(.danger):hover{background:rgba(56,189,248,.12)}
+  @media print{#kpis:empty,#act-list:empty{animation:none}}
   /* ========== DARK MODE (COMPLETE, ZERO BROKEN INLINE HACKS) ========== */
   html[data-theme="dark"]{
     color-scheme:dark;
@@ -1825,7 +2045,7 @@
     html:not(.sn-collapsed) .levers,html:not(.sn-collapsed) .prods{grid-template-columns:repeat(2,minmax(0,1fr))}
     html:not(.sn-collapsed) .li-strip{grid-template-columns:minmax(0,1fr)}
     html:not(.sn-collapsed) .li-head{flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;border-right:0;padding:0 2px 0 4px;flex-wrap:wrap}
-    html:not(.sn-collapsed) .li-pulse{position:static;margin:0;flex:none}
+    html:not(.sn-collapsed) .li-pulse{position:relative;left:auto;top:auto;margin:0;flex:none}
     html:not(.sn-collapsed) .li-lbl,html:not(.sn-collapsed) .li-wk{padding-left:0}
   }
   @media(min-width:1100px) and (max-width:1244px){
@@ -1836,7 +2056,7 @@
     html.sn-collapsed .levers,html.sn-collapsed .prods{grid-template-columns:repeat(2,minmax(0,1fr))}
     html.sn-collapsed .li-strip{grid-template-columns:minmax(0,1fr)}
     html.sn-collapsed .li-head{flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;border-right:0;padding:0 2px 0 4px;flex-wrap:wrap}
-    html.sn-collapsed .li-pulse{position:static;margin:0;flex:none}
+    html.sn-collapsed .li-pulse{position:relative;left:auto;top:auto;margin:0;flex:none}
     html.sn-collapsed .li-lbl,html.sn-collapsed .li-wk{padding-left:0}
   }
   @media(min-width:1100px) and (max-width:1212px){
@@ -3354,21 +3574,33 @@
   $("modeAll").onclick  = () => { const keep = activeStep; viewMode = "all"; updateStepView(false); activeStep = keep; scrollToPanel(keep); };
 
   // Scroll progress bar + scroll spy
-  addEventListener("scroll", () => {
+  // The bar is scaled with a transform (no layout, no repaint of the header) and written at most once per frame.
+  const scrollProgEl = $("scrollProg");
+  let progPending = false;
+  function paintScrollProg() {
+    progPending = false;
     const max = document.documentElement.scrollHeight - innerHeight;
-    $("scrollProg").style.width = (max > 0 ? Math.min(100, 100 * scrollY / max) : 0) + "%";
+    if (scrollProgEl) scrollProgEl.style.transform = "scaleX(" + (max > 0 ? Math.min(1, scrollY / max) : 0).toFixed(4) + ")";
+  }
+  addEventListener("scroll", () => {
+    if (!progPending) { progPending = true; requestAnimationFrame(paintScrollProg); }
     if (viewMode === "all" && !spyPending) { spyPending = true; requestAnimationFrame(stepSpy); }
   }, {passive:true});
 
   // ========== HEADER: STICKY METRICS, DERIVED LABELS ==========
   // The tools and preferences live in the side menu (31-sidenav.js); the header keeps the notice, the step name and the week control.
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => syncHeaderMetrics());
+  // Runs on every refresh. All sizes are read first and a custom property is written only when its value changed:
+  // writing one on <html> restyles the whole page, and a write between two reads forces an extra layout.
+  const headerNoticeEl = document.querySelector(".header-notice"), headerBarEl = document.querySelector("header.topbar");
+  const hmLast = {};
   function syncHeaderMetrics() {
-    const n = document.querySelector(".header-notice"), root = document.documentElement;
-    root.style.setProperty("--notice-h", (n ? n.offsetHeight : 0) + "px");
-    const tb = document.querySelector("header.topbar");
-    if (tb) root.style.setProperty("--topbar-h", tb.offsetHeight + "px");   // side-menu header matches it (61-sidenav.css)
-    root.style.scrollPaddingTop = (stickyHeaderH() + 12) + "px";
+    const root = document.documentElement;
+    const nh = (headerNoticeEl ? headerNoticeEl.offsetHeight : 0) + "px", th = headerBarEl ? headerBarEl.offsetHeight + "px" : null;
+    if (hmLast.nh !== nh) { hmLast.nh = nh; root.style.setProperty("--notice-h", nh); }
+    if (th && hmLast.th !== th) { hmLast.th = th; root.style.setProperty("--topbar-h", th); }   // side-menu header matches it (61-sidenav.css)
+    const sp = (stickyHeaderH() + 12) + "px";
+    if (hmLast.sp !== sp) { hmLast.sp = sp; root.style.scrollPaddingTop = sp; }
   }
   addEventListener("resize", () => { syncHeaderMetrics(); if (viewMode === "all") stepSpy(); }, {passive:true});
   onRefresh(() => {
@@ -3489,23 +3721,29 @@
       c.setAttribute("role", "button");
       c.setAttribute("aria-label", `${L(m.lbl)}: ${T("view calculation","ver memória de cálculo")}`);
       c.innerHTML = `<div class="top"><span class="lbl">${L(m.lbl)}</span><span class="delta flat" id="d_${m.k}">–</span></div>
-        <div class="val"><span id="v_${m.k}"></span><span class="u">${unitOf(m)}</span></div>
+        <div class="val"><span id="v_${m.k}"></span><span class="u">${esc(unitOf(m))}</span></div>
         <div class="q">${L(m.q)}</div>
-        <svg class="spark" id="s_${m.k}" viewBox="0 0 200 32" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <svg class="spark" id="s_${m.k}" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"></svg>
         <span class="proof-cue">${T("View calculation ↗","Ver cálculo ↗")}</span>`;
       kpiWrap.appendChild(c);
     });
   }
+  // Sparkline: muted dashed path for the whole series, gradient area and solid line up to the selected week.
+  // Strokes do not scale with the tile (the SVG stretches to the card width), so line and end dot keep their shape.
   function spark(m, w) {
     const s = $("s_" + m.k); if (!s) return;
-    s.innerHTML = "";
     const vals = m.series, mn = Math.min(...vals), mx = Math.max(...vals);
     const X = i => 4 + i * (192 / Math.max(1, W - 1));
-    const Y = v => 28 - (v - mn) / ((mx - mn) || 1) * 22;
-    const col = m.hl ? "#7FD8F7" : C.blue;
-    el("path", {d: vals.map((v, i) => `${i ? "L" : "M"}${X(i)},${Y(v)}`).join(" "), fill:"none", stroke: m.hl ? "rgba(255,255,255,.18)" : C.grid, "stroke-width":2}, s);
-    el("path", {d: vals.slice(0, w).map((v, i) => `${i ? "L" : "M"}${X(i)},${Y(v)}`).join(" "), fill:"none", stroke:col, "stroke-width":2.4, "stroke-linecap":"round", "stroke-linejoin":"round"}, s);
-    el("circle", {cx:X(w - 1), cy:Y(vals[w - 1]), r:3.8, fill:col}, s);
+    const Y = v => 30 - (v - mn) / ((mx - mn) || 1) * 23;
+    const col = m.hl ? "#7FD8F7" : C.blue, gid = "sg_" + m.k;
+    const path = arr => arr.map((v, i) => `${i ? "L" : "M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ");
+    const cur = path(vals.slice(0, w)), lx = X(w - 1).toFixed(1), ly = Y(vals[w - 1]).toFixed(1);
+    s.innerHTML = `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity="${m.hl ? .3 : .2}"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>`
+      + `<path d="${path(vals)}" fill="none" stroke="${m.hl ? "rgba(255,255,255,.28)" : C.slate}" stroke-opacity="${m.hl ? 1 : .55}" stroke-width="1.4" stroke-dasharray="2 4" vector-effect="non-scaling-stroke"/>`
+      + (w > 1 ? `<path d="${cur} L${lx},40 L4,40 Z" fill="url(#${gid})"/>` : "")
+      + `<path d="${cur}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`
+      + `<path d="M${lx},${ly}h.01" fill="none" stroke="${m.hl ? "#00205B" : "var(--surface)"}" stroke-width="11" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`
+      + `<path d="M${lx},${ly}h.01" fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`;
   }
   function updateKpis(w) {
     KPIS.forEach(m => {
@@ -3694,9 +3932,14 @@
     const x = g.lv.find(l => !l[2]);
     return x ? L(x) : "";
   }
+  let levSig = "";
   function renderLevers() {
     const box = $("levers"); if (!box) return;
     const v = F[mode], worst = worstStep(v), aiLive = week >= 5, sub = $("lv-sub");
+    // Called on every refresh (each week of the slider): skip when nothing this block shows has changed.
+    const sig = [mode, aiLive, lang].join("|");
+    if (sig === levSig && box.children.length) return;
+    levSig = sig;
     if (sub) sub.textContent = mode === "before"
       ? T("Conversion of each step in the baseline funnel. The step in red has the weakest conversion.","Conversão de cada etapa no funil-base. A etapa em vermelho tem a pior conversão.")
       : T("Conversion of each step with document AI live. The weakest conversion moves to the step in red.","Conversão de cada etapa com a IA de documentos em produção. A pior conversão passa para a etapa em vermelho.");
@@ -3811,64 +4054,101 @@
           ` Os cenários pessimista e otimista tiram ou somam metade do crescimento base (0,5× e 1,5× quando ele é positivo), com decaimento semanal de 93%, de modo que o pessimista nunca fica acima do base nem o otimista abaixo dele. O saldo segue (${bn(SPEND / 1000, 1)} × gasto % × utilização %) × ${PILOT.tenor}d ÷ 365, o prazo do piloto definido em Dados. As projeções ficam limitadas a ${money(fcCeil())}, o saldo com 100% das compras no escopo sob o programa e 100% de utilização${m.capped ? "; esse teto atua na projeção exibida" : ""}. A faixa é uma banda modelada, proporcional ao erro de projeção da semana, e não um intervalo de confiança estatístico.${ccy === "USD" ? ` Valores em USD. ${fxLabel()}.` : ""}`);
 
     fc.replaceChildren();
+    tip.classList.remove("show");
     const count = w + horizon, history = D.bal.slice(0, w);
     const lo = Math.min(...history, ...m.lo);
     const hi = Math.max(...history, ...m.hi, limitBRL * 1.03);
     const step = [25,50,100,200,250,500,1000].find(st => Math.ceil(hi / st) * st - Math.floor(lo / st) * st <= 4 * st) || 2000;
     const bottom = Math.floor(lo / step) * step, top = bottom + 4 * step;
-    const X = idx => 86 + (idx - 1) * 782 / (count - 1);
-    const Y = v => 250 - (v - bottom) * 218 / (top - bottom);
+    // Plot area inside the 900 x 300 viewBox.
+    const PX0 = 80, PX1 = 876, PY0 = 30, PY1 = 250;
+    const X = idx => PX0 + (idx - 1) * (PX1 - PX0) / Math.max(1, count - 1);
+    const Y = v => PY1 - (v - bottom) * (PY1 - PY0) / (top - bottom);
     const line = (pts, attrs) => el("polyline", {points:pts.map(p => p.join(",")).join(" "), fill:"none", ...attrs}, fc);
+    const halo = isDark() ? "#0D1B30" : "#FFFFFF";   // card surface: keeps a label readable where it crosses a line
+
+    // Soft fills: area under the realised balance, and the modeled band fading towards the horizon.
+    const defs = el("defs", {}, fc);
+    const grad = (id, stops, horiz) => { const g = el("linearGradient", {id, x1:0, y1:0, x2:horiz ? 1 : 0, y2:horiz ? 0 : 1}, defs); stops.forEach(([o, c, a]) => el("stop", {offset:o, "stop-color":c, "stop-opacity":a}, g)); };
+    grad("fcAreaG", [[0, C.blue, isDark() ? .26 : .16], [1, C.blue, 0]]);
+    grad("fcBandG", [[0, C.sky, isDark() ? .16 : .14], [1, C.sky, isDark() ? .34 : .30]], true);
 
     for (let i = 0; i <= 4; i++) {
       const v = bottom + (top - bottom) * i / 4;
-      line([[86, Y(v)], [868, Y(v)]], {stroke:C.grid});
-      el("text", {x:78, y:Y(v) + 4, "text-anchor":"end", fill:C.muted, "font-size":11.5}, fc).textContent = money(v);
+      line([[PX0, Y(v)], [PX1, Y(v)]], {stroke:C.grid, "stroke-width":1, ...(i ? {"stroke-dasharray":"2 5"} : {})});
+      el("text", {x:PX0 - 10, y:Y(v) + 4, "text-anchor":"end", fill:C.subtle, "font-size":11, "font-weight":500}, fc).textContent = money(v);
     }
     const ticks = [1, count];
     for (let n2 = 1; n2 < count - 1; n2 += Math.ceil(count / 7)) ticks.push(n2);
-    for (const n2 of new Set(ticks)) el("text", {x:X(n2), y:276, "text-anchor":"middle", fill:C.muted, "font-size":11.5, "font-weight": n2 === w ? 700 : 500}, fc).textContent = WL() + n2;
+    for (const n2 of new Set(ticks)) el("text", {x:X(n2), y:PY1 + 22, "text-anchor":"middle", fill:n2 === w ? C.navy : C.subtle, "font-size":11, "font-weight": n2 === w ? 700 : 500}, fc).textContent = WL() + n2;
 
     if (!SRCINFO && w >= 5) {
-      line([[X(5), 34], [X(5), 250]], {stroke:"#8ECAE6", "stroke-dasharray":"3 4"});
-      el("text", {x:X(5), y:24, "text-anchor":"middle", fill:C.blue, "font-size":10.5, "font-weight":700}, fc).textContent = T("W5 · Doc AI live","S5 · IA Docs");
+      line([[X(5), PY0 + 6], [X(5), PY1]], {stroke:C.sky, "stroke-opacity":.7, "stroke-dasharray":"2 4"});
+      el("text", {x:X(5), y:PY0 - 4, "text-anchor":"middle", fill:C.blue, "font-size":10.5, "font-weight":700}, fc).textContent = T("W5 · Doc AI live","S5 · IA Docs");
     }
     const edge = sign => values.map((v, k) => [X(w + k), Y(sign > 0 ? m.hi[k] : sign < 0 ? m.lo[k] : v)]);
-    el("polygon", {points:[...edge(1), ...edge(-1).reverse()].map(p => p.join(",")).join(" "), fill:"rgba(0,189,242,.20)"}, fc);
-    line(history.map((v, i) => [X(i + 1), Y(v)]), {stroke:C.navy, "stroke-width":3, "stroke-linecap":"round", "stroke-linejoin":"round"});
-    line(edge(0), {stroke:C.blue, "stroke-dasharray":"6 4", "stroke-width":3, "stroke-linecap":"round"});
-    // Approved limit line
+    el("polygon", {points:[...edge(1), ...edge(-1).reverse()].map(p => p.join(",")).join(" "), fill:"url(#fcBandG)"}, fc);
+    const histPts = history.map((v, i) => [X(i + 1), Y(v)]);
+    if (histPts.length > 1) el("polygon", {points:[...histPts, [X(w), PY1], [X(1), PY1]].map(p => p.join(",")).join(" "), fill:"url(#fcAreaG)"}, fc);
+    line(histPts, {stroke:C.navy, "stroke-width":2.6, "stroke-linecap":"round", "stroke-linejoin":"round"});
+    line(edge(0), {stroke:C.blue, "stroke-dasharray":"5 5", "stroke-width":2.6, "stroke-linecap":"round", "stroke-linejoin":"round"});
+    // Approved limit line (label on the left, where the history sits low, so it never collides with the end value)
     if (limitBRL >= bottom && limitBRL <= top) {
-      line([[86, Y(limitBRL)], [868, Y(limitBRL)]], {stroke:C.red, "stroke-dasharray":"8 5", "stroke-width":1.8});
-      el("text", {x:864, y:Math.max(18, Y(limitBRL) - 6), "text-anchor":"end", fill:C.red, "font-size":11.5, "font-weight":700}, fc).textContent = T("Approved limit ","Limite aprovado ") + money(limitBRL);
+      line([[PX0, Y(limitBRL)], [PX1, Y(limitBRL)]], {stroke:C.red, "stroke-dasharray":"7 5", "stroke-width":1.6});
+      el("text", {x:PX0 + 8, y:Math.max(PY0 - 6, Y(limitBRL) - 7), "text-anchor":"start", fill:C.red, "font-size":11, "font-weight":700, stroke:halo, "stroke-width":4, "paint-order":"stroke", "stroke-linejoin":"round"}, fc).textContent = T("Approved limit ","Limite aprovado ") + money(limitBRL);
     }
-    line([[X(w), 32], [X(w), 250]], {stroke:C.subtle, "stroke-dasharray":"3 4"});
-    el("circle", {cx:X(w), cy:Y(last), r:5, fill:C.navy, stroke:"#fff", "stroke-width":2}, fc);
+    line([[X(w), PY0 + 6], [X(w), PY1]], {stroke:C.subtle, "stroke-opacity":.6, "stroke-dasharray":"2 4"});
+    el("circle", {cx:X(w), cy:Y(last), r:5, fill:C.navy, stroke:halo, "stroke-width":2.5}, fc);
+    // Value at the end of the horizon, written next to the last point.
+    const endX = X(count), endY = Y(end);
+    // End label sits above the point unless the top edge or the limit line is in the way
+    const limY = (limitBRL >= bottom && limitBRL <= top) ? Y(limitBRL) : -99;
+    const endLabBelow = endY - PY0 < 26 || (limY > endY - 28 && limY < endY - 2);
+    el("circle", {cx:endX, cy:endY, r:4, fill:halo, stroke:C.blue, "stroke-width":2.4}, fc);
+    el("text", {x:endX - 8, y:endY + (endLabBelow ? 21 : -11), "text-anchor":"end", fill:C.navy, "font-size":12, "font-weight":700, stroke:halo, "stroke-width":4, "paint-order":"stroke", "stroke-linejoin":"round"}, fc).textContent = money(end);
 
+    // Hover or tap anywhere on the plot: a guide snaps to the nearest week and the tooltip reads that week.
     const allPts = [
       ...history.map((v, i) => ({wk:i + 1, v, isFc:false})),
       ...values.slice(1).map((v, i) => ({wk:w + i + 1, v, isFc:true, lo:m.lo[i + 1], hi:m.hi[i + 1]}))
     ];
-    allPts.forEach(pt => {
+    const guide = el("line", {x1:0, x2:0, y1:PY0 + 6, y2:PY1, stroke:C.blue, "stroke-width":1, "stroke-opacity":.55, visibility:"hidden"}, fc);
+    const mark = el("circle", {r:5.5, fill:C.blue, stroke:halo, "stroke-width":2.5, visibility:"hidden"}, fc);
+    const hit = el("rect", {x:PX0 - 12, y:PY0 - 10, width:PX1 - PX0 + 24, height:PY1 - PY0 + 20, fill:"transparent", style:"cursor:crosshair"}, fc);
+    const showTip = ev => {
+      const rect = fc.getBoundingClientRect(), wrapRect = fc.parentElement.getBoundingClientRect();
+      if (!rect.width) return;
+      const sx = (ev.clientX - rect.left) / rect.width * 900;
+      const pt = allPts[Math.max(0, Math.min(allPts.length - 1, Math.round((sx - PX0) / (PX1 - PX0) * (count - 1))))];
       const cx = X(pt.wk), cy = Y(pt.v);
-      const hit = el("circle", {cx, cy, r:11, fill:"transparent", style:"cursor:pointer"}, fc);
-      const showTip = () => {
-        const rect = fc.getBoundingClientRect(), wrapRect = fc.parentElement.getBoundingClientRect();
-        const px = (cx / 900) * rect.width + (rect.left - wrapRect.left), py = (cy / 300) * rect.height + (rect.top - wrapRect.top);
-        tip.style.left = Math.max(95, Math.min(wrapRect.width - 95, px)) + "px";
-        tip.style.top = Math.max(44, py - 6) + "px";
-        tip.innerHTML = `<strong>${WL()}${pt.wk} · ${pt.isFc ? L(I18N["lg.fc"]) : L(I18N["lg.actual"])}</strong><br>${money(pt.v)}`
-          + (pt.isFc ? `<br><span style="color:#9FD8F5">${money(pt.lo)} – ${money(pt.hi)}</span>` : "");
-        tip.classList.add("show");
-      };
-      hit.addEventListener("mouseenter", showTip); hit.addEventListener("click", showTip);
-      hit.addEventListener("mouseleave", () => tip.classList.remove("show"));
-    });
+      guide.setAttribute("x1", cx); guide.setAttribute("x2", cx); guide.setAttribute("visibility", "visible");
+      mark.setAttribute("cx", cx); mark.setAttribute("cy", cy); mark.setAttribute("fill", pt.isFc ? C.blue : C.navy); mark.setAttribute("visibility", "visible");
+      const px = (cx / 900) * rect.width + (rect.left - wrapRect.left) + fc.parentElement.scrollLeft, py = (cy / 300) * rect.height + (rect.top - wrapRect.top);
+      tip.style.left = Math.max(95, Math.min(fc.parentElement.scrollWidth - 95, px)) + "px";
+      tip.innerHTML = `<span class="ct-k">${WL()}${pt.wk} · ${pt.isFc ? L(I18N["lg.fc"]) : L(I18N["lg.actual"])}</span><strong>${money(pt.v)}</strong>`
+        + (pt.isFc ? `<span class="ct-r">${money(pt.lo)} – ${money(pt.hi)}</span>` : "")
+        + (limitBRL > 0 ? `<span class="ct-r">${nf(100 * pt.v / limitBRL, 0)}% ${T("of the limit","do limite")}</span>` : "");
+      const th = tip.offsetHeight || 84;   // the tip hangs above its anchor (translate -100%); flip it below when the top edge is too close
+      tip.style.top = (py - 12 >= th + 8 ? py - 12 : py + 16 + th) + "px";
+      tip.classList.add("show");
+    };
+    const hideTip = () => { tip.classList.remove("show"); guide.setAttribute("visibility", "hidden"); mark.setAttribute("visibility", "hidden"); };
+    hit.addEventListener("pointermove", showTip); hit.addEventListener("pointerdown", showTip);
+    hit.addEventListener("pointerleave", hideTip);
     fc.setAttribute("aria-label", $("outlook").textContent);
 
+    // Closing balance of each scenario on one scale that also holds the approved limit (the red mark), so the
+    // distance of every bar to the limit can be read at a glance. Percentages are closing balance / limit.
     const ends = Object.keys(multipliers).map(name => [name, projection(w, horizon, name)[horizon]]);
-    const maxEnd = Math.max(...ends.map(([, val]) => val)) || 1;
-    $("case-bars").innerHTML = ends.map(([name, val]) => `<div class="case-row"><span>${scName(name)}</span><div class="track"><div class="case-fill ${name === scenario ? "selected" : ""}" style="width:${100 * val / maxEnd}%"></div></div><b>${money(val)}</b></div>`).join("");
+    const maxEnd = Math.max(...ends.map(([, val]) => val), limitBRL) || 1;
+    const limPos = Math.min(99.4, 100 * limitBRL / maxEnd);
+    $("case-bars").innerHTML = ends.map(([name, val]) => {
+      const pct = limitBRL > 0 ? 100 * val / limitBRL : 0;
+      return `<div class="case-row${name === scenario ? " selected" : ""}"><span>${scName(name)}</span><div class="track case-track"><div class="case-fill ${name === scenario ? "selected" : ""}" style="width:${100 * val / maxEnd}%"></div><i class="case-lim" style="left:${limPos}%"></i></div><b>${money(val)}</b><small class="case-pct${pct > 100 ? " over" : ""}">${nf(pct, 0)}% ${T("of limit","do limite")}</small></div>`;
+    }).join("")
+      + `<p class="case-foot"><i class="case-lim-key"></i>${T(`Red mark: approved limit of ${money(limitBRL)}.`,`Marca vermelha: limite aprovado de ${money(limitBRL)}.`)} ${end <= limitBRL
+        ? T(`The ${scName(scenario).toLowerCase()} case closes ${money(limitBRL - end)} below it.`,`O cenário ${scName(scenario).toLowerCase()} fecha ${money(limitBRL - end)} abaixo dele.`)
+        : T(`The ${scName(scenario).toLowerCase()} case closes ${money(end - limitBRL)} above it.`,`O cenário ${scName(scenario).toLowerCase()} fecha ${money(end - limitBRL)} acima dele.`)}</p>`;
     $("forecast-rows").innerHTML = values.slice(1).map((v, i) => `<tr><th>${WL()}${w + i + 1}</th><td>${money(v)}</td><td>${money(m.lo[i + 1])}</td><td>${money(m.hi[i + 1])}</td></tr>`).join("");
 
     const scores = backtest(w), chart = $("accuracy");
@@ -3878,21 +4158,22 @@
       ? T(`Average absolute percentage error over ${sN} completed forecast${sN === 1 ? "" : "s"}: ${avg("model")}% for the base model vs. ${avg("flat")}% for carrying prior balance forward.`,`Erro percentual absoluto médio em ${sN} projeç${sN === 1 ? "ão apurada" : "ões apuradas"}: ${avg("model")}% no modelo base contra ${avg("flat")}% ao repetir o saldo anterior.`)
       : w > 1 ? T("No forecast can be scored yet: the balances so far round to zero.", "Nenhuma projeção pode ser avaliada ainda: os saldos até aqui arredondam para zero.") : T("The first forecast can be scored when week 2 closes.","A primeira projeção pode ser avaliada quando a semana 2 fechar.");
     chart.style.display = sN ? "block" : "none";
+    $("accuracy-note").classList.toggle("empty-state", !sN);   // nothing to plot yet: the note stands in for the chart
     if (!sN) return;
     const limit = Math.max(1, ...scores.map(r => Math.ceil(Math.max(r.model, r.flat))));
     [0, limit / 2, limit].forEach(t => {
       const y = 108 - 84 * t / limit;
-      el("line", {x1:38, x2:478, y1:y, y2:y, stroke:C.grid}, chart);
-      el("text", {x:33, y:y + 4, "text-anchor":"end", "font-size":10.5, fill:C.muted}, chart).textContent = nf(t, t % 1 ? 1 : 0) + "%";
+      el("line", {x1:38, x2:478, y1:y, y2:y, stroke:C.grid, ...(t ? {"stroke-dasharray":"2 5"} : {})}, chart);
+      el("text", {x:33, y:y + 4, "text-anchor":"end", "font-size":10.5, fill:C.subtle}, chart).textContent = nf(t, t % 1 ? 1 : 0) + "%";
     });
     scores.forEach((r, i) => {
       const group = 432 / sN, cx = 42 + (i + 0.5) * group, width = Math.min(13, group / 3);
       for (const [key, x, color] of [["model", cx - width - 1, C.blue], ["flat", cx + 1, C.slate]]) {
         const h = r[key] / limit * 84;
-        const bar = el("rect", {x, y:108 - h, width, height:h, rx:2, fill:color}, chart);
+        const bar = el("rect", {x, y:108 - h, width, height:Math.max(h, 0.8), rx:Math.min(3, width / 2), fill:color}, chart);
         el("title", {}, bar).textContent = WL() + r.week + " · " + (key === "model" ? L(I18N["lg.model"]) : L(I18N["lg.prior"])) + " · " + nf(r[key], 2) + "%";
       }
-      el("text", {x:cx, y:125, "text-anchor":"middle", "font-size":10.5, fill:C.muted}, chart).textContent = WL() + r.week;
+      el("text", {x:cx, y:125, "text-anchor":"middle", "font-size":10.5, fill:C.subtle}, chart).textContent = WL() + r.week;
     });
   }
   $("scenarioGroup").addEventListener("click", e => {
@@ -4217,6 +4498,7 @@
   }
   Object.assign(I18N, DS().i18n);
 
+  let dsBarHtml = "";
   function renderDatasetBars() {
     const d = DS();
     const btn = k => { const x = DATASETS[k]; return `<button type="button" data-ds="${k}" aria-pressed="${k === datasetId}">${esc(L(x.name))}<small>${esc(L(x.tag))}</small></button>`; };
@@ -4229,6 +4511,9 @@
         <li><span class="ds-chip pub">${T("Public · not checked live","Público · sem checagem ao vivo")}</span>${T("Company revenues are public figures quoted from the linked sources; this page does not verify them live.","As receitas das empresas são números públicos citados das fontes indicadas; esta página não os verifica ao vivo.")}</li>
         <li><span class="ds-chip fab">${esc(L(I18N["ds.fab.tag"]))}</span>${T("Everything in the market module (funder amounts, shares, price bands, ratings and signals) is fabricated for the prototype, in both datasets.","Tudo no módulo de mercado (valores por financiador, shares, faixas de preço, ratings e sinais) é fabricado para o protótipo, nos dois conjuntos.")}</li>
       </ul>`;
+    // Called on every refresh: the bars are only rewritten when their text actually changes.
+    if (html === dsBarHtml) return;
+    dsBarHtml = html;
     document.querySelectorAll("[data-ds-bar]").forEach(e => { e.innerHTML = html; });
   }
   document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-ds]"); if (b && b.closest("[data-ds-bar]")) setDataset(b.dataset.ds); });
@@ -4306,7 +4591,7 @@
     const colLbl = {addr:I18N["pp.th.addr"], cov:I18N["pp.th.cov"], adh:I18N["pp.th.adh"], util:I18N["pp.th.util"]};
     const inp = (i, k, step, max) => `<input type="number" data-i="${i}" data-k="${k}" value="${P[i][k]}" min="0" max="${max}" step="${step}" aria-label="${esc(ANCHORS[i].name)} · ${esc(colLbl[k] ? L(colLbl[k]) : k)}">`;
     // Quarter line only where the dataset has a quarterly figure; otherwise name the reporting period.
-    const revSub = a => (a.q3 != null ? `${L(d.revTag)}: ${revFmt(a, "q3", a.q3 < 15 ? 3 : 1)}` : T(`full year ${L(d.revTag)}`,`ano de ${L(d.revTag)}`)) + (revRep(a) != null ? T(" · as reported"," · divulgado") : "");
+    const revSub = a => (a.q3 != null ? `${L(d.revTag)}: ${revFmt(a, "q3", 1)}` : T(`full year ${L(d.revTag)}`,`ano de ${L(d.revTag)}`)) + (revRep(a) != null ? T(" · as reported"," · divulgado") : "");
     const asRep = T("Revenue notes on the cards quote the figures as reported by each company (BRL unless stated). In the USD view, companies that report in US dollars (JBS, Embraer) show the dollars they published (Embraer: midpoint of its 2026 guidance); everything else, including eligible purchases and the model values, is converted from reais at the rate entered in the panel.","As notas de receita das fichas citam os valores como divulgados por cada empresa (em reais, salvo indicação). Na visão em dólar, as empresas que divulgam em dólar (JBS, Embraer) aparecem com os dólares publicados (Embraer: ponto médio do guidance de 2026); todo o resto, inclusive compras elegíveis e valores do modelo, é convertido de reais pela taxa informada no painel.");
     $("pipe-rows").innerHTML = ANCHORS.map((a, i) => `<tr>
       <td><div class="anchor-cell">${brandBadge(a.id)}<span><b>${a.name}</b><small>${L(a.sector)}</small></span></div></td>
@@ -4348,9 +4633,8 @@
     $("pt-elig").textContent = bn(t.elig, 1); $("pt-revenue").textContent = bn(revTotal(), 0);
     $("pt-flow").textContent = bn(t.flow); $("pt-bal").textContent = money(t.bal); $("pt-rev").textContent = moneyD(t.rev);
     if (cascade) {
-      recomputeBook();
-      updateKpis(week);
-      forecast(week);
+      // The pilot book (KPI tiles, forecast) reads PILOT, not the pipeline hypotheses G and P, so it is not redrawn here.
+      // The market module and the action plan do read the pipeline, so they follow every edit.
       if (G.spread !== lastPipeSpread) mktSpread = Math.min(2.6, Math.max(0.6, G.spread));
       renderMarket();
       plan(week);
@@ -4571,11 +4855,11 @@
     $("realShareRows").innerHTML = html;
 
     const pCiti = totBase ? wCiti / totBase * 100 : 0, pPeers = totBase ? wPeers / totBase * 100 : 0, pFidc = totBase ? wFidc / totBase * 100 : 0, pFree = totBase ? wFree / totBase * 100 : 0;
-    const r = 68, circ = 2 * Math.PI * r, sum = Math.max(100, pCiti + pPeers + pFidc + pFree);
+    const r = 72, circ = 2 * Math.PI * r, sum = Math.max(100, pCiti + pPeers + pFidc + pFree);
     const segs = [{pct:pCiti, col:isDark() ? "#0369A1" : "#00205B"}, {pct:pPeers, col:isDark() ? "#2563EB" : "#056DAE"}, {pct:pFidc, col:"#D97706"}, {pct:pFree, col:C.freeSeg}];
     let offset = 0;
-    const arcs = segs.map(sg => { const len = circ * sg.pct / sum, c = `<circle cx="90" cy="90" r="${r}" fill="none" stroke="${sg.col}" stroke-width="20" stroke-dasharray="${len.toFixed(2)} ${(circ - len).toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 90 90)"/>`; offset += len; return c; }).join("");
-    $("realShareRing").innerHTML = arcs + `<text x="90" y="86" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-size="28" font-weight="800" fill="${C.navy}">${nf(pCiti, 1)}%</text><text x="90" y="106" text-anchor="middle" font-size="11.5" font-weight="600" fill="${C.muted}">${T("Citi share","Share do Citi")}</text><text x="90" y="122" text-anchor="middle" font-size="10.5" fill="${C.subtle}">${bn(totElig, 1)} ${T("eligible","elegíveis")}</text>`;
+    const arcs = segs.map(sg => { const len = circ * sg.pct / sum, c = `<circle cx="90" cy="90" r="${r}" fill="none" stroke="${sg.col}" stroke-width="15" stroke-dasharray="${len.toFixed(2)} ${(circ - len).toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 90 90)"/>`; offset += len; return c; }).join("");
+    $("realShareRing").innerHTML = arcs + `<text x="90" y="86" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-size="28" font-weight="800" fill="${C.navy}">${nf(pCiti, 1)}%</text><text x="90" y="106" text-anchor="middle" font-size="11.5" font-weight="600" fill="${C.muted}">${T("Citi share","Share do Citi")}</text><text x="90" y="122" text-anchor="middle" font-size="10.5" fill="${C.subtle}"><title>${T("Eligible payables of the anchors shown","Contas a pagar elegível das âncoras exibidas")}</title>${T("base","base")} ${bn(totElig, 1)}</text>`;
     $("realShareKpis").innerHTML = `<div><span><i style="background:var(--bar-citi)"></i>Citi</span><b>${bn(wCiti, 2)} (${nf(pCiti, 1)}%)</b></div><div><span><i style="background:var(--bar-peers)"></i>${T("Peer banks","Bancos pares")}</span><b>${bn(wPeers, 2)} (${nf(pPeers, 1)}%)</b></div><div><span><i style="background:var(--bar-fidc)"></i>FIDCs</span><b>${bn(wFidc, 2)} (${nf(pFidc, 1)}%)</b></div><div><span><i style="background:var(--bar-free)"></i>${T("Open headroom","Espaço livre")}</span><b style="color:var(--green)">${bn(wFree, 2)} (${nf(pFree, 1)}%)</b></div>`;
 
     if ($("shareRes")) $("shareRes").innerHTML = `<span class="fab-tag">${L(I18N["ds.fab.tag"])}</span> ` + (pilot
@@ -8122,18 +8406,20 @@ Format: plain text, at most about 150 words, short paragraphs or "- " bullets, n
     document.querySelectorAll(".sn-sec").forEach(a => {
       const el = $(a.dataset.snSec), h = el && snHeading(el);
       const t = h ? h.textContent.replace(/\s+/g, " ").trim() : "";
-      a.querySelector(".sn-lbl").textContent = t; a.title = t;
+      if (a._snT === t) return;   // called on every refresh: untouched labels cost no layout
+      a._snT = t; a.querySelector(".sn-lbl").textContent = t; a.title = t;
     });
-    const c = $("snCollapseLbl"); if (c) c.textContent = L(I18N[snCollapsed ? "sn.expand" : "sn.collapse"]);
+    const c = $("snCollapseLbl"), ct = L(I18N[snCollapsed ? "sn.expand" : "sn.collapse"]); if (c && c.textContent !== ct) c.textContent = ct;
   }
 
   // ---------- Current step: accordion in the menu + name in the header ----------
   function syncSideNav() {
-    document.querySelectorAll("[data-sn-secs]").forEach(ul => { ul.hidden = +ul.dataset.snSecs !== activeStep; });
+    document.querySelectorAll("[data-sn-secs]").forEach(ul => { const h = +ul.dataset.snSecs !== activeStep; if (ul.hidden !== h) ul.hidden = h; });
     const n = activeStep, sn = $("tbStepName"), so = $("tbStepOf"), sb = $("tbStepN");
-    if (sn) sn.textContent = L(I18N["st." + n + ".short"]);
-    if (so) so.textContent = viewMode === "all" ? L(I18N["vm.all"]) + " · " + L(I18N["sp." + n]) : L(I18N["sp." + n]);
-    if (sb) sb.textContent = n;
+    const put = (e, t) => { if (e && e.textContent !== String(t)) e.textContent = t; };
+    put(sn, L(I18N["st." + n + ".short"]));
+    put(so, viewMode === "all" ? L(I18N["vm.all"]) + " · " + L(I18N["sp." + n]) : L(I18N["sp." + n]));
+    put(sb, n);
     snSpy();
   }
   stepViewHook = syncSideNav;

@@ -274,6 +274,7 @@
   }
   Object.assign(I18N, DS().i18n);
 
+  let dsBarHtml = "";
   function renderDatasetBars() {
     const d = DS();
     const btn = k => { const x = DATASETS[k]; return `<button type="button" data-ds="${k}" aria-pressed="${k === datasetId}">${esc(L(x.name))}<small>${esc(L(x.tag))}</small></button>`; };
@@ -286,6 +287,9 @@
         <li><span class="ds-chip pub">${T("Public · not checked live","Público · sem checagem ao vivo")}</span>${T("Company revenues are public figures quoted from the linked sources; this page does not verify them live.","As receitas das empresas são números públicos citados das fontes indicadas; esta página não os verifica ao vivo.")}</li>
         <li><span class="ds-chip fab">${esc(L(I18N["ds.fab.tag"]))}</span>${T("Everything in the market module (funder amounts, shares, price bands, ratings and signals) is fabricated for the prototype, in both datasets.","Tudo no módulo de mercado (valores por financiador, shares, faixas de preço, ratings e sinais) é fabricado para o protótipo, nos dois conjuntos.")}</li>
       </ul>`;
+    // Called on every refresh: the bars are only rewritten when their text actually changes.
+    if (html === dsBarHtml) return;
+    dsBarHtml = html;
     document.querySelectorAll("[data-ds-bar]").forEach(e => { e.innerHTML = html; });
   }
   document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-ds]"); if (b && b.closest("[data-ds-bar]")) setDataset(b.dataset.ds); });
