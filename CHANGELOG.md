@@ -1,5 +1,12 @@
 # Changelog
 
+## 14.5.0 (2026-11-26): clean layout on phone and desktop
+- New last CSS layer `src/css/93-clean.css` (screen only): quieter borders and surfaces, no glows, no uppercase letter-spaced labels on the page, metadata as plain text instead of pills.
+- The owner's notice moved from a full-width banner above the header to one quiet line under the title, next to the "Dados ilustrativos" badge (same text).
+- Step cards show number, cadence and title; the description and "Quem usa" are dropped from the cards (the role and cadence stay in the line below them). The "Etapa n de 4" pill above each step title is hidden, since the top bar already shows it. The hero illustration is hidden.
+- Phones: one-row top bar (menu, step, week buttons; the week slider is hidden, play and arrows cover it), step cards 2 x 2, KPI tiles 2 per row with the question and "Ver cálculo" hidden (the whole tile still opens the calculation), action-plan checkbox on the title row.
+- Highlighted KPI tile is outlined instead of filled navy.
+
 ## 14.4.0 (2026-11-24): measured forecast range, Embraer base at the panel rate
 
 - Forecast range (Step 2) is now built on the error the model actually made: root mean square of its past one-week-ahead errors (the backtest), with the reported forecast-error KPI / 2.2 counted as one more observation so weeks 1 and 2 still have a range; it grows with the square root of the weeks ahead. Before, the range was the reported KPI / 2.2, which was 2 to 3 times wider than the measured error in the early weeks and never missed a past projection (66 of 66). The measured range is 18% narrower in week 12 (±1.16% instead of ±1.41% for one week ahead; 13-week range R$ 608-661 m instead of R$ 602-667 m, pre-approval ask R$ 11 m instead of R$ 17 m; in week 4 the range is R$ 527-603 m instead of R$ 492-638 m) and contained 57 of 66 past projections (86%). The page prints the width and that hit rate next to the chart.

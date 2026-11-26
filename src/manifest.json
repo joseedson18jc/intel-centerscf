@@ -33,7 +33,8 @@
     "css/81-fintech.css",
     "css/90-dark.css",
     "css/91-print.css",
-    "css/92-responsive.css"
+    "css/92-responsive.css",
+    "css/93-clean.css"
   ],
   "body": [
     "html/05-sidenav.html",
