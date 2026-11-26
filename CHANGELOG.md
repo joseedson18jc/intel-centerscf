@@ -1,5 +1,15 @@
 # Changelog
 
+## 15.0.0 (2026-11-26): one page per step
+
+Structure taken from the owner's reference redesign, on the neutral system layer (`94-system.css`). No function, number or data flow was removed or changed.
+
+- Page head (`html/15-hero.html`, `css/95-shell.css`): the page title is now the title of the current step, with the step question and who uses it under it; the step-by-step / full-view switch sits on the right of the head. In the full view the title goes back to "Intel Center - SCF Team".
+- Top bar: three quick actions on the right (assistant, Export, theme). Each one triggers the side-menu control it mirrors, so there is one code path per action.
+- Steps 2, 3 and 4 open with a row of four numbers (`js/32-v15.js`), read from the same functions as the cards below (`fcModel`, `totals`, `engBands`, `engShareTotals`, `engSigGroups`), so they follow every control on the page. Step 1 now opens with its eight indicators, and the action plan comes right after them.
+- Side menu: new "Sinal da semana" card with the most urgent live reading of the current step; clicking it opens that reading's calculation. Menu sections of step 1 follow the new order.
+- On screens of 1100px and wider the four step tabs are hidden (the side menu is the navigation); they stay on tablets and phones, where the menu is a drawer. The step banner that repeated the title is visually hidden in step mode and kept in the full view.
+
 ## 14.5.0 (2026-11-26): clean layout on phone and desktop
 - New last CSS layer `src/css/93-clean.css` (screen only): quieter borders and surfaces, no glows, no uppercase letter-spaced labels on the page, metadata as plain text instead of pills.
 - The owner's notice moved from a full-width banner above the header to one quiet line under the title, next to the "Dados ilustrativos" badge (same text).

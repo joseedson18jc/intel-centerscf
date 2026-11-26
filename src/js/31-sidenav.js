@@ -21,7 +21,7 @@
   const snRoot = document.documentElement;
   // Sections of each step: the id of the card or sub-heading it jumps to. The label is read from that heading.
   const SN_SECTIONS = {
-    1:["sec-actions","sec-kpis","sec-brief","sec-adoption","sec-levers","sec-friction"],
+    1:["sec-kpis","sec-actions","sec-brief","sec-adoption","sec-levers","sec-friction"],
     2:["sec-forecast","sec-cases","sec-accuracy"],
     3:["sec-pipeline","sec-anchors"],
     4:["sec-arch","sec-mkt-1","sec-mkt-2","sec-mkt-3","sec-mkt-4","products-ref"]

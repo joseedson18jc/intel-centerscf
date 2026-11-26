@@ -20,6 +20,19 @@
         <div class="slider-ticks"><span id="tk-start">S1</span><span class="milestone" id="docAiTick" data-i18n="wk.docai">S5 · IA Docs</span><span id="tk-end">S12</span></div>
       </div>
     </div>
+    <!-- Quick actions (js/32-v15.js): each one triggers the matching side-menu control -->
+    <div class="tb-actions">
+      <button class="tb-act" id="tbAsk" type="button" aria-label="Assistente" title="Assistente (/)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+      </button>
+      <button class="tb-act tb-export" id="tbExport" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></svg>
+        <span id="tbExportLbl">Exportar</span>
+      </button>
+      <button class="tb-act" id="tbTheme" type="button" aria-label="Tema" title="Tema">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
+      </button>
+    </div>
     <div id="scrollProg" aria-hidden="true"></div>
   </div>
 </header>

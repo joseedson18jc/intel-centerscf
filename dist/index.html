@@ -2813,7 +2813,85 @@
     html:root *,html:root *::before,html:root *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   }
   }
-  /* ========== v15 SHELL: top bar, side menu, hero, journey cards, step toolbar, footer. Built on 94-system.css (see DESIGN.md); screen rules go inside @media screen. ========== */
+/* ========== v15 SHELL: page structure ==========
+   One page per step. The top bar carries where you are, the week and three quick actions; the page opens with the
+   step title and its question, then a row of four numbers, then the detail cards. The four step tabs stay only where
+   the side menu is a drawer (below 1100px); on wide screens the menu is the navigation. */
+@media screen{
+  /* ---- top bar: quick actions on the right ---- */
+  html:root .tb-actions{display:flex;align-items:center;gap:var(--sp-1);margin-left:auto;flex:none}
+  html:root .tb-act{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);height:var(--ctl-h);min-width:var(--ctl-h);padding:0;
+    border:1px solid transparent;border-radius:var(--r-md);background:transparent;color:var(--text-2);font:inherit;font-size:var(--fs-small);font-weight:var(--fw-medium);cursor:pointer;
+    transition:background .12s ease,color .12s ease,border-color .12s ease}
+  html:root .tb-act:hover{background:var(--surface-3);color:var(--text-1)}
+  html:root .tb-act:focus-visible{outline:var(--focus);outline-offset:2px}
+  html:root .tb-act.tb-export{padding:0 var(--sp-3);background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+  html:root .tb-act.tb-export:hover{background:var(--accent);filter:brightness(1.08);color:var(--on-accent)}
+  html:root .tb-act[aria-pressed="true"]{color:var(--text-1)}
+  @media(max-width:1099.98px){
+    html:root .tb-act{height:40px;min-width:40px}
+    html:root .tb-act.tb-export{padding:0;width:40px;background:transparent;border-color:transparent;color:var(--text-2)}
+    html:root .tb-act.tb-export span{display:none}
+  }
+  @media(max-width:479.98px){html:root #tbTheme,html:root #tbExport{display:none}}
+
+  /* ---- side menu: signal of the week ---- */
+  html:root .sn-signal{display:flex;flex-direction:column;gap:var(--sp-1);width:calc(100% - 2*var(--sp-2));margin:var(--sp-2) var(--sp-2) var(--sp-3);padding:var(--sp-3);text-align:left;
+    background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-md);color:var(--text-2);font:inherit;cursor:pointer;transition:border-color .12s ease}
+  html:root .sn-signal[hidden]{display:none}
+  html:root .sn-signal:hover{border-color:var(--hair-strong)}
+  html:root .sn-signal:focus-visible{outline:var(--focus);outline-offset:2px}
+  html:root .sn-signal-h{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-micro);font-weight:var(--fw-medium);color:var(--text-3)}
+  html:root .sn-signal-h i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  html:root .sn-signal[data-tone="good"] .sn-signal-h i{background:var(--green)}
+  html:root .sn-signal[data-tone="warn"] .sn-signal-h i{background:var(--amber)}
+  html:root .sn-signal[data-tone="bad"] .sn-signal-h i{background:var(--red)}
+  html:root .sn-signal-t{font-size:var(--fs-micro);line-height:var(--lh-snug);color:var(--text-1);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  @media(min-width:1100px){html.sn-collapsed:root .sn-signal{display:none}}
+
+  /* ---- page head: title and question on the left, view switch on the right ---- */
+  html:root .hero{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:var(--sp-3) var(--sp-5);margin-bottom:var(--sp-5)}
+  html:root .hero>div:first-child{flex:1 1 420px;min-width:0}
+  html:root .hero .hero-art{display:none}
+  html:root .hero .view-toggle{flex:none}
+  html:root .hero .kick{display:block;margin-bottom:var(--sp-1)}
+  html:root .hero h1{margin-top:0}
+  html:root .hero .step-context{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:var(--sp-1);margin-top:var(--sp-2);max-width:76ch}
+  html:root .hero .step-context strong{display:block;order:1;font-family:var(--body);font-size:var(--fs-body);font-weight:var(--fw-regular);line-height:var(--lh-body);color:var(--text-2);letter-spacing:0}
+  html:root .hero .step-context .role-chip{order:2;margin:0;font-size:var(--fs-small);color:var(--text-3)}
+  html[data-view="step"]:root .hero .sub{display:none}
+  html[data-view="all"]:root .hero .step-context{display:none}
+
+  /* step tabs: only where the side menu is not on screen */
+  html:root .journey-bar{margin:0 0 var(--sp-5)}
+  @media(min-width:1100px){html:root .journey-bar{display:none}}
+  /* the step banner repeats the page title in step mode; it stays as the divider in the full view */
+  html[data-view="step"]:root .step-banner{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+  /* ---- summary row: the four numbers that answer the step ---- */
+  html:root .v15-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--gap);margin:0 0 var(--sp-5)}
+  html:root .v15-kpis[hidden]{display:none}
+  html:root .v15-kpi{display:flex;flex-direction:column;gap:var(--sp-1);min-width:0;padding:var(--card-pad);background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-lg)}
+  html:root .v15-kpi-l{font-size:var(--fs-small);color:var(--text-3);line-height:var(--lh-snug)}
+  html:root .v15-kpi-v{font-family:var(--num);font-size:var(--fs-num-lg);font-weight:var(--fw-semi);letter-spacing:var(--track-display);line-height:1.15;color:var(--text-1);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+  html:root .v15-kpi-s{font-size:var(--fs-micro);color:var(--text-3);line-height:var(--lh-snug);overflow-wrap:anywhere}
+  html:root .v15-kpi.warn .v15-kpi-v{color:var(--amber)}
+  html:root .v15-kpi.bad .v15-kpi-v{color:var(--red)}
+  @media(max-width:899.98px){html:root .v15-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-2)}
+    html:root .v15-kpi{padding:var(--sp-3)}
+    html:root .v15-kpi-v{font-size:18px}}
+
+  /* ---- first block of each step sits right under the head ---- */
+  html:root .panel>.subhead:first-of-type{margin-top:var(--sp-5)}
+  html:root .tip-card{margin-bottom:var(--sp-4)}
+  html:root .li-strip{margin-bottom:var(--sp-5)}
+
+  @media(max-width:719.98px){
+    html:root .hero{margin-bottom:var(--sp-4);gap:var(--sp-3)}
+    html:root .hero .view-toggle{width:100%}
+    html:root .journey-bar{margin-bottom:var(--sp-4)}
+  }
+}
   /* ========== v15 STEP 1: diagnose (tips, live insights, action plan, KPIs, briefing, adoption, levers, friction). Built on 94-system.css (see DESIGN.md); screen rules go inside @media screen. ========== */
   /* ========== v15 STEP 2: forecast and limit. Built on 94-system.css (see DESIGN.md); screen rules go inside @media screen. ========== */
   /* ========== v15 STEP 3: anchor pipeline and datasets. Built on 94-system.css (see DESIGN.md); screen rules go inside @media screen. ========== */
@@ -2957,6 +3035,19 @@
         <div class="slider-ticks"><span id="tk-start">S1</span><span class="milestone" id="docAiTick" data-i18n="wk.docai">S5 · IA Docs</span><span id="tk-end">S12</span></div>
       </div>
     </div>
+    <!-- Quick actions (js/32-v15.js): each one triggers the matching side-menu control -->
+    <div class="tb-actions">
+      <button class="tb-act" id="tbAsk" type="button" aria-label="Assistente" title="Assistente (/)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+      </button>
+      <button class="tb-act tb-export" id="tbExport" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></svg>
+        <span id="tbExportLbl">Exportar</span>
+      </button>
+      <button class="tb-act" id="tbTheme" type="button" aria-label="Tema" title="Tema">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
+      </button>
+    </div>
     <div id="scrollProg" aria-hidden="true"></div>
   </div>
 </header>
@@ -2969,10 +3060,16 @@
         <span class="kick" data-i18n="kick">Carteira Brasil · Revisão semanal, inputs diários</span>
         <span class="fx-badge" id="fxBadge" hidden></span>
       </div>
-      <h1 data-i18n="h1">Intel Center - SCF Team</h1>
+      <h1 id="pageTitle">Intel Center - SCF Team</h1>
+      <div class="step-context" id="stepContext"></div>
       <p class="sub" id="heroSub"></p>
       <!-- Owner's notice + data badge: one quiet line under the title (was a full-width banner above the header) -->
       <p class="hero-meta" role="note"><span class="badge" id="dataBadge">Dados ilustrativos</span><span class="hero-notice" data-i18n="hdr.notice">Uso funcional comprovado porém esta versão é somente por ora, ilustrativa e pertence a J.E.M.Costa.</span></p>
+    </div>
+    <!-- View mode: one step at a time or the whole cockpit -->
+    <div class="view-toggle" role="group" aria-label="Modo de visualização" data-i18n-aria="vm.aria">
+      <button id="modeStep" aria-pressed="true" data-i18n="vm.step">Passo a passo</button>
+      <button id="modeAll" aria-pressed="false" data-i18n="vm.all">Visão completa</button>
     </div>
 
     <svg class="hero-art" viewBox="0 0 400 150" role="img" aria-label="Fluxo entre fornecedor, âncora e banco" data-i18n-aria="hero.art">
@@ -3033,16 +3130,6 @@
       <div class="step-owner"><span data-i18n="st.who">Quem usa:</span> <b data-i18n="st.4.who">Liderança & Produto</b></div>
     </button>
   </section>
-
-  <!-- VIEW MODE BAR -->
-  <div class="step-toolbar">
-    <div class="step-context" id="stepContext"></div>
-    <div class="view-toggle" role="group" aria-label="Modo de visualização" data-i18n-aria="vm.aria">
-      <button id="modeStep" aria-pressed="true" data-i18n="vm.step">Passo a passo</button>
-      <button id="modeAll" aria-pressed="false" data-i18n="vm.all">Visão completa</button>
-    </div>
-  </div>
-
   <!-- ==================== STEP 1: DIAGNOSE, ACTIONS & AUDITABLE PROOFS ==================== -->
   <section class="step-panel" id="panel-1" data-step-panel="1">
     <div class="step-banner">
@@ -3054,7 +3141,7 @@
     </div>
     <aside class="tip-card" id="tip-1" data-tip="1" role="note">
       <span class="tip-ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.6 10.2A4.3 4.3 0 1 1 10.4 10.2c-.5.4-.8.9-.8 1.5H6.4c0-.6-.3-1.1-.8-1.5Z"/><path d="M6.6 14h2.8"/></svg></span>
-      <p><b data-i18n="tip.lbl">Como usar esta etapa</b> <span data-i18n="tip.1">Comece pelo plano de ação e depois confira os indicadores e alertas que o sustentam. Mova o controle de semanas no topo para ver a evolução do programa e clique em qualquer card para ver o cálculo.</span></p>
+      <p><b data-i18n="tip.lbl">Como usar esta etapa</b> <span data-i18n="tip.1">Comece pelos indicadores e depois siga o plano de ação que sai deles. Mova o controle de semanas no topo para ver a evolução do programa e clique em qualquer card para ver o cálculo.</span></p>
       <button type="button" class="tip-x" data-tip-close="1" data-i18n-aria="tip.close" aria-label="Dispensar esta dica">✕</button>
     </aside>
     <!-- Live insights (22-live-insights.js): readings computed from the numbers of this step -->
@@ -3068,8 +3155,15 @@
       <div class="li-pop" data-li-pop hidden></div>
     </div>
 
+    <!-- 8 Clickable KPI Tiles -->
+    <div class="subhead" id="sec-kpis">
+      <h3 data-i18n="sec.perf">Desempenho do programa</h3>
+      <span data-i18n="sec.perf.delta">Variação sobre a semana anterior · clique no card para auditar</span>
+    </div>
+    <div class="grid kpis" id="kpis"></div>
+
     <!-- Auto-Generated Monday Action Plan -->
-    <div class="subhead" id="sec-actions" style="margin-top:6px">
+    <div class="subhead" id="sec-actions">
       <h3 data-i18n="sec.act">Plano de ação da semana</h3>
       <span id="act-n"></span>
     </div>
@@ -3080,13 +3174,6 @@
         <span class="proof-cue" style="margin-top:0" data-i18n="pf.cue">Ver prova e memória de cálculo ↗</span>
       </div>
     </div>
-
-    <!-- 8 Clickable KPI Tiles -->
-    <div class="subhead" id="sec-kpis">
-      <h3 data-i18n="sec.perf">Desempenho do programa</h3>
-      <span data-i18n="sec.perf.delta">Variação sobre a semana anterior · clique no card para auditar</span>
-    </div>
-    <div class="grid kpis" id="kpis"></div>
 
     <!-- Weekly Briefing + Alerts -->
     <div class="subhead" id="sec-brief">
@@ -3226,6 +3313,8 @@
       <div class="li-list" data-li-list aria-live="polite" aria-atomic="false"></div>
       <div class="li-pop" data-li-pop hidden></div>
     </div>
+    <!-- Summary row (js/32-v15.js): the four numbers that answer this step, read from the same model as the cards below -->
+    <div class="v15-kpis" data-v15-kpis="2"></div>
 
     <div class="card" id="sec-forecast">
       <div class="chead">
@@ -3334,6 +3423,8 @@
       <div class="li-list" data-li-list aria-live="polite" aria-atomic="false"></div>
       <div class="li-pop" data-li-pop hidden></div>
     </div>
+    <!-- Summary row (js/32-v15.js): the four numbers that answer this step, read from the same model as the cards below -->
+    <div class="v15-kpis" data-v15-kpis="3"></div>
     <div class="ds-bar" data-ds-bar="3"></div>
 
     <div class="card" id="sec-pipeline">
@@ -3429,6 +3520,8 @@
       <div class="li-list" data-li-list aria-live="polite" aria-atomic="false"></div>
       <div class="li-pop" data-li-pop hidden></div>
     </div>
+    <!-- Summary row (js/32-v15.js): the four numbers that answer this step, read from the same model as the cards below -->
+    <div class="v15-kpis" data-v15-kpis="4"></div>
     <div class="fab-banner" role="note">
       <span class="fab-badge" data-i18n="ds.fab.badge">Números fabricados</span>
       <span data-i18n="ds.fab.banner">Nomes reais, números fabricados: valores, ratings e sinais não representam relações reais de financiamento.</span>
@@ -8760,8 +8853,8 @@ Format: plain text, at most about 150 words, short paragraphs or "- " bullets, n
     "gd.menu.hints":["Field explanations","Explicações dos campos"],
     "tip.lbl":["How to use this step","Como usar esta etapa"],
     "tip.close":["Dismiss this tip","Dispensar esta dica"],
-    "tip.1":["Start with the action plan, then check the indicators and alerts behind it. Move the week slider at the top to see how the program evolved, and click any card to see its calculation.",
-             "Comece pelo plano de ação e depois confira os indicadores e alertas que o sustentam. Mova o controle de semanas no topo para ver a evolução do programa e clique em qualquer card para ver o cálculo."],
+    "tip.1":["Start with the indicators, then follow the action plan they lead to. Move the week slider at the top to see how the program evolved, and click any card to see its calculation.",
+             "Comece pelos indicadores e depois siga o plano de ação que sai deles. Mova o controle de semanas no topo para ver a evolução do programa e clique em qualquer card para ver o cálculo."],
     "tip.2":["Check whether the projected balance fits the approved limit. Change the limit, the scenario and the horizon: the chart, the verdict and the action plan update at once.",
              "Veja se o saldo projetado cabe no limite aprovado. Altere o limite, o cenário e o horizonte: o gráfico, o veredito e o plano de ação se atualizam na hora."],
     "tip.3":["See which anchor offers the largest potential flow. Edit the assumptions in the table or pick a quick scenario: flow, balance and spread revenue are recalculated.",
@@ -9167,7 +9260,7 @@ Format: plain text, at most about 150 words, short paragraphs or "- " bullets, n
   const snRoot = document.documentElement;
   // Sections of each step: the id of the card or sub-heading it jumps to. The label is read from that heading.
   const SN_SECTIONS = {
-    1:["sec-actions","sec-kpis","sec-brief","sec-adoption","sec-levers","sec-friction"],
+    1:["sec-kpis","sec-actions","sec-brief","sec-adoption","sec-levers","sec-friction"],
     2:["sec-forecast","sec-cases","sec-accuracy"],
     3:["sec-pipeline","sec-anchors"],
     4:["sec-arch","sec-mkt-1","sec-mkt-2","sec-mkt-3","sec-mkt-4","products-ref"]
@@ -9346,6 +9439,99 @@ Format: plain text, at most about 150 words, short paragraphs or "- " bullets, n
     e.preventDefault(); m.setAttribute("tabindex", "-1"); m.focus({preventScroll:true}); scrollToY(0);
   });
   onRefresh(() => { snLabels(); syncSideNav(); });
+  // ========== v15 PAGE STRUCTURE ==========
+  // One page per step: the page title is the step title, the step question sits under it, and steps 2 to 4 open with
+  // a row of four numbers read from the same functions as the cards below (fcModel, totals, engBands, engShareTotals),
+  // so the row can never disagree with them. The top-bar quick actions trigger the side-menu controls they mirror.
+  Object.assign(I18N, {
+    "tb.export":["Export","Exportar"], "tb.ask":["Assistant","Assistente"], "tb.theme":["Switch theme","Trocar tema"]
+  });
+  const v15Tile = (lbl, val, sub, tone) => `<div class="v15-kpi${tone ? " " + tone : ""}"><span class="v15-kpi-l">${esc(lbl)}</span><strong class="v15-kpi-v">${esc(val)}</strong><span class="v15-kpi-s">${esc(sub)}</span></div>`;
+  const V15_ROWS = {
+    2: () => {
+      const m = fcModel(), room = m.lim - m.peakHigh, use = 100 * m.peakHigh / m.lim, err = D.err[m.w - 1];
+      if (!(m.now > 0)) return [];
+      return [
+        [T("Top of the range", "Topo da faixa"), money(m.peakHigh), T(`${scName(m.sc)} case · ${m.h} weeks`, `Cenário ${scName(m.sc).toLowerCase()} · ${m.h} semanas`)],
+        [room >= 0 ? T("Headroom under the limit", "Folga de limite") : T("Above the limit", "Acima do limite"), money(Math.abs(room)), room >= 0 ? T("Available capacity", "Capacidade disponível") : T(`Request +${money(m.need)}`, `Pedir +${money(m.need)}`), room >= 0 ? "" : "bad"],
+        [T("Limit used at the peak", "Uso do limite no pico"), nf(use, 0) + "%", T(`Limit of ${money(m.lim)}`, `Limite de ${money(m.lim)}`), use > 100 ? "bad" : m.kHigh >= 0 ? "warn" : ""],
+        [T("Forecast error", "Erro de projeção"), nf(err, 1) + "%", T(`Tolerance 8% · measured ±${nf(m.e1, 2)}% a week`, `Tolerância de 8% · medido ±${nf(m.e1, 2)}% por semana`), err > 8 ? "warn" : ""]
+      ];
+    },
+    3: () => {
+      const t = totals();
+      return [
+        [T("Anchors in the pipeline", "Âncoras no pipeline"), String(ANCHORS.length), T("Editable hypotheses", "Hipóteses editáveis")],
+        [T("Potential annual flow", "Fluxo anual potencial"), bn(t.flow), T(`${bn(t.elig, 1)} of eligible purchases`, `${bn(t.elig, 1)} de compras elegíveis`)],
+        [T("Implied balance", "Saldo implícito"), money(t.bal), T(`Credit to request · ${G.tenor} days`, `Crédito a pedir · ${G.tenor} dias`)],
+        [T("Spread revenue a year", "Receita de spread ao ano"), moneyD(t.rev), T(`At ${nf(G.spread, 2)}% a year`, `A ${nf(G.spread, 2)}% ao ano`)]
+      ];
+    },
+    4: () => {
+      const b = engBands(mktSpread), s = engShareTotals(), inside = ANCHORS.length - b.above.length - b.below.length, g = engSigGroups();
+      const alerts = g.red.length + g.amber.length;
+      return [
+        [T("Proposed rate", "Taxa proposta"), "CDI + " + nf(mktSpread, 2) + "%", T("Moves with the slider below", "Segue o controle abaixo")],
+        [T("Inside the market band", "Dentro da faixa de mercado"), T(`${inside} of ${ANCHORS.length}`, `${inside} de ${ANCHORS.length}`), b.above.length ? T(`Above for ${b.above.join(", ")}`, `Acima em ${b.above.join(", ")}`) : b.below.length ? T(`Below for ${b.below.join(", ")}`, `Abaixo em ${b.below.join(", ")}`) : T("All anchors", "Todas as âncoras"), b.above.length ? "warn" : ""],
+        [T("Unfinanced purchases", "Compras sem financiamento"), bn(s.free, 1), T(`Largest: ${s.best.name}`, `Maior: ${s.best.name}`)],
+        [T("Anchors with a credit signal", "Âncoras com sinal de crédito"), T(`${alerts} of ${ANCHORS.length}`, `${alerts} de ${ANCHORS.length}`), T("Fabricated market figures", "Números de mercado fabricados"), g.red.length ? "bad" : alerts ? "warn" : ""]
+      ];
+    }
+  };
+  function v15Rows() {
+    document.querySelectorAll("[data-v15-kpis]").forEach(box => {
+      let rows = [];
+      try { rows = V15_ROWS[box.dataset.v15Kpis](); } catch (e) { console.error("[v15]", e); }
+      const html = rows.map(r => v15Tile(r[0], r[1], r[2], r[3])).join("");
+      if (box._html !== html) { box._html = html; box.innerHTML = html; }
+      box.hidden = !rows.length;
+    });
+  }
+  // Signal of the week (side menu): the most urgent live reading of the current step, from the same list as the page.
+  // Clicking it opens that reading's calculation, exactly as the reading on the page does.
+  function v15Signal() {
+    const nav = $("topStepNav"); if (!nav || typeof insightsFor !== "function") return;
+    let box = $("snSignal");
+    if (!box) {
+      box = document.createElement("button"); box.type = "button"; box.id = "snSignal"; box.className = "sn-signal";
+      box.innerHTML = '<span class="sn-signal-h"><i aria-hidden="true"></i><span class="sn-signal-k"></span></span><span class="sn-signal-t"></span>';
+      nav.closest(".sn-group").after(box);
+      box.onclick = () => { const b = document.querySelector(`[data-insights="${box.dataset.step}"] [data-li-id="${box.dataset.id}"]`); if (viewMode !== "all" && +box.dataset.step !== activeStep) goStep(+box.dataset.step); if (b) b.click(); };
+    }
+    let items = [];
+    try { items = insightsFor(activeStep); } catch (e) { console.error("[v15]", e); }
+    const x = ["bad", "warn", "info", "good"].map(t => items.find(i => i.tone === t)).find(Boolean);
+    box.hidden = !x; if (!x) return;
+    const k = T("Signal of the week", "Sinal da semana") + " · " + L(LI_TONE[x.tone]);
+    box.dataset.step = activeStep; box.dataset.id = x.id; box.dataset.tone = x.tone;
+    const ke = box.querySelector(".sn-signal-k"), te = box.querySelector(".sn-signal-t");
+    if (ke.textContent !== k) ke.textContent = k;
+    if (te.textContent !== x.text) te.textContent = x.text;
+  }
+  function v15Head() {
+    const root = document.documentElement, h = $("pageTitle");
+    if (root.dataset.view !== viewMode) root.dataset.view = viewMode;
+    if (h) { const t = viewMode === "all" ? L(I18N.h1) : L(I18N["st." + activeStep + ".title"]); if (h.textContent !== t) h.textContent = t; }
+    const ex = $("tbExportLbl"); if (ex) ex.textContent = L(I18N["tb.export"]);
+    const ask = $("tbAsk"); if (ask) ask.setAttribute("aria-label", L(I18N["tb.ask"]));
+    const th = $("tbTheme"); if (th) { th.setAttribute("aria-label", L(I18N["tb.theme"])); th.title = L(I18N["tb.theme"]); th.setAttribute("aria-pressed", String(isDark())); }
+  }
+  {
+    const prevHook = stepViewHook;
+    stepViewHook = () => { if (prevHook) prevHook(); v15Head(); v15Signal(); };
+    const via = (id, target) => { const b = $(id); if (b) b.onclick = () => { const t = typeof target === "function" ? target() : $(target); if (t) t.click(); }; };
+    via("tbAsk", "openAssistant");
+    via("tbExport", "openBrief");
+    via("tbTheme", () => document.querySelector(`.theme-switch [data-theme="${isDark() ? "light" : "dark"}"]`));
+  }
+  onRefresh(() => { v15Head(); v15Rows(); v15Signal(); });
+  // Several controls (limit, scenario, pipeline inputs, spread slider) change state without calling touch(), so the
+  // row and the signal also re-read after any user input, as the live readings do. They only read state.
+  {
+    let queued = false;
+    const later = () => { if (queued) return; queued = true; setTimeout(() => { queued = false; v15Rows(); v15Signal(); }, 0); };
+    ["input", "change", "click"].forEach(ev => document.addEventListener(ev, later, true));
+  }
 
   document.querySelectorAll(".lang button").forEach(b => b.onclick = () => setLang(b.dataset.lang));
   document.querySelectorAll(".theme-switch button").forEach(b => b.onclick = () => setTheme(b.dataset.theme, true));

@@ -95,6 +95,7 @@
     "js/23-consistency.js",
     "js/30-guide.js",
     "js/31-sidenav.js",
+    "js/32-v15.js",
     "js/99-boot.js"
   ],
   "slots": {
