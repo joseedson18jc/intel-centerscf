@@ -5,11 +5,18 @@
     <div>
       <div class="kick-row">
         <span class="kick" data-i18n="kick">Carteira Brasil · Revisão semanal, inputs diários</span>
-        <span class="badge" id="dataBadge">Dados ilustrativos</span>
         <span class="fx-badge" id="fxBadge" hidden></span>
       </div>
-      <h1 data-i18n="h1">Intel Center - SCF Team</h1>
+      <h1 id="pageTitle">Intel Center - SCF Team</h1>
+      <div class="step-context" id="stepContext"></div>
       <p class="sub" id="heroSub"></p>
+      <!-- Owner's notice + data badge: one quiet line under the title (was a full-width banner above the header) -->
+      <p class="hero-meta" role="note"><span class="badge" id="dataBadge">Dados ilustrativos</span><span class="hero-notice" data-i18n="hdr.notice">Uso funcional comprovado porém esta versão é somente por ora, ilustrativa e pertence a J.E.M.Costa.</span></p>
+    </div>
+    <!-- View mode: one step at a time or the whole cockpit -->
+    <div class="view-toggle" role="group" aria-label="Modo de visualização" data-i18n-aria="vm.aria">
+      <button id="modeStep" aria-pressed="true" data-i18n="vm.step">Passo a passo</button>
+      <button id="modeAll" aria-pressed="false" data-i18n="vm.all">Visão completa</button>
     </div>
 
     <svg class="hero-art" viewBox="0 0 400 150" role="img" aria-label="Fluxo entre fornecedor, âncora e banco" data-i18n-aria="hero.art">

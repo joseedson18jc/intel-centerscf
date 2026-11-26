@@ -1,0 +1,79 @@
+/* ========== v15 SHELL: page structure ==========
+   One page per step. The top bar carries where you are, the week and three quick actions; the page opens with the
+   step title and its question, then a row of four numbers, then the detail cards. The four step tabs stay only where
+   the side menu is a drawer (below 1100px); on wide screens the menu is the navigation. */
+@media screen{
+  /* ---- top bar: quick actions on the right ---- */
+  html:root .tb-actions{display:flex;align-items:center;gap:var(--sp-1);margin-left:auto;flex:none}
+  html:root .tb-act{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);height:var(--ctl-h);min-width:var(--ctl-h);padding:0;
+    border:1px solid transparent;border-radius:var(--r-md);background:transparent;color:var(--text-2);font:inherit;font-size:var(--fs-small);font-weight:var(--fw-medium);cursor:pointer;
+    transition:background .12s ease,color .12s ease,border-color .12s ease}
+  html:root .tb-act:hover{background:var(--surface-3);color:var(--text-1)}
+  html:root .tb-act:focus-visible{outline:var(--focus);outline-offset:2px}
+  html:root .tb-act.tb-export{padding:0 var(--sp-3);background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+  html:root .tb-act.tb-export:hover{background:var(--accent);filter:brightness(1.08);color:var(--on-accent)}
+  html:root .tb-act[aria-pressed="true"]{color:var(--text-1)}
+  @media(max-width:1099.98px){
+    html:root .tb-act{height:40px;min-width:40px}
+    html:root .tb-act.tb-export{padding:0;width:40px;background:transparent;border-color:transparent;color:var(--text-2)}
+    html:root .tb-act.tb-export span{display:none}
+  }
+  @media(max-width:479.98px){html:root #tbTheme,html:root #tbExport{display:none}}
+
+  /* ---- side menu: signal of the week ---- */
+  html:root .sn-signal{display:flex;flex-direction:column;gap:var(--sp-1);width:calc(100% - 2*var(--sp-2));margin:var(--sp-2) var(--sp-2) var(--sp-3);padding:var(--sp-3);text-align:left;
+    background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-md);color:var(--text-2);font:inherit;cursor:pointer;transition:border-color .12s ease}
+  html:root .sn-signal[hidden]{display:none}
+  html:root .sn-signal:hover{border-color:var(--hair-strong)}
+  html:root .sn-signal:focus-visible{outline:var(--focus);outline-offset:2px}
+  html:root .sn-signal-h{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-micro);font-weight:var(--fw-medium);color:var(--text-3)}
+  html:root .sn-signal-h i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  html:root .sn-signal[data-tone="good"] .sn-signal-h i{background:var(--green)}
+  html:root .sn-signal[data-tone="warn"] .sn-signal-h i{background:var(--amber)}
+  html:root .sn-signal[data-tone="bad"] .sn-signal-h i{background:var(--red)}
+  html:root .sn-signal-t{font-size:var(--fs-micro);line-height:var(--lh-snug);color:var(--text-1);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  @media(min-width:1100px){html.sn-collapsed:root .sn-signal{display:none}}
+
+  /* ---- page head: title and question on the left, view switch on the right ---- */
+  html:root .hero{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:var(--sp-3) var(--sp-5);margin-bottom:var(--sp-5)}
+  html:root .hero>div:first-child{flex:1 1 420px;min-width:0}
+  html:root .hero .hero-art{display:none}
+  html:root .hero .view-toggle{flex:none}
+  html:root .hero .kick{display:block;margin-bottom:var(--sp-1)}
+  html:root .hero h1{margin-top:0}
+  html:root .hero .step-context{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:var(--sp-1);margin-top:var(--sp-2);max-width:76ch}
+  html:root .hero .step-context strong{display:block;order:1;font-family:var(--body);font-size:var(--fs-body);font-weight:var(--fw-regular);line-height:var(--lh-body);color:var(--text-2);letter-spacing:0}
+  html:root .hero .step-context .role-chip{order:2;margin:0;font-size:var(--fs-small);color:var(--text-3)}
+  html[data-view="step"]:root .hero .sub{display:none}
+  html[data-view="all"]:root .hero .step-context{display:none}
+
+  /* step tabs: only where the side menu is not on screen */
+  html:root .journey-bar{margin:0 0 var(--sp-5)}
+  @media(min-width:1100px){html:root .journey-bar{display:none}}
+  /* the step banner repeats the page title in step mode; it stays as the divider in the full view */
+  html[data-view="step"]:root .step-banner{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+  /* ---- summary row: the four numbers that answer the step ---- */
+  html:root .v15-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--gap);margin:0 0 var(--sp-5)}
+  html:root .v15-kpis[hidden]{display:none}
+  html:root .v15-kpi{display:flex;flex-direction:column;gap:var(--sp-1);min-width:0;padding:var(--card-pad);background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-lg)}
+  html:root .v15-kpi-l{font-size:var(--fs-small);color:var(--text-3);line-height:var(--lh-snug)}
+  html:root .v15-kpi-v{font-family:var(--num);font-size:var(--fs-num-lg);font-weight:var(--fw-semi);letter-spacing:var(--track-display);line-height:1.15;color:var(--text-1);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+  html:root .v15-kpi-s{font-size:var(--fs-micro);color:var(--text-3);line-height:var(--lh-snug);overflow-wrap:anywhere}
+  html:root .v15-kpi.warn .v15-kpi-v{color:var(--amber)}
+  html:root .v15-kpi.bad .v15-kpi-v{color:var(--red)}
+  @media(max-width:899.98px){html:root .v15-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-2)}
+    html:root .v15-kpi{padding:var(--sp-3)}
+    html:root .v15-kpi-v{font-size:18px}}
+
+  /* ---- first block of each step sits right under the head ---- */
+  html:root .panel>.subhead:first-of-type{margin-top:var(--sp-5)}
+  html:root .tip-card{margin-bottom:var(--sp-4)}
+  html:root .li-strip{margin-bottom:var(--sp-5)}
+
+  @media(max-width:719.98px){
+    html:root .hero{margin-bottom:var(--sp-4);gap:var(--sp-3)}
+    html:root .hero .view-toggle{width:100%}
+    html:root .journey-bar{margin-bottom:var(--sp-4)}
+  }
+}
