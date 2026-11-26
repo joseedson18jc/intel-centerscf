@@ -2161,6 +2161,144 @@
     html:not(.sn-collapsed) .grid-2,html:not(.sn-collapsed) .friction-card,html:not(.sn-collapsed) .price-grid,html:not(.sn-collapsed) .share-grid,html:not(.sn-collapsed) .sig-feed{grid-template-columns:1fr}
   }
   @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+  /* ========== CLEAN LAYOUT (v14.5) ==========
+     Owner's feedback: the page looked polluted on phone and desktop. This layer removes visual noise without removing
+     features: one quiet line for the notice, no uppercase letter-spaced labels on the page, plain text instead of pills
+     for metadata, compact step cards, lower-contrast borders, no glows, denser KPI grid on phones.
+     Screen only (print keeps 91-print.css). Loads last so it wins over 80/81/90/92. */
+  @media screen{
+  /* ---------- Tokens: quieter borders and surfaces ---------- */
+  html[data-theme="dark"]{
+    --hair:rgba(148,178,214,.12);--hair-strong:rgba(148,178,214,.22);
+    --canvas:#070F1C;--surface:#0C1829;--surface-alt:#101F34;
+    --shadow-sm:none;--shadow-md:0 8px 24px -10px rgba(0,0,0,.5);
+  }
+  html:not([data-theme="dark"]){--shadow-sm:none}
+  html[data-theme="dark"] body{background:var(--canvas)}
+
+  /* ---------- Header: no banner, one calm bar ---------- */
+  .topbar{box-shadow:none}
+  html[data-theme="dark"] header.topbar{box-shadow:none;border-bottom-color:var(--hair)}
+  .tb-step-txt small{text-transform:none;letter-spacing:0;font-weight:500;font-size:11.5px}
+  .tb-step-n{width:22px;height:22px;font-size:11px}
+  .wk-pill small,.topbar .wk-pill small{text-transform:none;letter-spacing:0;font-weight:500;font-size:11.5px}
+  .topbar .btn-ico.play,html[data-theme="dark"] .topbar .btn-ico.play{box-shadow:none}
+  .topbar .btn-ico{border-color:rgba(255,255,255,.16)}
+
+  /* ---------- Hero: title, one line of context, one quiet note ---------- */
+  .hero{padding-top:4px;padding-bottom:4px}
+  .hero-art{display:none!important}
+  .hero{grid-template-columns:1fr!important}
+  .kick{font-size:13px;letter-spacing:0;text-transform:none;font-weight:500;color:var(--subtle)}
+  .hero h1{margin-top:4px}
+  .hero .sub{font-size:14.5px;line-height:1.55;max-width:92ch}
+  .li-wk{letter-spacing:0!important;text-transform:none!important}
+  .hero-meta{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:12px;line-height:1.5;color:var(--subtle)}
+  .hero-meta .badge,html[data-theme="dark"] .hero-meta .badge{background:transparent;border:0;padding:0;font-size:12px;font-weight:600;color:var(--amber);gap:6px}
+  .hero-notice{min-width:0;overflow-wrap:anywhere}
+
+  /* ---------- Step cards: number, title, cadence. Description and owner move out of the way ---------- */
+  .journey-bar{gap:10px;margin-top:22px}
+  .step-card,html[data-theme="dark"] .step-card{padding:14px 16px;gap:4px;background:var(--surface);border:1px solid var(--hair);box-shadow:none}
+  .step-card p,.step-card .step-owner{display:none}
+  .step-card-top{flex-direction:row!important;align-items:center!important;justify-content:flex-start;gap:8px;flex-wrap:nowrap}
+  .step-num{font-size:0;letter-spacing:0;gap:0}
+  .step-num i{width:22px;height:22px;font-size:11.5px;font-style:normal}
+  .step-cadence,html[data-theme="dark"] .step-cadence,html[data-theme="dark"] .step-card[aria-pressed="true"] .step-cadence{
+    background:transparent;border:0;padding:0;font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--subtle)}
+  .step-card strong{font-size:14.5px;margin-top:4px;line-height:1.3}
+  .step-card:hover,html[data-theme="dark"] .step-card:hover{border-color:var(--hair-strong);box-shadow:none}
+  html .step-card[aria-pressed="true"],html[data-theme="dark"] .step-card[aria-pressed="true"]{
+    background:var(--surface);border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}
+  html[data-theme="dark"] .step-card.in-view,.step-card.in-view{box-shadow:inset 0 0 0 1px var(--blue)}
+
+  /* Context line under the cards: plain text, no boxed chip */
+  .step-toolbar,html[data-theme="dark"] .step-toolbar{background:transparent;border:0;box-shadow:none;padding:4px 0;margin-bottom:20px}
+  .step-context .role-chip,html[data-theme="dark"] .step-context .role-chip{background:transparent;border:0;padding:0;font-size:12.5px;font-weight:500;color:var(--subtle)}
+  .step-context strong{font-size:14px}
+
+  /* ---------- Step panel header: the top bar already says "Step n of 4" ---------- */
+  .step-pill-lg{display:none}
+  .step-banner{border-bottom:1px solid var(--hair);padding-bottom:14px}
+  .step-banner .sub-meta{font-size:12.5px;color:var(--subtle)}
+
+  /* Tip and live insights: neutral surfaces, colour only in the small icon */
+  .tip-card,html[data-theme="dark"] .tip-card,html:not([data-theme="dark"]) .tip-card{background:var(--surface);border:1px solid var(--hair);border-left:1px solid var(--hair);box-shadow:none}
+  .li-strip,html[data-theme="dark"] .li-strip{background:transparent;border:0;box-shadow:none;padding:0}
+  .li-item,html[data-theme="dark"] .li-item,html:not([data-theme="dark"]) .li-item{background:var(--surface);border:1px solid var(--hair);border-left-width:1px}
+
+  /* ---------- Page-wide: no uppercase letter-spaced labels (the deck keeps its own style) ---------- */
+  .wrap :is(.lbl,.aibadge,.fc-ctrl-lbl,.lev-k,.lev-pill,.pp small,.anchor-kpis span,.anchor-card dt,.proto-pill,.ds-lbl,.of-k,.of-lbl,.pipe-presets span,.prod em,.asst-mode-lbl),
+  .wrap :is(.data-table,.pipe-table,.matrix-table) thead th{
+    text-transform:none;letter-spacing:0;font-size:12.5px;font-weight:600;
+  }
+  .wrap :is(.lev-chip,.lev-flag,.sig-pub,.fab-tag,.ds-chip){text-transform:none;letter-spacing:0;font-weight:600}
+  .wrap .card .lbl,.wrap .kpi .lbl{color:var(--muted)}
+
+  /* Cards: hairline, flat, no glow */
+  .card,html[data-theme="dark"] .card{box-shadow:none;border-color:var(--hair)}
+  html[data-theme="dark"] .card{background:var(--surface)}
+  .clickable-card:hover,html[data-theme="dark"] .clickable-card:hover{box-shadow:none;border-color:var(--hair-strong)}
+  html[data-theme="dark"] .briefing-card{background:var(--surface)}
+  html:not([data-theme="dark"]) .kpi.hl,html[data-theme="dark"] .kpi.hl{background:var(--surface);border-color:var(--blue);color:inherit}
+  html .kpi.hl .lbl{color:var(--muted)} html .kpi.hl .val{color:var(--navy)} html .kpi.hl .val .u{color:var(--subtle)} html .kpi.hl .q{color:var(--muted)}
+  html .kpi.hl .delta.up{background:var(--green-soft);color:var(--green)} html .kpi.hl .delta.flat{background:var(--canvas);color:var(--muted)}
+  .delta{border-radius:6px;font-weight:600}
+
+  /* Action plan: metadata as one line of text, separated by dots */
+  .act .meta{display:block;margin-top:6px;font-size:12px;line-height:1.5;color:var(--subtle)}
+  .act .meta span,html[data-theme="dark"] .act .meta span{background:transparent;border:0;padding:0;border-radius:0;font-size:12px;font-weight:500;letter-spacing:0;color:var(--subtle)}
+  .act .meta span+span::before{content:"·";margin:0 7px;color:var(--hair-strong)}
+  .act .meta span:first-child{color:var(--blue);font-weight:600}
+  .act .pr{width:22px;height:22px;font-size:11px}
+  .actions-foot{background:transparent;border-top:1px solid var(--hair)}
+  .act b{font-size:14.5px}
+
+  /* Section headings: a bit more air, quieter side note */
+  .subhead{margin-top:36px}
+  .subhead>span{color:var(--subtle);font-size:12.5px}
+
+  /* ---------- Phones ---------- */
+  @media(max-width:680px){
+    /* One-row top bar: menu, step name, week buttons. The slider stays on wider screens (play, ‹ and › cover it here). */
+    .topbar-inner{flex-wrap:nowrap;gap:8px;padding:8px 12px}
+    .tb-step-txt small{display:none}
+    .tb-step-txt strong{font-size:15px}
+    .topbar .week-bar{flex:0 0 auto}
+    .topbar .slider-wrap{display:none}
+    .topbar .btn-ico{width:32px;height:32px}
+    .topbar .btn-ico.play{width:34px;height:34px}
+    .tb-menu-btn{width:36px;height:36px;border-color:rgba(255,255,255,.16)}
+
+    .hero h1{font-size:28px;line-height:1.12}
+    .hero .sub{font-size:14px}
+    .hero-meta{font-size:11.5px;gap:4px 8px}
+
+    /* Step cards: 2 x 2, title only */
+    .journey-bar{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px;margin-top:18px}
+    .step-card,html[data-theme="dark"] .step-card{padding:11px 12px}
+    .step-cadence{display:none}
+    .step-card strong{font-size:13.5px;margin-top:6px}
+    .step-toolbar{flex-direction:column;align-items:stretch;gap:10px}
+    .step-context{gap:4px 8px}
+
+    /* KPIs: 2 per row, the whole tile opens the calculation */
+    .kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}
+    .kpi{min-height:0;padding:12px!important;gap:3px}
+    .kpi .top{flex-direction:column;align-items:flex-start;gap:4px}
+    .kpi .lbl{font-size:12px!important;line-height:1.3}
+    .kpi .val{font-size:24px}
+    .kpi .q,.kpi .proof-cue{display:none}
+    .kpi .spark{height:26px;margin-top:6px}
+
+    /* Action plan: checkbox on the title row, metadata on one wrapped line */
+    .act{grid-template-columns:24px 1fr auto;gap:10px;padding:12px 14px}
+    .act label{grid-column:3;grid-row:1;padding:0 0 0 4px;min-height:0;font-size:0;gap:0}
+    .act label input{margin:2px 0 0}
+    .subhead{margin-top:28px}
+    .step-banner .sub-meta{display:none}
+  }
+  }
 </style>
 </head>
 <body>
@@ -2277,9 +2415,6 @@
 </aside>
 <div class="sn-tip" id="snTip" aria-hidden="true" hidden></div>
 <header class="topbar">
-  <div class="header-notice" role="note">
-    <span data-i18n="hdr.notice">Uso funcional comprovado porém esta versão é somente por ora, ilustrativa e pertence a J.E.M.Costa.</span>
-  </div>
   <div class="topbar-inner">
     <button class="tb-menu-btn" id="navMenuBtn" type="button" aria-controls="sideNav" aria-expanded="false" data-i18n-aria="sn.open" aria-label="Abrir menu">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -2311,11 +2446,12 @@
     <div>
       <div class="kick-row">
         <span class="kick" data-i18n="kick">Carteira Brasil · Revisão semanal, inputs diários</span>
-        <span class="badge" id="dataBadge">Dados ilustrativos</span>
         <span class="fx-badge" id="fxBadge" hidden></span>
       </div>
       <h1 data-i18n="h1">Intel Center - SCF Team</h1>
       <p class="sub" id="heroSub"></p>
+      <!-- Owner's notice + data badge: one quiet line under the title (was a full-width banner above the header) -->
+      <p class="hero-meta" role="note"><span class="badge" id="dataBadge">Dados ilustrativos</span><span class="hero-notice" data-i18n="hdr.notice">Uso funcional comprovado porém esta versão é somente por ora, ilustrativa e pertence a J.E.M.Costa.</span></p>
     </div>
 
     <svg class="hero-art" viewBox="0 0 400 150" role="img" aria-label="Fluxo entre fornecedor, âncora e banco" data-i18n-aria="hero.art">
