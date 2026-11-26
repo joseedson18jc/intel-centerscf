@@ -1,15 +1,16 @@
   // ========== UNIFIED DESIGN TOKENS (LIGHT + DARK) ==========
+  // v15 palette: neutral ink + one blue accent. Mirrors the CSS tokens in css/94-system.css (same key names as before).
   const THEME_LIGHT = {
-    navy:"#00205B", navyMid:"#002D72", blue:"#056DAE", sky:"#00BDF2", red:"#E31B23",
-    green:"#097650", amber:"#D97706", slate:"#9FB4CA", muted:"#4A5D73", subtle:"#56697F",
-    grid:"#DCE5F0", ringTrack:"#E6EEF7", barMuted:"#C9D7E7", freeSeg:"#DCE7F3",
-    nodeBg:"#EDF4FC", nodeStroke:"#D1E1F3", series:["#00205B","#056DAE","#1E88C7","#00BDF2","#7FD8F7"]
+    navy:"#0B0D12", navyMid:"#1B1E26", blue:"#0B57D0", sky:"#7FA9EE", red:"#C4222B",
+    green:"#0A7A4B", amber:"#B66A00", slate:"#B8BCC6", muted:"#4A4E57", subtle:"#6A6F78",
+    grid:"#ECECEF", ringTrack:"#ECECEF", barMuted:"#D6D6DB", freeSeg:"#ECECEF",
+    nodeBg:"#F5F5F6", nodeStroke:"#D6D6DB", series:["#0A2F73","#0B57D0","#3E82EE","#7FA9EE","#BBD2F7"]
   };
   const THEME_DARK = {
-    navy:"#E8F1FC", navyMid:"#C9DFF8", blue:"#38BDF8", sky:"#7DD3FC", red:"#F87171",
-    green:"#34D399", amber:"#FBBF24", slate:"#537094", muted:"#9FB3C8", subtle:"#8CA3BD",
-    grid:"#1E3350", ringTrack:"#1B314E", barMuted:"#263F5E", freeSeg:"#243C5C",
-    nodeBg:"#132946", nodeStroke:"#2A4B75", series:["#0284C7","#0EA5E9","#38BDF8","#7DD3FC","#BAE6FD"]
+    navy:"#EDEDF0", navyMid:"#D5D6DB", blue:"#6BA6FF", sky:"#9CC3FF", red:"#FF7272",
+    green:"#3DD68C", amber:"#F0B34A", slate:"#4A4B55", muted:"#A6A8B1", subtle:"#8B8D97",
+    grid:"#222227", ringTrack:"#222227", barMuted:"#32323A", freeSeg:"#222227",
+    nodeBg:"#18181C", nodeStroke:"#32323A", series:["#2F6FE0","#4C8DF6","#6BA6FF","#9CC3FF","#C9DEFF"]
   };
   let theme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
   const isDark = () => theme === "dark";
