@@ -1,5 +1,5 @@
 // Numbers audit: recomputes the pilot book, every KPI, the forecast (3 scenarios x 3 horizons), the modelled range,
-// the limit verdict and the one-week backtest for each of the 12 example weeks, independently of the page code,
+// the limit verdict and the one-week backtest for each of the example weeks, independently of the page code,
 // and compares the result with what the built page prints. Run: node tools/audit-numbers.mjs (needs Playwright).
 // It checks the example data with the default parameters (BRL, Portuguese, limit R$ 650 mi).
 import { createRequire } from "node:module";
@@ -10,9 +10,9 @@ const require = createRequire(import.meta.url);
 let chromium;
 try { ({ chromium } = require("playwright")); } catch { ({ chromium } = createRequire("/opt/node-tools/")("playwright")); }
 const D = {
-  spend:[52,53,54,55,56,57,57,58,59,59,60,60], active:[40,44,51,60,72,85,97,110,121,133,142,150],
-  util:[58,59,60,61,62,64,65,66,67,68,69,70], days:[21,21,20,19,16,14,13,12,11,10,9,9],
-  err:[9.8,9.1,8.4,7.9,7.0,6.1,5.5,4.9,4.2,3.8,3.4,3.1], sow:[34,35,36,37,39,40,42,43,45,46,47,48], flags:[5,4,6,3,3,2,2,3,1,2,1,1]};
+  spend:[52,53,54,55,56,57,57,58,59,59,60,60,61], active:[40,44,51,60,72,85,97,110,121,133,142,150,157],
+  util:[58,59,60,61,62,64,65,66,67,68,69,70,71], days:[21,21,20,19,16,14,13,12,11,10,9,9,8],
+  err:[9.8,9.1,8.4,7.9,7.0,6.1,5.5,4.9,4.2,3.8,3.4,3.1,2.9], sow:[34,35,36,37,39,40,42,43,45,46,47,48,49], flags:[5,4,6,3,3,2,2,3,1,2,1,1,1]};
 const SPEND=6000, TENOR=75, SPREAD=1.2;
 // independent: exact (unrounded) book, then the panel's 1-decimal rounding
 const balExact = D.spend.map((s,i)=>SPEND*s/100*D.util[i]/100*TENOR/365);
@@ -36,7 +36,7 @@ let bad = 0, checks = 0; const fail = (...a) => { bad++; if (bad < 40) console.l
 const eq = (label, got, want) => { checks++; if (String(got).replace(/\s+/g," ").trim() !== String(want).replace(/\s+/g," ").trim()) fail(label, "| got:", got, "| want:", want); };
 const has = (label, text, want) => { checks++; if (!text.replace(/\s+/g," ").includes(want.replace(/\s+/g," "))) fail(label, "| text:", text.slice(0,160), "| want:", want); };
 const mult = {Downside:.5, Base:1, Upside:1.5};
-for (let w = 1; w <= 12; w++) {
+for (let w = 1; w <= D.spend.length; w++) {
   await p.evaluate(w => { const s=document.querySelector('input[type=range]'); s.value=w; s.dispatchEvent(new Event("input",{bubbles:true})); }, w);
   await p.waitForTimeout(120);
   const k = await p.evaluate(() => Object.fromEntries(["spend","active","util","days","rev","err","sow","flags"].flatMap(k => [["v_"+k, document.getElementById("v_"+k).textContent], ["d_"+k, document.getElementById("d_"+k).textContent]])));

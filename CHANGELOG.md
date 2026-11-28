@@ -1,5 +1,11 @@
 # Changelog
 
+## 15.1.0 (2026-11-28): week 13 in the example data
+
+- The example dataset (`src/js/04-data-state.js`) gains week 13, continuing the trend of the series (values chosen by the owner's "continue the trend" option, still example data): spend 61%, active suppliers 157, utilization 71%, 8 days to first discount, forecast error 2.9%, share of wallet 49%, 1 open risk alert, supplier share 38%. The page opens on week 13; the slider, labels, forecast, backtest and readings follow the number of weeks in the data.
+- Effect on Step 2: the balance in week 13 is R$ 534 m, and the 13-week base case now reaches R$ 652 m, above the R$ 650 m limit (in week 12 only the top of the range crossed it). The pre-approval ask goes from R$ 11 m to R$ 29 m.
+- `tools/audit-numbers.mjs` reads the number of weeks from its own copy of the data instead of a fixed 12 (3,033 checks).
+
 ## 15.0.0 (2026-11-26): one page per step
 
 Structure taken from the owner's reference redesign, on the neutral system layer (`94-system.css`). No function, number or data flow was removed or changed.

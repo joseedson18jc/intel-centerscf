@@ -1,5 +1,5 @@
   // ========== PILOT DATA + CONFIGURABLE PARAMETERS ==========
-  let W = 12, SPEND = 6000, BASE_SUP = 300;
+  let W = 13, SPEND = 6000, BASE_SUP = 300;
   const TENOR = 75; // default average days discounted (also the pipeline default in 09-pipeline)
   // Pilot programme assumptions. They belong to the pilot book only (Steps 1 and 2) and are independent
   // of the pipeline assumptions G (Step 3): changing a pipeline preset never rewrites the pilot history.
@@ -11,14 +11,14 @@
   const clampNum = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
   let appReady = false; // set by 99-boot after the first render
   const D = {
-    spend:   [52,53,54,55,56,57,57,58,59,59,60,60],
-    active:  [40,44,51,60,72,85,97,110,121,133,142,150],
-    util:    [58,59,60,61,62,64,65,66,67,68,69,70],
-    days:    [21,21,20,19,16,14,13,12,11,10,9,9],
-    err:     [9.8,9.1,8.4,7.9,7.0,6.1,5.5,4.9,4.2,3.8,3.4,3.1],
-    sow:     [34,35,36,37,39,40,42,43,45,46,47,48],
-    flags:   [5,4,6,3,3,2,2,3,1,2,1,1],
-    supShare:[28,28,29,30,31,32,33,34,35,35,36,37],
+    spend:   [52,53,54,55,56,57,57,58,59,59,60,60,61],
+    active:  [40,44,51,60,72,85,97,110,121,133,142,150,157],
+    util:    [58,59,60,61,62,64,65,66,67,68,69,70,71],
+    days:    [21,21,20,19,16,14,13,12,11,10,9,9,8],
+    err:     [9.8,9.1,8.4,7.9,7.0,6.1,5.5,4.9,4.2,3.8,3.4,3.1,2.9],
+    sow:     [34,35,36,37,39,40,42,43,45,46,47,48,49],
+    flags:   [5,4,6,3,3,2,2,3,1,2,1,1,1],
+    supShare:[28,28,29,30,31,32,33,34,35,35,36,37,38],
   };
   let rev = [];
   const DEMO = JSON.parse(JSON.stringify(D));
